@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/lblReviewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/row_border"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="10dp"
+        android:text="@string/routeName_routeList"
+        android:textAlignment="center"
+        android:textColor="#80005D"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"/>
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblReviewTitle"
+        app:layout_constraintVertical_bias="0.02"
+        app:layout_constraintWidth_percent="0.9" >
+
+    </SearchView>
+
+    <TextView
+        android:id="@+id/lblVisited"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fontFamily="@font/roboto_bold"
+        android:paddingBottom="10dp"
+        android:text="@string/visited"
+        android:textAlignment="viewStart"
+        android:textColor="#FF000000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:layout_constraintVertical_bias="0.02" />
+
+    <ScrollView
+        android:id="@+id/siteScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
+        android:contentDescription="@string/descriptionList_routeList"
+        android:fontFamily="@font/roboto_regular"
+        app:layout_constraintVertical_bias="0.1"
+        app:layout_constraintHeight_percent="0.65"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblVisited">
+
+        <TableLayout
+            android:id="@+id/tableSitesList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:shrinkColumns="*">
+
+        </TableLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,17 +2,30 @@ package com.example.artcitytourapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
+import android.annotation.SuppressLint;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.example.artcitytourapp.R;
+import com.example.artcitytourapp.fragments.CloseSitesFragment;
+import com.example.artcitytourapp.fragments.PlanningFragment;
+import com.example.artcitytourapp.fragments.ReviewFragment;
+import com.example.artcitytourapp.fragments.SitesFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,37 +36,30 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
+    BottomNavigationView bottomNavigationView;
+
+    SitesFragment sites = new SitesFragment();
+    CloseSitesFragment close = new CloseSitesFragment();
+    PlanningFragment planning = new PlanningFragment();
+    ReviewFragment review = new ReviewFragment();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button boton1 = findViewById(R.id.boton1);
-        boton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BDs();
-            }
-        });
-    }
-    protected void BDs(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
-        db.collection("users")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                //PARA VER LO QUE IMPRIME
-                                //REVISAR LOGCAT ABAJO A LA PAR DE BUILD
-                                //EN EL BUSCADOR QUE APARECE PONER TAG
-                                Log.d("TAG", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+
+        //FragmentContainerView
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.contentContainer);
+        assert navHostFragment != null;
+        bottomNavigationView = findViewById(R.id.bottom_nav);
+        NavController navController = navHostFragment.getNavController();
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+        // Fragment
+        /*bottomNavigationView = findViewById(R.id.bottom_nav);
+        NavController navController = Navigation.findNavController(this, R.id.contentContainer);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);*/
     }
 }
 

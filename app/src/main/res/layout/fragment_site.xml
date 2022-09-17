@@ -1,14 +1,313 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.SiteFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".025">
+
+            <ImageView
+                android:id="@+id/backImageSiteInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/atras"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="?attr/actionModeCloseDrawable" />
+
+            <LinearLayout
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/notificationImage_SiteDes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:contentDescription="@string/notification_SiteDes"
+                    app:srcCompat="@android:drawable/ic_menu_today" />
+
+                <ImageView
+                    android:id="@+id/shareImage_SiteDes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:contentDescription="@string/share_SiteDes"
+                    app:srcCompat="@android:drawable/ic_menu_upload" />
+
+                <ImageView
+                    android:id="@+id/favImage_SiteDes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:contentDescription="@string/fav_SiteDes"
+                    app:srcCompat="@android:drawable/btn_star_big_on" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:id="@+id/siteScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/descriptionList_routeList"
+            android:fontFamily="@font/roboto_regular">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ViewFlipper
+                    android:id="@+id/viewFlipper2"
+                    android:layout_width="432dp"
+                    android:layout_height="258dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+                <LinearLayout
+                    android:id="@+id/basicInfo_SiteDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".3"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/nameAndRoute_SiteDes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.7"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/siteRoute_SiteInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="@string/routeName_SiteInfo"
+                            android:textColor="@color/positive_600"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/siteName_SiteInfo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="@string/siteName_SiteInfo"
+                            android:textColor="@color/grey_800"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/timeExp_SiteInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:text="@string/timeExp_SiteInfo"
+                        app:layout_constraintHeight_percent="0.3"/>
+
+                </LinearLayout>
+
+                <!--  ExpandableTextView Container -->
+                <com.ms.square.android.expandabletextview.ExpandableTextView
+                    android:id="@+id/expand_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    expandableTextView:animDuration="100"
+                    expandableTextView:maxCollapsedLines="5"
+                    android:paddingTop="20sp"
+                    android:paddingBottom="20sp">
+
+                    <!-- simple text view  -->
+                    <TextView
+                        android:id="@+id/expandable_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/description_SiteInfo"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="16sp"/>
+
+                    <!-- expandable ImageButton -->
+                    <ImageButton
+                        android:id="@id/expand_collapse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:background="@android:color/transparent" />
+
+                </com.ms.square.android.expandabletextview.ExpandableTextView>
+
+                <TextView
+                    android:id="@+id/capacity_SiteInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.30"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="@string/capacity_SiteInfo"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/addPlanButton_SiteInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".025"
+                    android:text="@string/addPlan_SiteInfo"
+                    android:textColor="#FFFFFFFF"
+                    android:backgroundTint="#80005D"/>
+
+                <TextView
+                    android:id="@+id/schedule_SiteInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.30"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/schedule_SiteInfo"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.30"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/day_SiteInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="@string/day_SiteInfo"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/timeRange_SiteInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.80"
+                        android:fontFamily="@font/roboto_regular"
+                        android:text="@string/timeRange_SiteInfo"
+                        android:textAlignment="textEnd" />
+
+                    <ImageView
+                        android:id="@+id/moreDats_SiteInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        expandableTextView:srcCompat="@android:drawable/ic_media_play" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/directions_SiteDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.30"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/directions_SiteDes"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.30"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="20sp"
+                        android:paddingRight="20sp"
+                        expandableTextView:srcCompat="@drawable/googleg_standard_color_18" />
+
+                    <TextView
+                        android:id="@+id/directionsGoogle_SitesInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/directionsGoogle_SitesInfo" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/reviews_SiteDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.30"
+                    android:fontFamily="@font/roboto_medium"
+                    android:text="@string/reviews_SiteDes"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.30"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/addReviews_SiteDes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/addReview_SiteDes"
+                        android:textColor="#FFFFFFFF"
+                        android:backgroundTint="#80005D"/>
+
+                    <Button
+                        android:id="@+id/addPhoto_SiteDes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/addPhoto_SiteDes"
+                        android:textColor="#FFFFFFFF"
+                        android:backgroundTint="#80005D"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="0.3">
+
+                    <TableLayout
+                        android:id="@+id/tablaResenas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

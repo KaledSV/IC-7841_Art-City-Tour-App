@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/appLogo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#CC0096"
+        android:contentDescription="@string/app_info"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"/>
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appLogo"
+        app:layout_constraintVertical_bias="0.02"
+        app:layout_constraintWidth_percent="0.9" >
+
+    </SearchView>
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.40"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintVertical_bias="0.2">
+
+        <TableLayout
+            android:id="@+id/routesTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:shrinkColumns="*"
+            android:collapseColumns="*">
+
+<!--            <TableRow-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="7.5dp">-->
+
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="0.5"-->
+<!--                    android:layout_marginEnd="7.5dp">-->
+<!--                    <ImageView-->
+<!--                        android:adjustViewBounds="true"-->
+<!--                        android:id="@+id/imageView3"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        tools:srcCompat="@tools:sample/backgrounds/scenic" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/myImageViewText"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_alignStart="@+id/imageView3"-->
+<!--                        android:layout_alignTop="@+id/imageView3"-->
+<!--                        android:layout_alignEnd="@+id/imageView3"-->
+<!--                        android:layout_alignBottom="@+id/imageView3"-->
+<!--                        android:fontFamily="@font/roboto_bold"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Ruta del Jade"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="20sp" />-->
+<!--                </RelativeLayout>-->
+
+
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="0.5"-->
+<!--                    android:layout_marginEnd="7.5dp">-->
+<!--                    <ImageView-->
+<!--                        android:adjustViewBounds="true"-->
+<!--                        android:id="@+id/imageView5"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        tools:srcCompat="@tools:sample/backgrounds/scenic" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/myImageViewText2"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_alignStart="@+id/imageView5"-->
+<!--                        android:layout_alignTop="@+id/imageView5"-->
+<!--                        android:layout_alignEnd="@+id/imageView5"-->
+<!--                        android:layout_alignBottom="@+id/imageView5"-->
+<!--                        android:fontFamily="@font/roboto_bold"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Ruta davivienda"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="20sp" />-->
+<!--                </RelativeLayout>-->
+<!--            </TableRow>-->
+<!--            <TableRow-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="7.5dp">-->
+
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="0.5"-->
+<!--                    android:layout_marginEnd="7.5dp"-->
+<!--                    app:layout_constraintWidth_percent="0.9">-->
+<!--                    <ImageView-->
+<!--                        android:adjustViewBounds="true"-->
+<!--                        android:id="@+id/imageView7"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        tools:srcCompat="@tools:sample/backgrounds/scenic" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/myImageViewText3"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_alignStart="@+id/imageView7"-->
+<!--                        android:layout_alignTop="@+id/imageView7"-->
+<!--                        android:layout_alignEnd="@+id/imageView7"-->
+<!--                        android:layout_alignBottom="@+id/imageView7"-->
+<!--                        android:fontFamily="@font/roboto_bold"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Ruta Norte"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="20sp" />-->
+<!--                </RelativeLayout>-->
+
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="0.5"-->
+<!--                    android:layout_marginEnd="7.5dp">-->
+<!--                    <ImageView-->
+<!--                        android:adjustViewBounds="true"-->
+<!--                        android:id="@+id/imageView8"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        tools:srcCompat="@tools:sample/backgrounds/scenic" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/myImageViewText4"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_alignStart="@+id/imageView8"-->
+<!--                        android:layout_alignTop="@+id/imageView8"-->
+<!--                        android:layout_alignEnd="@+id/imageView8"-->
+<!--                        android:layout_alignBottom="@+id/imageView8"-->
+<!--                        android:fontFamily="@font/roboto_bold"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Ruta H Solis"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="20sp" />-->
+<!--                </RelativeLayout>-->
+<!--            </TableRow>-->
+        </TableLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

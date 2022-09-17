@@ -3,21 +3,34 @@ package Usuario;
 public abstract class Usuario {
 
     //Atributos
+    private String id;
     private String nombre;
     private int numero;
     private String correo;
     private String contrasenna;
 
     //Constructor
-    public Usuario(String nombre, int numero, String correo, String contrasenna) {
+    public Usuario(String id, String nombre, int numero, String correo, String contrasenna) {
+        this.id = id;
         this.nombre = nombre;
         this.numero = numero;
         this.correo = correo;
         this.contrasenna = contrasenna;
     }
 
+    public Usuario (){
+
+    }
 
     //Metodos
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getNombre() {
         return nombre;
     }

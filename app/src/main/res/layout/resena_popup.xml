@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_constraintGuide_percent="1">
+    <TextView
+        android:id="@+id/lblNameSite"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/row_border"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="20dp"
+        android:text="@string/routeName_routeList"
+        android:textColor="#323F4B"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <TextView
+        android:id="@+id/StarTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/starDescription"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblNameSite"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <Button
+        android:id="@+id/resenaOneBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_star_big_off"
+        android:contentDescription="@string/una_estrella"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/StarTextView"
+        app:layout_constraintVertical_bias="0.015" />
+
+    <Button
+        android:id="@+id/resenaTwoBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_star_big_off"
+        android:contentDescription="@string/dos_estrellas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
+        app:layout_constraintStart_toEndOf="@+id/resenaOneBtn"
+        app:layout_constraintTop_toBottomOf="@+id/StarTextView"
+        app:layout_constraintVertical_bias="0.015" />
+
+    <Button
+        android:id="@+id/resenaThreeBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_star_big_off"
+        android:contentDescription="@string/tres_estrellas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
+        app:layout_constraintStart_toEndOf="@+id/resenaTwoBtn"
+        app:layout_constraintTop_toBottomOf="@+id/StarTextView"
+        app:layout_constraintVertical_bias="0.015" />
+
+    <Button
+        android:id="@+id/resenaFourBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_star_big_off"
+        android:contentDescription="@string/cuatro_estrellas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
+        app:layout_constraintStart_toEndOf="@+id/resenaThreeBtn"
+        app:layout_constraintTop_toBottomOf="@+id/StarTextView"
+        app:layout_constraintVertical_bias="0.015" />
+
+    <Button
+        android:id="@+id/resenaFiveBtn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:drawable/btn_star_big_off"
+        android:contentDescription="@string/cinco_estrellas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.035"
+        app:layout_constraintStart_toEndOf="@+id/resenaFourBtn"
+        app:layout_constraintTop_toBottomOf="@+id/StarTextView"
+        app:layout_constraintVertical_bias="0.015" />
+
+    <TextView
+        android:id="@+id/opinionTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/opinionText"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resenaOneBtn"
+        app:layout_constraintVertical_bias="0.02"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <EditText
+        android:id="@+id/opinionText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="top"
+        android:hint="@string/opinionTextLong"
+        android:importantForAutofill="no"
+        android:inputType="textLongMessage|textMultiLine|text"
+        android:singleLine="false"
+        android:textAlignment="viewStart"
+        android:textColorHint="#546E7A"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/opinionTextView"
+        app:layout_constraintVertical_bias="0.02"
+        app:layout_constraintWidth_percent="0.8"
+        tools:ignore="RtlCompat" />
+
+    <LinearLayout
+        android:id="@+id/cancelLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.118"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/opinionText"
+        app:layout_constraintVertical_bias="0.069">
+
+        <ImageView
+            android:id="@+id/backImageSite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/atras"
+            app:srcCompat="?attr/actionModeCloseDrawable" />
+
+        <TextView
+            android:id="@+id/cleanTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_regular"
+            android:text="@string/limpiar"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/sendBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="#80005D"
+        android:contentDescription="@string/continuar"
+        android:fontFamily="@font/roboto_regular"
+        android:text="@string/continuar"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.994"
+        app:layout_constraintStart_toEndOf="@+id/cancelLayout"
+        app:layout_constraintTop_toBottomOf="@+id/opinionText"
+        app:layout_constraintVertical_bias="0.025" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
