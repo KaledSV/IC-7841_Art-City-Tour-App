@@ -1,7 +1,9 @@
 package com.example.artcitytourapp.fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -47,12 +49,25 @@ public class RoutesFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_routes, container, false);
 
+        ImageView appLogo = (ImageView) view.findViewById(R.id.appLogo);
+        appLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redirect();
+            }
+        });
+
         // data of fragment
         // todo remove
         VisitanteSingleton user = VisitanteSingleton.AlterSingleton("1", "Kaled", 86254968, "kaledsv@gmail.com", "password");
         prepareTable();
         loadData();
         return view;
+    }
+
+    private void redirect() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://artcitytour.gamcultural.com/"));
+        startActivity(browserIntent);
     }
 
     protected void loadData(){
@@ -163,4 +178,6 @@ public class RoutesFragment extends Fragment {
             }
         });
     }
+
+
 }

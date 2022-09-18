@@ -98,6 +98,14 @@ public class SiteFragment extends Fragment {
             }
         });
 
+        ImageView shareSite = (ImageView) view.findViewById(R.id.shareImage_SiteDes);
+        shareSite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                share( );
+            }
+        });
+
         mPhoto = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -124,6 +132,18 @@ public class SiteFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void share() {
+        Intent sendIntent = new Intent();
+        String base = "Mirá que chiva el sitio: ";
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,base + site.getNombre());
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+
     }
 
 
@@ -770,5 +790,49 @@ public class SiteFragment extends Fragment {
                         Log.w("Error", "Error adding document", e);
                     }
                 });
+    }
+
+    // Schedule database methods
+
+    protected String getTodaysSchedule(int SiteId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("ResenasXSitios")
+                .whereEqualTo("idSitio", SiteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> resenaIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                resenaIDs.add((String) document.getData().get("idResena"));
+                            }
+                            bdGetReviewsBySiteAux(resenaIDs);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+        return "a";
+    }
+
+    protected String getTodaysHours(int SiteId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("ResenasXSitios")
+                .whereEqualTo("idSitio", SiteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> resenaIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                resenaIDs.add((String) document.getData().get("idResena"));
+                            }
+                            bdGetReviewsBySiteAux(resenaIDs);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+        return "a";
     }
 }
