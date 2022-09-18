@@ -33,7 +33,25 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/menu/bottom_menu.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1037037037037037" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/menu/menu.xml" value="0.1037037037037037" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/row_border.xml" value="0.207" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout-w936dp/fragment_resena.xml" value="0.5" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_full_screen_image.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_fullscreen_image.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_gallery.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_planning.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_resena.xml" value="0.33" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_review.xml" value="0.22" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_routes.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_site.xml" value="0.33" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sites.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/images_review.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/photo_popup.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_and_photo_popup.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_main.xml" value="0.25" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_photos_popup.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_popup.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/routes_row.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.12952898550724637" />
       </map>
     </option>

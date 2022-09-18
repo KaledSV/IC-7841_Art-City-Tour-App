@@ -292,17 +292,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/resenaJ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="0.3">
-
-                    <TableLayout
-                        android:id="@+id/tablaResenas"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </LinearLayout>
+                    android:layout_weight="0.3"
+                    android:orientation="vertical"/>
 
             </LinearLayout>
         </ScrollView>

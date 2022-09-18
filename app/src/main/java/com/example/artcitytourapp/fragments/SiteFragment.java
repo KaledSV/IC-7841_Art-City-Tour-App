@@ -159,6 +159,10 @@ public class SiteFragment extends Fragment {
         ViewFlipper vFlipper = view.findViewById(R.id.viewFlipper2);
         ImageView imageView = new ImageView(getContext());
         imageView.setImageResource(image);
+        Bitmap imagenOriginalF = BitmapFactory.decodeResource(getResources(),image);
+        Bitmap imagenFinalF = Bitmap.createScaledBitmap(imagenOriginalF,400,300,false);
+        imageView.setImageBitmap(imagenFinalF);
+        imageView.setPadding(10,10,10,10);
         vFlipper.addView(imageView);
         vFlipper.setFlipInterval(3500);
         vFlipper.setAutoStart(true);
@@ -199,21 +203,31 @@ public class SiteFragment extends Fragment {
     }
 
     protected void bdGetReviewsBySiteAux(ArrayList<String> resenaIDs){
-        TableLayout varTbl = view.findViewById(R.id.tablaResenas);
-        /*LinearLayout varL = view.findViewById(R.id.linearLayout3);
-        ImageView imageView1 = new ImageView(getContext());
-        Bitmap imagenOriginal = BitmapFactory.decodeResource(getResources(),R.drawable.m1);
-        Bitmap imagenFinal = Bitmap.createScaledBitmap(imagenOriginal,100,100,false);
-        imageView1.setImageBitmap(imagenFinal);
-        varL.addView(imageView1);*/
+        final View resenaWindow1 = getLayoutInflater().inflate(R.layout.fragment_resena, null);
+        LinearLayout layoutResenas = view.findViewById(R.id.resenaJ);
+        LinearLayout layoutImagenes = resenaWindow1.findViewById(R.id.layoutImages);
+        //Este codigo comentado sirve para colocar imagenes en una resena
+        /*LinearLayout layoutImagenes = resenaWindow1.findViewById(R.id.layoutImages);
+        for(int j=0;j<10;j++){
+            ImageView imageView1 = new ImageView(getContext());
+            Bitmap imagenOriginal = BitmapFactory.decodeResource(getResources(),R.drawable.m1);
+            Bitmap imagenFinal = Bitmap.createScaledBitmap(imagenOriginal,230,230,false);
+            imageView1.setImageBitmap(imagenFinal);
+            imageView1.setPadding(10,10,10,10);
+            layoutImagenes.addView(imageView1);
+        }*/
+        //SI LA RESENA NO TIENE IMAGENES SE DEBE USAR
+        //layoutResenas.findViewById(R.id.containerImgs).setVisibility(View.GONE);
+        //layoutResenas.addView(resenaWindow1);
+        /*for(int j=0;j<10;j++){
+            View var = new View(getContext());
+            var = getLayoutInflater().inflate(R.layout.fragment_resena, null);
+            layoutResenas.addView(var);
+        }*/
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final int[] i = {0};
         for(String resenaId : resenaIDs){
-            TableRow varTblR = new TableRow(getContext());
-            TableRow varTblR2 = new TableRow(getContext());
-            TableRow varTblR3 = new TableRow(getContext());
-            TextView textView1 = new TextView(getContext());
-            TextView textView2 = new TextView(getContext());
             DocumentReference docRef = db.collection("Resena").document(resenaId);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -221,23 +235,30 @@ public class SiteFragment extends Fragment {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            //Resenna resena = document.toObject(Resenna.class);
-                            Log.d("PRUEBA1", (String) document.get("comentario"));
                             String perfil = (String) document.get("autor");
                             Timestamp fecha = (Timestamp) document.get("fechaSubida");
-
                             java.sql.Date timeD = new java.sql.Date(fecha.getSeconds() * 1000);
                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                             String fecha2 = sdf.format(timeD);
-                            perfil = perfil + "\n" + fecha2;
-
+                            Number likes = (Number) document.get("likes");
+                            Number dislikes = (Number) document.get("dislikes");
+                            String comentario = (String) document.get("comentario");
+                            View var = new View(getContext());
+                            var = getLayoutInflater().inflate(R.layout.fragment_resena, null);
+                            TextView textView1 = var.findViewById(R.id.resenaNombre);
                             textView1.setText(perfil);
-                            textView2.setText((String) document.get("comentario"));
-
-                            varTblR.addView(textView1);
-                            varTblR2.addView(textView2);
-                            varTbl.addView(varTblR);
-                            varTbl.addView(varTblR2);
+                            TextView textView2 = var.findViewById(R.id.resenaFecha);
+                            textView2.setText(fecha2);
+                            TextView textView3 = var.findViewById(R.id.countLikes);
+                            textView3.setText(String.valueOf(likes));
+                            TextView textView4 = var.findViewById(R.id.countDislikes);
+                            textView4.setText(String.valueOf(dislikes));
+                            TextView textView5 = var.findViewById(R.id.viewComentario);
+                            textView5.setText(comentario);
+                            //Permite que no se vea el contenedor de imagenes
+                            //ahora bien si hay imagenes Si debe verse
+                            //var.findViewById(R.id.containerImgs).setVisibility(View.GONE);
+                            layoutResenas.addView(var);
                             i[0]++;
                         } else {
                             Log.d("TAG", "No such document");

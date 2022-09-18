@@ -1,6 +1,5 @@
 package com.example.artcitytourapp.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,11 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.artcitytourapp.R;
 import com.example.artcitytourapp.activities.Adapters.GalleryImagesAdapter;
-
-import Sitio.Sitio;
 
 
 public class FullscreenImageFragment extends Fragment {
@@ -26,6 +24,9 @@ public class FullscreenImageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_fullscreen_image, container, false);
+        final View descripcionWindow = getLayoutInflater().inflate(R.layout.fragment_resena, null);
+        LinearLayout layoutDescripcionImagen = view.findViewById(R.id.layoutDescripcionImagen);
+        layoutDescripcionImagen.addView(descripcionWindow);
         Bundle b = this.getArguments();
         //recibir el id de la imagen mediante intent
         if (b != null) {
