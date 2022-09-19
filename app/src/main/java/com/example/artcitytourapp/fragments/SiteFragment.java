@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -56,6 +57,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -135,6 +137,22 @@ public class SiteFragment extends Fragment {
                         .commit();
             }
         });
+        ImageView buttonSchedule = view.findViewById(R.id.moreDats_SiteInfo);
+        buttonSchedule.setClickable(true);
+        buttonSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("Sitio", site);
+
+                ScheduleFragment nextFrag= new ScheduleFragment();
+                nextFrag.setArguments(b);
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.contentContainer, nextFrag, "ScheduleFragment")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         mPhoto = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
@@ -199,6 +217,7 @@ public class SiteFragment extends Fragment {
 
         bdGetReviewsIdBySite(site.getIdSite());
         bdGetPhotosIdSite(site.getIdSite());
+        bdGetHorarioDiaIdSite(site.getIdSite());
     }
 
     protected void cleanData(){
@@ -220,7 +239,6 @@ public class SiteFragment extends Fragment {
                 })
                 .show();
     }
-
     // Preview of gallery
     protected void bdGetPhotosIdSite(String siteId){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -247,7 +265,6 @@ public class SiteFragment extends Fragment {
                     }
                 });
     }
-
     protected void bdGetPhotosBySite( ArrayList<String> photosIDs){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         for(String photoId : photosIDs){
@@ -271,6 +288,61 @@ public class SiteFragment extends Fragment {
                 }
             });
         }
+    }
+
+    protected void bdGetHorarioDiaIdSite(String siteId){
+        LinearLayout layoutH = view.findViewById(R.id.layoutH);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Create a new user with a first and last name
+        db.collection("Horario")
+                .whereEqualTo("idSitio", siteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Calendar c = Calendar.getInstance();
+                                c.set(Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH);
+                                int nD=c.get(Calendar.DAY_OF_WEEK);
+                                String varDia = "";
+                                Log.d("TAGI",String.valueOf(nD));
+                                switch (nD){
+                                    case 1: varDia = "Domingo";
+                                        break;
+                                    case 2: varDia = "Lunes";
+                                        break;
+                                    case 3: varDia = "Martes";
+                                        break;
+                                    case 4: varDia = "Miercoles";
+                                        break;
+                                    case 5: varDia = "Jueves";
+                                        break;
+                                    case 6: varDia = "Viernes";
+                                        break;
+                                    case 7: varDia = "Sabado";
+                                        break;
+                                }
+                                String dia = (String) document.getData().get("dia");
+                                TextView lyh = layoutH.findViewById(R.id.day_SiteInfo);
+                                TextView lyh2 = layoutH.findViewById(R.id.timeRange_SiteInfo);
+                                Log.d("TAGI",varDia + dia);
+                                if(varDia.equals(dia)){
+                                    String abierto = (String) document.getData().get("abierto");
+                                    String cerrado = (String) document.getData().get("cerrado");
+                                    lyh.setText(varDia);
+                                    lyh2.setText(abierto+"-"+cerrado);
+                                    break;
+                                }
+                                else{
+                                    lyh.setText(varDia);
+                                    lyh2.setText("Cerrado");
+                                }
+                            }
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
     protected void setPhoto(Fotografia photo) {

@@ -1,66 +1,85 @@
 package com.example.artcitytourapp.fragments;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.artcitytourapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ScheduleFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import Sitio.Sitio;
+
+
 public class ScheduleFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Sitio site;
+    private View view;
 
     public ScheduleFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ScheduleFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ScheduleFragment newInstance(String param1, String param2) {
-        ScheduleFragment fragment = new ScheduleFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_schedule, container, false);
+        view = inflater.inflate(R.layout.fragment_schedule, container, false);
+        // load all data from database
+        Bundle b = this.getArguments();
+        if (b != null) {
+            site = (Sitio) b.get("Sitio");
+            bdGetHorarioIdSite(site.getIdSite(),site.getNombre());
+        }
+        return view;
+    }
+    protected void bdGetHorarioIdSite(String siteId,String nombre){
+        LinearLayout layoutHorarios = view.findViewById(R.id.layoutHorarios);
+        TextView titulo = view.findViewById(R.id.NombreSitio);
+        titulo.setText(nombre);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Create a new user with a first and last name
+        db.collection("Horario")
+                .whereEqualTo("idSitio", siteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String abierto = (String) document.getData().get("abierto");
+                                String cerrado = (String) document.getData().get("cerrado");
+                                String dia = (String) document.getData().get("dia");
+                                LinearLayout ly = new LinearLayout(getContext());
+                                ly.setOrientation(LinearLayout.VERTICAL);
+                                TextView textview1 = new TextView(getContext());
+                                textview1.setText(abierto);
+                                TextView textview2 = new TextView(getContext());
+                                textview2.setText(cerrado);
+                                TextView textview3 = new TextView(getContext());
+                                textview3.setText(dia);
+                                textview3.setTypeface(null, Typeface.BOLD);
+                                textview3.setTextSize(18);
+                                ly.addView(textview3);
+                                ly.addView(textview1);
+                                ly.addView(textview2);
+                                ly.setPadding(30,30,30,30);
+                                layoutHorarios.addView(ly);
+                            }
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 }
