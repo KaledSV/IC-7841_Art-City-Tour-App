@@ -1,6 +1,9 @@
 package com.example.artcitytourapp.activities.Adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -11,17 +14,19 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.example.artcitytourapp.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
+
+import Fotografia.Fotografia;
 
 public class GalleryImagesAdapter extends BaseAdapter{
     private Context mContext;
-    public int[] ImagesArray = {
-            R.drawable.m1,
-            R.drawable.m2,
-            R.drawable.m3,
-            R.drawable.m4,
-            R.drawable.m5,
-            R.drawable.m6
-    };
+    public Fotografia[] ImagesArray = {};
 
     public GalleryImagesAdapter(Context mContext) {
         this.mContext = mContext;
@@ -45,7 +50,8 @@ public class GalleryImagesAdapter extends BaseAdapter{
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ImageView imageView = new ImageView(mContext);
-        imageView.setImageResource(ImagesArray[i]);
+        bdGetPhoto(imageView, ImagesArray[i]);
+        imageView.setPadding(10,10,10,10);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setLayoutParams(new GridView.LayoutParams(
                 340,
@@ -53,5 +59,43 @@ public class GalleryImagesAdapter extends BaseAdapter{
         ));
 
         return imageView;
+    }
+
+    protected void bdGetPhoto(ImageView iv, Fotografia photo){
+        StorageReference pathReference  = FirebaseStorage.getInstance().getReference(photo.getFoto());
+        try {
+            File localFile = File.createTempFile("tempFile", ".png");
+            pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 400, 400, false));
+                }
+            });
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    // setters and getters
+    public Fotografia[] getImagesArray() {
+        return ImagesArray;
+    }
+
+    public void setImagesArray(Fotografia[] imagesArray) {
+        ImagesArray = imagesArray;
+    }
+
+    public void addImage(Fotografia image)
+    {
+        int size = ImagesArray.length;
+        Fotografia[] newarr = new Fotografia[size + 1];
+
+        for (int i = 0; i < size; i++)
+            newarr[i] = ImagesArray[i];
+
+        newarr[size] = image;
+        ImagesArray = newarr;
     }
 }

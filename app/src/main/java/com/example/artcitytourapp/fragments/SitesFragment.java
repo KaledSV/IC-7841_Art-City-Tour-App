@@ -218,8 +218,6 @@ public class SitesFragment extends Fragment {
 
     protected void imageRow(Sitio espSite, ImageView iv, String imgPath){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
-
-
         try {
             File localFile = File.createTempFile("tempFile", ".png");
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {

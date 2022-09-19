@@ -9,23 +9,26 @@
     <ImageView
         android:id="@+id/imagen_detalle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHeight_percent="0.65"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/layoutDescripcionImagen"
-        android:layout_width="352dp"
-        android:layout_height="262dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:padding="10dp"
+        app:layout_constraintHeight_percent="0.35"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.964"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/imagen_detalle"
+        app:layout_constraintVertical_bias="0.964" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

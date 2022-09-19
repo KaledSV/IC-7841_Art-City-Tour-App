@@ -42,26 +42,35 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import Fotografia.Fotografia;
+import Resenna.Resenna;
 import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
 public class SiteFragment extends Fragment {
     View view;
+    ViewFlipper flipper;
+    LinearLayout layoutResenas;
     private AlertDialog resenaDialog, resenaAndPhotoDialog, resenaPhotosDialog, photoDialog;
     ActivityResultLauncher<String> mPhoto, mPhotos;
     private Sitio site;
@@ -103,6 +112,27 @@ public class SiteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 share( );
+            }
+        });
+
+        layoutResenas = (LinearLayout) view.findViewById(R.id.resenaJ);
+
+        flipper = (ViewFlipper) view.findViewById(R.id.previewImages);
+        flipper.setFlipInterval(3500);
+        flipper.setAutoStart(true);
+        flipper.setClickable(true);
+        flipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle b = new Bundle();
+                b.putSerializable("Sitio", site);
+
+                GalleryFragment nextFrag= new GalleryFragment();
+                nextFrag.setArguments(b);
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.contentContainer, nextFrag, "GalerryFragment")
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -167,128 +197,8 @@ public class SiteFragment extends Fragment {
         //lblday.setText(); todo
         //lbltimeRange.setText(); todo
 
-        bdGetReviewsBySite("1");
-        GalleryImagesAdapter imagenes = new GalleryImagesAdapter(getContext());
-        for(int image: imagenes.ImagesArray){
-            flipperImages(image);
-        }
-    }
-
-    //Recibe el id del sitio y encuentra las reseñas de ese sitio
-    public void flipperImages(int image){
-        ViewFlipper vFlipper = view.findViewById(R.id.viewFlipper2);
-        ImageView imageView = new ImageView(getContext());
-        imageView.setImageResource(image);
-        Bitmap imagenOriginalF = BitmapFactory.decodeResource(getResources(),image);
-        Bitmap imagenFinalF = Bitmap.createScaledBitmap(imagenOriginalF,400,300,false);
-        imageView.setImageBitmap(imagenFinalF);
-        imageView.setPadding(10,10,10,10);
-        vFlipper.addView(imageView);
-        vFlipper.setFlipInterval(3500);
-        vFlipper.setAutoStart(true);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*Bundle b = new Bundle();
-                b.putSerializable("Sitio", espSite);*/
-
-                GalleryFragment nextFrag= new GalleryFragment();
-                //nextFrag.setArguments(b);
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentContainer, nextFrag, "GalerryFragment")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
-    }
-
-    protected void bdGetReviewsBySite(String SiteId){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("ResenasXSitios")
-                .whereEqualTo("idSitio", SiteId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<String> resenaIDs = new ArrayList<String>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                resenaIDs.add((String) document.getData().get("idResena"));
-                            }
-                            bdGetReviewsBySiteAux(resenaIDs);
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
-
-    protected void bdGetReviewsBySiteAux(ArrayList<String> resenaIDs){
-        final View resenaWindow1 = getLayoutInflater().inflate(R.layout.fragment_resena, null);
-        LinearLayout layoutResenas = view.findViewById(R.id.resenaJ);
-        LinearLayout layoutImagenes = resenaWindow1.findViewById(R.id.layoutImages);
-        //Este codigo comentado sirve para colocar imagenes en una resena
-        /*LinearLayout layoutImagenes = resenaWindow1.findViewById(R.id.layoutImages);
-        for(int j=0;j<10;j++){
-            ImageView imageView1 = new ImageView(getContext());
-            Bitmap imagenOriginal = BitmapFactory.decodeResource(getResources(),R.drawable.m1);
-            Bitmap imagenFinal = Bitmap.createScaledBitmap(imagenOriginal,230,230,false);
-            imageView1.setImageBitmap(imagenFinal);
-            imageView1.setPadding(10,10,10,10);
-            layoutImagenes.addView(imageView1);
-        }*/
-        //SI LA RESENA NO TIENE IMAGENES SE DEBE USAR
-        //layoutResenas.findViewById(R.id.containerImgs).setVisibility(View.GONE);
-        //layoutResenas.addView(resenaWindow1);
-        /*for(int j=0;j<10;j++){
-            View var = new View(getContext());
-            var = getLayoutInflater().inflate(R.layout.fragment_resena, null);
-            layoutResenas.addView(var);
-        }*/
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final int[] i = {0};
-        for(String resenaId : resenaIDs){
-            DocumentReference docRef = db.collection("Resena").document(resenaId);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            String perfil = (String) document.get("autor");
-                            Timestamp fecha = (Timestamp) document.get("fechaSubida");
-                            java.sql.Date timeD = new java.sql.Date(fecha.getSeconds() * 1000);
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                            String fecha2 = sdf.format(timeD);
-                            Number likes = (Number) document.get("likes");
-                            Number dislikes = (Number) document.get("dislikes");
-                            String comentario = (String) document.get("comentario");
-                            View var = new View(getContext());
-                            var = getLayoutInflater().inflate(R.layout.fragment_resena, null);
-                            TextView textView1 = var.findViewById(R.id.resenaNombre);
-                            textView1.setText(perfil);
-                            TextView textView2 = var.findViewById(R.id.resenaFecha);
-                            textView2.setText(fecha2);
-                            TextView textView3 = var.findViewById(R.id.countLikes);
-                            textView3.setText(String.valueOf(likes));
-                            TextView textView4 = var.findViewById(R.id.countDislikes);
-                            textView4.setText(String.valueOf(dislikes));
-                            TextView textView5 = var.findViewById(R.id.viewComentario);
-                            textView5.setText(comentario);
-                            //Permite que no se vea el contenedor de imagenes
-                            //ahora bien si hay imagenes Si debe verse
-                            //var.findViewById(R.id.containerImgs).setVisibility(View.GONE);
-                            layoutResenas.addView(var);
-                            i[0]++;
-                        } else {
-                            Log.d("TAG", "No such document");
-                        }
-                    } else {
-                        Log.d("TAG", "get failed with ", task.getException());
-                    }
-                }
-            });
-        }
+        bdGetReviewsIdBySite(site.getIdSite());
+        bdGetPhotosIdSite(site.getIdSite());
     }
 
     protected void cleanData(){
@@ -309,6 +219,237 @@ public class SiteFragment extends Fragment {
                     }
                 })
                 .show();
+    }
+
+    // Preview of gallery
+    protected void bdGetPhotosIdSite(String siteId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Create a new user with a first and last name
+        db.collection("FotosXSitios")
+                .whereEqualTo("idSitio", siteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> fotosIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                fotosIDs.add((String) document.getData().get("idFotografia"));
+                            }
+                            if (fotosIDs.size()<=3){
+                                bdGetPhotosBySite(fotosIDs);
+                            }
+                            else{
+                                bdGetPhotosBySite((ArrayList<String>) fotosIDs.subList(0, 2));
+                            }
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    protected void bdGetPhotosBySite( ArrayList<String> photosIDs){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        for(String photoId : photosIDs){
+            DocumentReference docRef = db.collection("Fotografia").document(photoId);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Fotografia photo = document.toObject(Fotografia.class);
+                            assert photo != null;
+                            photo.setIdFoto(photoId);
+                            setPhoto(photo);
+                        } else {
+                            Log.d("TAG", "No such document");
+                        }
+                    } else {
+                        Log.d("TAG", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+    }
+
+    protected void setPhoto(Fotografia photo) {
+        if (photo.getFoto() == null) {
+            photo.setFoto("Imagenes Interfaz/notFoundImage.png");
+        }
+        ImageView photoImageView = new ImageView(getContext());
+        photoImageView.setPadding(10,10,10,10);
+
+        bdGetPhoto(photoImageView, photo.getFoto());
+        flipper.addView(photoImageView);
+    }
+
+    protected void bdGetPhoto(ImageView iv, String imgPath){
+        StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
+        try {
+            File localFile = File.createTempFile("tempFile", ".png");
+            pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 400, 400, false));
+                }
+            });
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    // reviews method
+    protected void bdGetReviewsIdBySite(String SiteId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("ResenasXSitios")
+                .whereEqualTo("idSitio", SiteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> resenaIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                resenaIDs.add((String) document.getData().get("idResena"));
+                            }
+                            bdGetReviewsBySite(resenaIDs);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    protected void bdGetReviewsBySite(ArrayList<String> resenaIDs){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        for(String resenaId : resenaIDs){
+            DocumentReference docRef = db.collection("Resena").document(resenaId);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Resenna resenna = document.toObject(Resenna.class);
+                            assert resenna != null;
+                            resenna.setIdResenna(resenaId);
+                            addReview(resenna);
+                        } else {
+                            Log.d("TAG", "No such document");
+                        }
+                    } else {
+                        Log.d("TAG", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+    }
+
+    protected void addReview(Resenna resenna){
+        final View resenaWindow = getLayoutInflater().inflate(R.layout.fragment_resena, null);
+
+        java.sql.Date timeD = new java.sql.Date(resenna.getFechaSubida().getSeconds() * 1000L);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String date = sdf.format(timeD);
+
+        View ressenaView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_resena, null);
+
+        TextView resName = ressenaView.findViewById(R.id.resenaNombre);
+        resName.setText(resenna.getAutor());
+        TextView resDate = ressenaView.findViewById(R.id.resenaFecha);
+        resDate.setText(date);
+        TextView resLikes = ressenaView.findViewById(R.id.countLikes);
+        resLikes.setText(String.valueOf(resenna.getLikes()));
+        TextView resDislikes = ressenaView.findViewById(R.id.countDislikes);
+        resDislikes.setText(String.valueOf(resenna.getDislikes()));
+        TextView resComment = ressenaView.findViewById(R.id.viewComentario);
+        resComment.setText(resenna.getComentario());
+        if (resenna.isTieneFotos()){
+            LinearLayout layoutImagenes = ressenaView.findViewById(R.id.layoutImages);
+            bdGetPhotosByReview(resenna.getIdResenna(), layoutImagenes);
+        }
+        else{
+            ressenaView.findViewById(R.id.containerImgs).setVisibility(View.GONE);
+        }
+        layoutResenas.addView(ressenaView);
+    }
+
+    protected void bdGetPhotosByReview(String idRessena, LinearLayout layout){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Create a new user with a first and last name
+        db.collection("ResenasXFotos")
+                .whereEqualTo("idResena", idRessena)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> fotosIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                fotosIDs.add((String) document.getData().get("idFotografia"));
+                            }
+                            bdGetPhotosByReview(fotosIDs, layout);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    protected void bdGetPhotosByReview(ArrayList<String> photosIDs, LinearLayout layout){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        for(String photoId : photosIDs){
+            DocumentReference docRef = db.collection("Fotografia").document(photoId);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Fotografia photo = document.toObject(Fotografia.class);
+                            assert photo != null;
+                            photo.setIdFoto(photoId);
+                            setPhotoReview(photo, layout);
+                        } else {
+                            Log.d("TAG", "No such document");
+                        }
+                    } else {
+                        Log.d("TAG", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+    }
+
+    protected void setPhotoReview(Fotografia photo, LinearLayout layout) {
+        if (photo.getFoto() == null) {
+            photo.setFoto("Imagenes Interfaz/notFoundImage.png");
+        }
+        ImageView photoImageView = new ImageView(getContext());
+        photoImageView.setPadding(10,10,10,10);
+
+        bdGetPhotoReview(photoImageView, photo.getFoto());
+        layout.addView(photoImageView);
+
+        Log.d("SE AÑADIOOOOOOOOOOOOOOO", photo.getFieldValues());
+    }
+
+    protected void bdGetPhotoReview(ImageView iv, String imgPath){
+        StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
+        try {
+            File localFile = File.createTempFile("tempFile", ".png");
+            pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 230, 230, false));
+                }
+            });
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     // addReview dialog
@@ -576,6 +717,7 @@ public class SiteFragment extends Fragment {
         data.put("fechaSubida", FieldValue.serverTimestamp());
         data.put("likes", 0);
         data.put("dislikes", 0);
+        data.put("tieneFotos", false);
         Task<DocumentReference> docRef = db.collection("Resena").add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -628,6 +770,7 @@ public class SiteFragment extends Fragment {
         data.put("fechaSubida", FieldValue.serverTimestamp());
         data.put("likes", 0);
         data.put("dislikes", 0);
+        data.put("tieneFotos", true);
         Task<DocumentReference> docRef = db.collection("Resena").add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -678,6 +821,9 @@ public class SiteFragment extends Fragment {
         data.put("descripcion", opinion);
         data.put("fechaSubida", FieldValue.serverTimestamp());
         data.put("foto", imgPath);
+        data.put("likes", 0);
+        data.put("dislikes", 0);
+
         Task<DocumentReference> docRef = db.collection("Fotografia").add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -753,6 +899,8 @@ public class SiteFragment extends Fragment {
         data.put("descripcion", description);
         data.put("fechaSubida", FieldValue.serverTimestamp());
         data.put("foto", mediaUrl);
+        data.put("likes", 0);
+        data.put("dislikes", 0);
         Task<DocumentReference> docRef = db.collection("Fotografia").add(data)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -795,44 +943,10 @@ public class SiteFragment extends Fragment {
     // Schedule database methods
 
     protected String getTodaysSchedule(int SiteId){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("ResenasXSitios")
-                .whereEqualTo("idSitio", SiteId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<String> resenaIDs = new ArrayList<String>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                resenaIDs.add((String) document.getData().get("idResena"));
-                            }
-                            bdGetReviewsBySiteAux(resenaIDs);
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
         return "a";
     }
 
     protected String getTodaysHours(int SiteId){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("ResenasXSitios")
-                .whereEqualTo("idSitio", SiteId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<String> resenaIDs = new ArrayList<String>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                resenaIDs.add((String) document.getData().get("idResena"));
-                            }
-                            bdGetReviewsBySiteAux(resenaIDs);
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
         return "a";
     }
 }

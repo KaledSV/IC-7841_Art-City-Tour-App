@@ -1,25 +1,42 @@
 package Fotografia;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Fotografia {
+public class Fotografia implements Serializable {
     //Atributos
+    private transient String idFoto;
     private String foto; //Buscar como hacer el manejo de datos en android
     private String autor;
     private String descripcion;
-    private Date diaSubida;
+    private Date fechaSubida;
+    private int likes;
+    private int dislikes;
 
     //Constructores
 
-    public Fotografia(String foto, String autor, String descripcion, Date diaSubida) {
+    public Fotografia(String idFoto, String foto, String autor, String descripcion, Date fechaSubida, int likes, int dislikes) {
+        this.idFoto = idFoto;
         this.foto = foto;
         this.autor = autor;
         this.descripcion = descripcion;
-        this.diaSubida = diaSubida;
+        this.fechaSubida = fechaSubida;
+        this.likes = likes;
+        this.dislikes = dislikes;
     }
 
+    public Fotografia(){
+
+    }
 
     //Métodos
+    public String getIdFoto() {
+        return idFoto;
+    }
+
+    public void setIdFoto(String idFoto) {
+        this.idFoto = idFoto;
+    }
 
     public String getFoto() {
         return foto;
@@ -45,11 +62,32 @@ public class Fotografia {
         this.descripcion = descripcion;
     }
 
-    public Date getDiaSubida() {
-        return diaSubida;
+    public Date getFechaSubida() {
+        return fechaSubida;
     }
 
-    public void setDiaSubida(Date diaSubida) {
-        this.diaSubida = diaSubida;
+    public void setFechaSubida(Date fechaSubida) {
+        this.fechaSubida = fechaSubida;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
+    }
+
+    public String getFieldValues(){
+        return "idFoto: " + this.idFoto + " foto: " + this.foto + ", autor: " + this.autor + "descripcion: "
+                + this.descripcion + ", fechaSubida: " + this.fechaSubida;
     }
 }

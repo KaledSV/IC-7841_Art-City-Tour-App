@@ -1,40 +1,49 @@
 package Resenna;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 
 import Fotografia.Fotografia;
 
-public class Resenna {
+public class Resenna implements Serializable {
     //Atributos
-    private List<Fotografia> fotos;
+    private transient String idResenna;
     private String autor;
-    private String Comentario;
-    private Date diaSubida;
+    private int calificacion;
+    private String comentario;
+    private Date fechaSubida;
     private int likes;
     private int dislikes;
+    private boolean tieneFotos;
+    private transient List<Fotografia> fotos;
 
     //Constructor
 
-    public Resenna(List<Fotografia> fotos, String autor, String comentario, Date diaSubida, int likes, int dislikes) {
-        this.fotos = fotos;
+    public Resenna(String idResenna, String autor, int calificacion, String comentario, Date fechaSubida, int likes, int dislikes, boolean tieneFotos, List<Fotografia> fotos) {
+        this.idResenna = idResenna;
         this.autor = autor;
-        Comentario = comentario;
-        this.diaSubida = diaSubida;
+        this.calificacion = calificacion;
+        this.comentario = comentario;
+        this.fechaSubida = fechaSubida;
         this.likes = likes;
         this.dislikes = dislikes;
+        this.tieneFotos = tieneFotos;
+        this.fotos = fotos;
+    }
+
+    public Resenna(){
+
     }
 
     //Metodos
 
-
-    public List<Fotografia> getFotos() {
-        return fotos;
+    public String getIdResenna() {
+        return idResenna;
     }
 
-    public void setFotos(List<Fotografia> fotos) {
-        this.fotos = fotos;
+    public void setIdResenna(String idResenna) {
+        this.idResenna = idResenna;
     }
 
     public String getAutor() {
@@ -45,20 +54,28 @@ public class Resenna {
         this.autor = autor;
     }
 
+    public int getCalificacion() {
+        return calificacion;
+    }
+
+    public void setCalificacion(int calificacion) {
+        this.calificacion = calificacion;
+    }
+
     public String getComentario() {
-        return Comentario;
+        return comentario;
     }
 
     public void setComentario(String comentario) {
-        Comentario = comentario;
+        this.comentario = comentario;
     }
 
-    public Date getDiaSubida() {
-        return diaSubida;
+    public Date getFechaSubida() {
+        return fechaSubida;
     }
 
-    public void setDiaSubida(Date diaSubida) {
-        this.diaSubida = diaSubida;
+    public void setFechaSubida(Date fechaSubida) {
+        this.fechaSubida = fechaSubida;
     }
 
     public int getLikes() {
@@ -75,5 +92,21 @@ public class Resenna {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public boolean isTieneFotos() {
+        return tieneFotos;
+    }
+
+    public void setTieneFotos(boolean tieneFotos) {
+        this.tieneFotos = tieneFotos;
+    }
+
+    public List<Fotografia> getFotos() {
+        return fotos;
+    }
+
+    public void setFotos(List<Fotografia> fotos) {
+        this.fotos = fotos;
     }
 }

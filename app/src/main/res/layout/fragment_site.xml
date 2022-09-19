@@ -80,7 +80,7 @@
                 android:orientation="vertical">
 
                 <ViewFlipper
-                    android:id="@+id/viewFlipper2"
+                    android:id="@+id/previewImages"
                     android:layout_width="432dp"
                     android:layout_height="258dp"
                     app:layout_constraintEnd_toEndOf="parent"
