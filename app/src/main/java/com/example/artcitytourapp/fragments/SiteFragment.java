@@ -192,8 +192,8 @@ public class SiteFragment extends Fragment {
         lblNameRoute.setText(site.getNombreRuta());
         lblNameSite.setText(site.getNombre());
         lblDescription.setText(site.getDescripcion());
-        lblexpectedTime.setText(Integer.toString(site.getTiempoEspera()));
-        lblcapacity.setText(Integer.toString(site.getCapacidad()));
+        lblexpectedTime.setText("Tiempo de espera: " + Integer.toString(site.getTiempoEspera()));
+        lblcapacity.setText("Capacidad Maxima: " + Integer.toString(site.getCapacidad()));
         //lblday.setText(); todo
         //lbltimeRange.setText(); todo
 
