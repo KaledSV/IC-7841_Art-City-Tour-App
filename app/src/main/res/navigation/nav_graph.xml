@@ -8,7 +8,97 @@
         android:id="@+id/sitesFragment"
         android:name="com.example.artcitytourapp.fragments.RoutesFragment"
         android:label="fragment_site"
-        tools:layout="@layout/fragment_routes" />
+        tools:layout="@layout/fragment_routes" >
+        <action
+            android:id="@+id/action_sitesFragment_to_routeSitesFragment"
+            app:destination="@id/routeSitesFragment" >
+            <argument
+                android:name="idRuta"
+                app:argType="string" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/routeSitesFragment"
+        android:name="com.example.artcitytourapp.fragments.SitesFragment"
+        android:label="fragment_sites"
+        tools:layout="@layout/fragment_sites" >
+        <argument
+            android:name="idRuta"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_routeSitesFragment_to_siteFragment"
+            app:destination="@id/siteFragment" >
+            <argument
+                android:name="Sitio"
+                app:argType="Sitio.Sitio" />
+            <argument
+                android:name="idRuta"
+                app:argType="string" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/siteFragment"
+        android:name="com.example.artcitytourapp.fragments.SiteFragment"
+        android:label="fragment_site"
+        tools:layout="@layout/fragment_site" >
+        <argument
+            android:name="Sitio"
+            app:argType="Sitio.Sitio" />
+        <argument
+            android:name="idRuta"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_siteFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" >
+            <argument
+                android:name="Sitio"
+                app:argType="Sitio.Sitio" />
+        </action>
+        <action
+            android:id="@+id/action_siteFragment_to_scheduleFragment"
+            app:destination="@id/scheduleFragment" >
+            <argument
+                android:name="Sitio"
+                app:argType="Sitio.Sitio" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.example.artcitytourapp.fragments.GalleryFragment"
+        android:label="fragment_site_gallery"
+        tools:layout="@layout/fragment_gallery" >
+        <argument
+            android:name="Sitio"
+            app:argType="Sitio.Sitio" />
+        <action
+            android:id="@+id/action_galleryFragment_to_PhotoFragment"
+            app:destination="@id/PhotoFragment" >
+            <argument
+                android:name="photo"
+                app:argType="Fotografia.Fotografia" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/PhotoFragment"
+        android:name="com.example.artcitytourapp.fragments.FullscreenImageFragment"
+        android:label="fragment_site_photo"
+        tools:layout="@layout/fragment_fullscreen_image" >
+        <argument
+            android:name="photo"
+            app:argType="Fotografia.Fotografia" />
+    </fragment>
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.example.artcitytourapp.fragments.ScheduleFragment"
+        android:label="fragment_site_schedule"
+        tools:layout="@layout/fragment_schedule" >
+        <argument
+            android:name="Sitio"
+            app:argType="Sitio.Sitio" />
+    </fragment>
+
+
+
     <fragment
         android:id="@+id/closeFragment"
         android:name="com.example.artcitytourapp.fragments.CloseSitesFragment"
@@ -19,9 +109,29 @@
         android:name="com.example.artcitytourapp.fragments.PlanningFragment"
         android:label="fragment_planning"
         tools:layout="@layout/fragment_planning" />
+
+
+
     <fragment
         android:id="@+id/reviewFragment"
         android:name="com.example.artcitytourapp.fragments.ReviewFragment"
         android:label="fragment_review"
-        tools:layout="@layout/fragment_review" />
+        tools:layout="@layout/fragment_review" >
+        <action
+            android:id="@+id/action_reviewFragment_to_siteFragmentReview"
+            app:destination="@id/siteFragmentReview" >
+            <argument
+                android:name="Sitio"
+                app:argType="Sitio.Sitio" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/siteFragmentReview"
+        android:name="com.example.artcitytourapp.fragments.SiteFragment"
+        android:label="fragment_site_review"
+        tools:layout="@layout/fragment_site" >
+        <argument
+            android:name="Sitio"
+            app:argType="Sitio.Sitio" />
+    </fragment>
 </navigation>

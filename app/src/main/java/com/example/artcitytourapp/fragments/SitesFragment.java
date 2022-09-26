@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,7 +54,7 @@ public class SitesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_sites, container, false);
-        Bundle b = this.getArguments();
+        Bundle b = getArguments();
         if (b != null) {
             idRoute = (String) b.get("idRuta");
             prepareTable();
@@ -210,14 +211,9 @@ public class SitesFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", espSite);
-                b.putSerializable("idRuta", idRoute);
+                //b.putSerializable("idRuta", idRoute);
 
-                SiteFragment nextFrag= new SiteFragment();
-                nextFrag.setArguments(b);
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentContainer, nextFrag, "SiteFragment")
-                        .addToBackStack(null)
-                        .commit();
+                Navigation.findNavController(view).navigate(R.id.siteFragment, b);
             }
         });
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -160,13 +161,7 @@ public class ReviewFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", espSite);
-
-                SiteFragment nextFrag= new SiteFragment();
-                nextFrag.setArguments(b);
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentContainer, nextFrag, "SiteFragment")
-                        .addToBackStack(null)
-                        .commit();
+                Navigation.findNavController(view).navigate(R.id.siteFragment, b);
             }
         });
 

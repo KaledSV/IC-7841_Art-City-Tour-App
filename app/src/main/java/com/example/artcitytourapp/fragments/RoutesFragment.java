@@ -169,13 +169,17 @@ public class RoutesFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("idRuta", route.getIdRoute());
+                Navigation.findNavController(view).navigate(R.id.routeSitesFragment, b);
+                /*
+                Bundle b = new Bundle();
+                b.putSerializable("idRuta", route.getIdRoute());
 
                 SitesFragment nextFrag = new SitesFragment();
                 nextFrag.setArguments(b);
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.contentContainer, nextFrag, "RouteFragment")
                         .addToBackStack(null)
-                        .commit();
+                        .commit();*/
             }
         });
     }

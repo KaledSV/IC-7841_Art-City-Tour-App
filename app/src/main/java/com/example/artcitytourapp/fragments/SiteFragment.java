@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.navigation.Navigation;
 
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -77,7 +78,6 @@ public class SiteFragment extends Fragment {
     private AlertDialog resenaDialog, resenaAndPhotoDialog, resenaPhotosDialog, photoDialog;
     ActivityResultLauncher<String> mPhoto, mPhotos;
     private Sitio site;
-    private String idRoute;
 
     private int calification = 0;
     private String opinion = "";
@@ -129,13 +129,7 @@ public class SiteFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", site);
-
-                GalleryFragment nextFrag= new GalleryFragment();
-                nextFrag.setArguments(b);
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentContainer, nextFrag, "GalerryFragment")
-                        .addToBackStack(null)
-                        .commit();
+                Navigation.findNavController(view).navigate(R.id.galleryFragment, b);
             }
         });
         ImageView buttonSchedule = view.findViewById(R.id.moreDats_SiteInfo);
@@ -145,13 +139,7 @@ public class SiteFragment extends Fragment {
             public void onClick(View view) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", site);
-
-                ScheduleFragment nextFrag= new ScheduleFragment();
-                nextFrag.setArguments(b);
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentContainer, nextFrag, "ScheduleFragment")
-                        .addToBackStack(null)
-                        .commit();
+                Navigation.findNavController(view).navigate(R.id.scheduleFragment, b);
             }
         });
 
@@ -176,7 +164,7 @@ public class SiteFragment extends Fragment {
         Bundle b = this.getArguments();
         if (b != null) {
             site = (Sitio) b.get("Sitio");
-            idRoute = (String) b.get("idRuta");
+            //idRoute = (String) b.get("idRuta");
             loadData();
         }
 

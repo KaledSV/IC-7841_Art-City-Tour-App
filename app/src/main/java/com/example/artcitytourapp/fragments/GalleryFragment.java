@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,13 +62,7 @@ public class GalleryFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Bundle b = new Bundle();
                 b.putSerializable("photo", imagenes.ImagesArray[i]);
-
-                FullscreenImageFragment nextFrag= new FullscreenImageFragment();
-                nextFrag.setArguments(b);
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.contentContainer, nextFrag, "FullscreenFragment")
-                        .addToBackStack(null)
-                        .commit();
+                Navigation.findNavController(view).navigate(R.id.PhotoFragment, b);
             }
         });
         return view;
