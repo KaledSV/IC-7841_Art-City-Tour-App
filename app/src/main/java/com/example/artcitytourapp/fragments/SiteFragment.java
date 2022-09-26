@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -204,20 +205,17 @@ public class SiteFragment extends Fragment {
         final ExpandableTextView lblDescription = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
         final TextView lblexpectedTime = view.findViewById(R.id.timeExp_SiteInfo);
         final TextView lblcapacity = view.findViewById(R.id.capacity_SiteInfo);
-        final TextView lblday = view.findViewById(R.id.day_SiteInfo);
-        final TextView lbltimeRange = view.findViewById(R.id.timeRange_SiteInfo);
 
         lblNameRoute.setText(site.getNombreRuta());
         lblNameSite.setText(site.getNombre());
         lblDescription.setText(site.getDescripcion());
         lblexpectedTime.setText("Tiempo de espera: " + Integer.toString(site.getTiempoEspera()));
         lblcapacity.setText("Capacidad Maxima: " + Integer.toString(site.getCapacidad()));
-        //lblday.setText(); todo
-        //lbltimeRange.setText(); todo
 
         bdGetReviewsIdBySite(site.getIdSite());
         bdGetPhotosIdSite(site.getIdSite());
         bdGetHorarioDiaIdSite(site.getIdSite());
+        setFavButon();
     }
 
     protected void cleanData(){
@@ -239,58 +237,39 @@ public class SiteFragment extends Fragment {
                 })
                 .show();
     }
-    // Preview of gallery
-    protected void bdGetPhotosIdSite(String siteId){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
-        db.collection("FotosXSitios")
-                .whereEqualTo("idSitio", siteId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            ArrayList<String> fotosIDs = new ArrayList<String>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                fotosIDs.add((String) document.getData().get("idFotografia"));
-                            }
-                            if (fotosIDs.size()<=3){
-                                bdGetPhotosBySite(fotosIDs);
-                            }
-                            else{
-                                bdGetPhotosBySite((ArrayList<String>) fotosIDs.subList(0, 2));
-                            }
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
+
+    // setFavStatus and button functionality
+    protected void setFavButon(){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        final ImageView favImage = (ImageView) view.findViewById(R.id.favImage_SiteDes);
+        setFavoriteImage(user.siteFavoriteStatus(site), favImage);
+
+        favImage.setClickable(true);
+        favImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.siteFavoriteStatus(site)){
+                    user.bdRemoveFavorite(site.getIdSite());
+                    setFavoriteImage(false, favImage);
+                }
+                else{
+                    user.bdAddFavorite(site.getIdSite());
+                    setFavoriteImage(true, favImage);
+                }
+            }
+        });
     }
 
-    protected void bdGetPhotosBySite( ArrayList<String> photosIDs){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        for(String photoId : photosIDs){
-            DocumentReference docRef = db.collection("Fotografia").document(photoId);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            Fotografia photo = document.toObject(Fotografia.class);
-                            assert photo != null;
-                            photo.setIdFoto(photoId);
-                            setPhoto(photo);
-                        } else {
-                            Log.d("TAG", "No such document");
-                        }
-                    } else {
-                        Log.d("TAG", "get failed with ", task.getException());
-                    }
-                }
-            });
+    protected void setFavoriteImage(Boolean status, ImageView iv){
+        if (status){
+            iv.setImageResource(R.drawable.ic_baseline_favorite_on_24);
+        }
+        else{
+            iv.setImageResource(R.drawable.ic_baseline_favorite_off_grey_24);
         }
     }
 
+    // schedule of the day
     protected void bdGetHorarioDiaIdSite(String siteId){
         LinearLayout layoutH = view.findViewById(R.id.layoutH);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -345,6 +324,58 @@ public class SiteFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    // Preview of gallery
+    protected void bdGetPhotosIdSite(String siteId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Create a new user with a first and last name
+        db.collection("FotosXSitios")
+                .whereEqualTo("idSitio", siteId)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> fotosIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                fotosIDs.add((String) document.getData().get("idFotografia"));
+                            }
+                            if (fotosIDs.size()<=3){
+                                bdGetPhotosBySite(fotosIDs);
+                            }
+                            else{
+                                bdGetPhotosBySite((ArrayList<String>) fotosIDs.subList(0, 2));
+                            }
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    protected void bdGetPhotosBySite( ArrayList<String> photosIDs){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        for(String photoId : photosIDs){
+            DocumentReference docRef = db.collection("Fotografia").document(photoId);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Fotografia photo = document.toObject(Fotografia.class);
+                            assert photo != null;
+                            photo.setIdFoto(photoId);
+                            setPhoto(photo);
+                        } else {
+                            Log.d("TAG", "No such document");
+                        }
+                    } else {
+                        Log.d("TAG", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
     }
 
     protected void setPhoto(Fotografia photo) {

@@ -9,7 +9,7 @@
                 />
         </shape>
     </item>
-    <item android:drawable="@drawable/ic_baseline_favorite_off_24"
+    <item android:drawable="@drawable/ic_baseline_favorite_off_white_24"
         android:top="2dp"
         android:left="2dp"
         android:right="2dp"/>

@@ -36,7 +36,8 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/notificationImage_SiteDes"
@@ -44,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:contentDescription="@string/notification_SiteDes"
-                    app:srcCompat="@android:drawable/ic_menu_today" />
+                    app:srcCompat="@drawable/ic_baseline_notifications_24" />
 
                 <ImageView
                     android:id="@+id/shareImage_SiteDes"
@@ -52,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:contentDescription="@string/share_SiteDes"
-                    app:srcCompat="@android:drawable/ic_menu_upload" />
+                    app:srcCompat="@drawable/ic_baseline_share_24" />
 
                 <ImageView
                     android:id="@+id/favImage_SiteDes"
@@ -60,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:contentDescription="@string/fav_SiteDes"
-                    app:srcCompat="@android:drawable/btn_star_big_on" />
+                    app:srcCompat="@drawable/ic_baseline_favorite_off_grey_24" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
