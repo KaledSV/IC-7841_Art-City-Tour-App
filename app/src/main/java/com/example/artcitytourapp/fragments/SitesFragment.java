@@ -188,6 +188,7 @@ public class SitesFragment extends Fragment {
 
     protected void addTableRow(Sitio espSite, String imgPath) {
         TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.sites_row, null);
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
 
         ImageView siteImageView = (ImageView) siteRow.findViewById(R.id.siteImageView);
         ImageView heartImageView = (ImageView) siteRow.findViewById(R.id.heartImageView);
@@ -196,7 +197,7 @@ public class SitesFragment extends Fragment {
         RelativeLayout siteImageLayout = (RelativeLayout) siteRow.findViewById(R.id.siteImageLayout);
 
         //heartImageView.setImageResource(R.drawable.favorite_off);
-        setFavoriteImage(siteFavoriteStatus(espSite), heartImageView);
+        setFavoriteImage(user.siteFavoriteStatus(espSite), heartImageView);
         imageRow(siteImageView, imgPath);
         siteTextView.setText(espSite.getNombre());
         siteTypeTextView.setText(espSite.getTipoSitio());
@@ -224,12 +225,12 @@ public class SitesFragment extends Fragment {
         siteImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (siteFavoriteStatus(espSite)){
-                    removeFavorite(espSite.getIdSite());
+                if (user.siteFavoriteStatus(espSite)){
+                    user.bdRemoveFavorite(espSite.getIdSite());
                     setFavoriteImage(false, heartImageView);
                 }
                 else{
-                    addFavorite(espSite.getIdSite());
+                    user.bdAddFavorite(espSite.getIdSite());
                     setFavoriteImage(true, heartImageView);
                 }
             }
@@ -255,11 +256,6 @@ public class SitesFragment extends Fragment {
         }
     }
 
-    protected boolean siteFavoriteStatus(Sitio espSite){
-        VisitanteSingleton user = VisitanteSingleton.getInstance();
-        return user.getSitiosFavoritos().contains(espSite.getIdSite());
-    }
-
     protected void setFavoriteImage(Boolean status, ImageView iv){
         if (status){
             iv.setImageResource(R.drawable.favorite_on);
@@ -267,51 +263,5 @@ public class SitesFragment extends Fragment {
         else{
             iv.setImageResource(R.drawable.favorite_off);
         }
-    }
-
-    protected void removeFavorite(String idSite){
-        VisitanteSingleton user = VisitanteSingleton.getInstance();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Favoritos")
-                .whereEqualTo("idUsuario", user.getId())
-                .whereEqualTo("idSitio", idSite)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                db.collection("Favoritos").document(document.getId()).delete();
-                                Log.d("TAG", "DocumentSnapshot eliminated with ID: " + document.getId());
-                            }
-                            user.getSitiosFavoritos().remove(idSite);
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
-    }
-
-    protected void addFavorite(String idSite){
-        VisitanteSingleton user = VisitanteSingleton.getInstance();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("idSitio", idSite);
-        data.put("idUsuario", user.getId());
-        Task<DocumentReference> docRef = db.collection("Favoritos").add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        user.getSitiosFavoritos().add(idSite);
-                        Log.d("TAG", "DocumentSnapshot written with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // todo error window
-                        Log.w("Error", "Error adding document", e);
-                    }
-                });
     }
 }
