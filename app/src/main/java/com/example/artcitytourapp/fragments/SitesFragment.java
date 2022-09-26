@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,6 +62,14 @@ public class SitesFragment extends Fragment {
             bdSetRouteName(idRoute);
             bdGetSitesByRoute(idRoute);
         }
+        ImageView backBtn = (ImageView) view.findViewById(R.id.backImageSitesList);
+        backBtn.setClickable(true);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigateUp();
+            }
+        });
         return view;
     }
 

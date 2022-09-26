@@ -160,6 +160,14 @@ public class SiteFragment extends Fragment {
                         updateResenaPhotosDialog(uri);
                     }
                 });
+        ImageView backBtn = (ImageView) view.findViewById(R.id.backImageSiteInfo);
+        backBtn.setClickable(true);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigateUp();
+            }
+        });
         // load all data from database
         Bundle b = this.getArguments();
         if (b != null) {
