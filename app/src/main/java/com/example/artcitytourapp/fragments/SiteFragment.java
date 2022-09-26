@@ -204,8 +204,8 @@ public class SiteFragment extends Fragment {
         final ExpandableTextView lblDescription = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
         final TextView lblexpectedTime = view.findViewById(R.id.timeExp_SiteInfo);
         final TextView lblcapacity = view.findViewById(R.id.capacity_SiteInfo);
-        final TextView lblday = view.findViewById(R.id.day_SiteInfo); //todo para horarios
-        final TextView lbltimeRange = view.findViewById(R.id.timeRange_SiteInfo); //todo para horarios;
+        final TextView lblday = view.findViewById(R.id.day_SiteInfo);
+        final TextView lbltimeRange = view.findViewById(R.id.timeRange_SiteInfo);
 
         lblNameRoute.setText(site.getNombreRuta());
         lblNameSite.setText(site.getNombre());
@@ -265,6 +265,7 @@ public class SiteFragment extends Fragment {
                     }
                 });
     }
+
     protected void bdGetPhotosBySite( ArrayList<String> photosIDs){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         for(String photoId : photosIDs){
@@ -297,6 +298,7 @@ public class SiteFragment extends Fragment {
         db.collection("Horario")
                 .whereEqualTo("idSitio", siteId)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
@@ -780,7 +782,6 @@ public class SiteFragment extends Fragment {
     protected void uploadReview(){
         VisitanteSingleton user = VisitanteSingleton.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final String[] idDoc = {""};
 
         Map<String, Object> data = new HashMap<>();
         data.put("autor", user.getNombre());

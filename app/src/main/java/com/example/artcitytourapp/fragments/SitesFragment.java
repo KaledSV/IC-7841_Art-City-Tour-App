@@ -15,16 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -36,9 +39,12 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import Sitio.Sitio;
+import Usuario.VisitanteSingleton;
 
 public class SitesFragment extends Fragment {
     View view;
@@ -83,7 +89,6 @@ public class SitesFragment extends Fragment {
 
     protected void bdGetSitesByRoute(String routeId){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
         db.collection("RutasXSitios")
                 .whereEqualTo("idRuta", routeId)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -104,7 +109,6 @@ public class SitesFragment extends Fragment {
 
     protected void bdGetSites(ArrayList<String> sitesId){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final int[] i = {0};
         for(String siteId : sitesId){
             DocumentReference docRef = db.collection("Sitios").document(siteId);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -117,8 +121,7 @@ public class SitesFragment extends Fragment {
                             assert site != null;
                             site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
                             site.setIdSite(siteId);
-                            bdGetSiteFoto(i, site);
-                            i[0]++;
+                            bdGetSiteFoto(site);
                         } else {
                             Log.d("TAG", "No such document");
                         }
@@ -130,9 +133,9 @@ public class SitesFragment extends Fragment {
         }
     }
 
-    protected void bdGetSiteFoto(int[] i, Sitio espSite){
+    protected void bdGetSiteFoto(Sitio espSite){
         if (espSite.getIdFotoPredeterminada() == null){
-            addTableRow(i[0], espSite, "Imagenes Interfaz/notFoundImage.png");
+            addTableRow(espSite, "Imagenes Interfaz/notFoundImage.png");
         }
         else {
 
@@ -146,9 +149,9 @@ public class SitesFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             if (document.get("foto") == null) {
-                                addTableRow(i[0], espSite, "Imagenes Interfaz/notFoundImage.png");
+                                addTableRow(espSite, "Imagenes Interfaz/notFoundImage.png");
                             } else {
-                                addTableRow(i[0], espSite, (String) Objects.requireNonNull(document.get("foto")));
+                                addTableRow(espSite, (String) Objects.requireNonNull(document.get("foto")));
                             }
                         } else {
                             Log.d("TAG", "No such document");
@@ -183,14 +186,18 @@ public class SitesFragment extends Fragment {
         table.addView(tr0);*/
     }
 
-    protected void addTableRow(int i, Sitio espSite, String imgPath) {
+    protected void addTableRow(Sitio espSite, String imgPath) {
         TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.sites_row, null);
 
         ImageView siteImageView = (ImageView) siteRow.findViewById(R.id.siteImageView);
+        ImageView heartImageView = (ImageView) siteRow.findViewById(R.id.heartImageView);
         TextView siteTextView = (TextView) siteRow.findViewById(R.id.siteTextView);
         TextView siteTypeTextView = (TextView) siteRow.findViewById(R.id.siteTypeTextView);
+        RelativeLayout siteImageLayout = (RelativeLayout) siteRow.findViewById(R.id.siteImageLayout);
 
-        imageRow(espSite, siteImageView, imgPath);
+        //heartImageView.setImageResource(R.drawable.favorite_off);
+        setFavoriteImage(siteFavoriteStatus(espSite), heartImageView);
+        imageRow(siteImageView, imgPath);
         siteTextView.setText(espSite.getNombre());
         siteTypeTextView.setText(espSite.getTipoSitio());
 
@@ -213,10 +220,25 @@ public class SitesFragment extends Fragment {
             }
         });
 
+        siteImageLayout.setClickable(true);
+        siteImageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (siteFavoriteStatus(espSite)){
+                    removeFavorite(espSite.getIdSite());
+                    setFavoriteImage(false, heartImageView);
+                }
+                else{
+                    addFavorite(espSite.getIdSite());
+                    setFavoriteImage(true, heartImageView);
+                }
+            }
+        });
+
         table.addView(siteRow);
     }
 
-    protected void imageRow(Sitio espSite, ImageView iv, String imgPath){
+    protected void imageRow(ImageView iv, String imgPath){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
         try {
             File localFile = File.createTempFile("tempFile", ".png");
@@ -224,21 +246,72 @@ public class SitesFragment extends Fragment {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 125, 125, false));
+                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250, 250, false));
                 }
             });
         }
         catch (IOException e){
             e.printStackTrace();
         }
+    }
 
-        // click de la foto para favoritos
-        iv.setClickable(true);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // todo agregar addFavorite(espSite)
-            }
-        });
+    protected boolean siteFavoriteStatus(Sitio espSite){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        return user.getSitiosFavoritos().contains(espSite.getIdSite());
+    }
+
+    protected void setFavoriteImage(Boolean status, ImageView iv){
+        if (status){
+            iv.setImageResource(R.drawable.favorite_on);
+        }
+        else{
+            iv.setImageResource(R.drawable.favorite_off);
+        }
+    }
+
+    protected void removeFavorite(String idSite){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Favoritos")
+                .whereEqualTo("idUsuario", user.getId())
+                .whereEqualTo("idSitio", idSite)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                db.collection("Favoritos").document(document.getId()).delete();
+                                Log.d("TAG", "DocumentSnapshot eliminated with ID: " + document.getId());
+                            }
+                            user.getSitiosFavoritos().remove(idSite);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+    }
+
+    protected void addFavorite(String idSite){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("idSitio", idSite);
+        data.put("idUsuario", user.getId());
+        Task<DocumentReference> docRef = db.collection("Favoritos").add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        user.getSitiosFavoritos().add(idSite);
+                        Log.d("TAG", "DocumentSnapshot written with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // todo error window
+                        Log.w("Error", "Error adding document", e);
+                    }
+                });
     }
 }

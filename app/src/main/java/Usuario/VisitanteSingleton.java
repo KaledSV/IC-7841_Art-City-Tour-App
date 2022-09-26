@@ -1,5 +1,17 @@
 package Usuario;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.example.artcitytourapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import Ruta.RutaPersonalizada;
@@ -11,7 +23,7 @@ public class VisitanteSingleton extends Usuario {
     //Atributos
     private int permiso = 2;
     private List<RutaPersonalizada> rutas = null;
-    private List<Favorito> sitiosFavoritos = null;
+    private List<String> sitiosIdFavoritos = null;
 
     // Private constructor prevents instantiation from other classes
     public static VisitanteSingleton AlterSingleton(String id, String nombre, int numero, String correo, String contrasenna) {
@@ -20,6 +32,7 @@ public class VisitanteSingleton extends Usuario {
         instance.setNumero(numero);
         instance.setCorreo(correo);
         instance.setContrasenna(contrasenna);
+        instance.bdGetFavoritos();
         return instance;
     }
 
@@ -31,22 +44,6 @@ public class VisitanteSingleton extends Usuario {
         super("", "", 0, "", "");
     }
 
-    //Métodos
-    public void crearRutaPersonalizada(){
-        //TODO
-    }
-
-    public void modificarRuta(){
-        //TODO
-    }
-
-    public void crearResennas(){
-        //TODO
-    }
-
-    public void subirFotografias(){
-        //TODO
-    }
 
     // setters and getters
     public int getPermiso() {
@@ -65,11 +62,32 @@ public class VisitanteSingleton extends Usuario {
         this.rutas = rutas;
     }
 
-    public List<Favorito> getSitiosFavoritos() {
-        return sitiosFavoritos;
+    public List<String> getSitiosFavoritos() {
+        return sitiosIdFavoritos;
     }
 
-    public void setSitiosFavoritos(List<Favorito> sitiosFavoritos) {
-        this.sitiosFavoritos = sitiosFavoritos;
+    public void setSitiosFavoritos(List<String> sitiosIdFavoritos) {
+        this.sitiosIdFavoritos = sitiosIdFavoritos;
+    }
+
+    public void bdGetFavoritos(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Create a new user with a first and last name
+        db.collection("Favoritos")
+                .whereEqualTo("idUsuario", instance.getId())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            ArrayList<String> sitesIDs = new ArrayList<String>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                sitesIDs.add((String) document.getData().get("idSitio"));
+                            }
+                            instance.setSitiosFavoritos(sitesIDs);
+                        } else {
+                            Log.w("TAG", "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 }
