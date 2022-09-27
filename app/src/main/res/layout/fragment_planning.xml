@@ -1,14 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.PlanningFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/lblPlanningTitle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/planning" />
+        android:layout_height="0dp"
+        android:background="@drawable/row_border"
+        android:fontFamily="@font/roboto_regular"
+        android:paddingBottom="10dp"
+        android:text="@string/routeName_routeList"
+        android:textAlignment="center"
+        android:textColor="#80005D"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"/>
 
-</FrameLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblPlanningTitle"
+        app:layout_constraintWidth_percent="0.85">
+
+        <TextView
+            android:id="@+id/myRouteLbl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selected_button_border"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingBottom="20dp"
+            android:text="@string/my_route"
+            android:textAlignment="center"
+            android:textColor="@color/positive_600"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.35" />
+
+        <TextView
+            android:id="@+id/favLbl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/unselected_button_border"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingBottom="20dp"
+            android:text="@string/fav"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/myRouteLbl"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.35" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:id="@+id/planningContainer"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonsLayout"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHeight_percent="0.73"
+        app:layout_constraintWidth_percent="0.85"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

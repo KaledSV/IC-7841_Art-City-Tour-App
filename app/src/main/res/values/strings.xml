@@ -65,4 +65,8 @@
     <string name="photoDescription">Describe la foto/s que tomaste!</string>
     <string name="app_info">App info</string>
     <string name="visited">Tus Visitados</string>
+    <string name="my_route">Mi ruta</string>
+    <string name="fav">Favoritos</string>
+    <string name="recommended">Recomendados</string>
+    <string name="your_fav">Tus Favoritos</string>
 </resources>
