@@ -151,7 +151,6 @@ public class RoutesFragment extends Fragment {
     }
 
     protected void addOneRoute(Ruta route){
-        Log.d(route.getIdRoute(), route.getFieldValues());
         TableRow row = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.routes_row, null);
         ImageView iv = (ImageView) row.findViewById(R.id.imageView);
         TextView tiv = (TextView) row.findViewById(R.id.imageViewText);

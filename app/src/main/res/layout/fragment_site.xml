@@ -221,7 +221,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.1"
-                        expandableTextView:srcCompat="@android:drawable/ic_media_play" />
+                        expandableTextView:srcCompat="@drawable/ic_baseline_next_24" />
 
                 </LinearLayout>
 

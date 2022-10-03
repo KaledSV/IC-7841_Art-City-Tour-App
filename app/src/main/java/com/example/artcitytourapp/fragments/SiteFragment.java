@@ -269,7 +269,28 @@ public class SiteFragment extends Fragment {
     protected void bdGetHorarioDiaIdSite(String siteId){
         LinearLayout layoutH = view.findViewById(R.id.layoutH);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
+
+        Calendar c = Calendar.getInstance();
+        int nD = c.get(Calendar.DAY_OF_WEEK);
+        String varDia = "";
+        switch (nD){
+            case Calendar.SUNDAY: varDia = "Domingo";
+                break;
+            case Calendar.MONDAY: varDia = "Lunes";
+                break;
+            case Calendar.TUESDAY: varDia = "Martes";
+                break;
+            case Calendar.WEDNESDAY: varDia = "Miercoles";
+                break;
+            case Calendar.THURSDAY: varDia = "Jueves";
+                break;
+            case Calendar.FRIDAY: varDia = "Viernes";
+                break;
+            case Calendar.SATURDAY: varDia = "Sabado";
+                break;
+        }
+
+        String finalVarDia = varDia;
         db.collection("Horario")
                 .whereEqualTo("idSitio", siteId)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -278,40 +299,18 @@ public class SiteFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Calendar c = Calendar.getInstance();
-                                c.set(Calendar.YEAR,Calendar.MONTH,Calendar.DAY_OF_MONTH);
-                                int nD=c.get(Calendar.DAY_OF_WEEK);
-                                String varDia = "";
-                                Log.d("TAGI",String.valueOf(nD));
-                                switch (nD){
-                                    case 1: varDia = "Domingo";
-                                        break;
-                                    case 2: varDia = "Lunes";
-                                        break;
-                                    case 3: varDia = "Martes";
-                                        break;
-                                    case 4: varDia = "Miercoles";
-                                        break;
-                                    case 5: varDia = "Jueves";
-                                        break;
-                                    case 6: varDia = "Viernes";
-                                        break;
-                                    case 7: varDia = "Sabado";
-                                        break;
-                                }
                                 String dia = (String) document.getData().get("dia");
                                 TextView lyh = layoutH.findViewById(R.id.day_SiteInfo);
                                 TextView lyh2 = layoutH.findViewById(R.id.timeRange_SiteInfo);
-                                Log.d("TAGI",varDia + dia);
-                                if(varDia.equals(dia)){
+                                if(finalVarDia.equals(dia)){
                                     String abierto = (String) document.getData().get("abierto");
                                     String cerrado = (String) document.getData().get("cerrado");
-                                    lyh.setText(varDia);
+                                    lyh.setText(finalVarDia);
                                     lyh2.setText(abierto+"-"+cerrado);
                                     break;
                                 }
                                 else{
-                                    lyh.setText(varDia);
+                                    lyh.setText(finalVarDia);
                                     lyh2.setText("Cerrado");
                                 }
                             }
@@ -532,8 +531,6 @@ public class SiteFragment extends Fragment {
 
         bdGetPhotoReview(photoImageView, photo.getFoto());
         layout.addView(photoImageView);
-
-        Log.d("SE AÑADIOOOOOOOOOOOOOOO", photo.getFieldValues());
     }
 
     protected void bdGetPhotoReview(ImageView iv, String imgPath){
