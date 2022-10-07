@@ -11,4 +11,16 @@
         android:layout_height="match_parent"
         android:text="@string/close" />
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center|top" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="com.example.artcitytourapp.fragments.SearchFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center" />
+
 </FrameLayout>

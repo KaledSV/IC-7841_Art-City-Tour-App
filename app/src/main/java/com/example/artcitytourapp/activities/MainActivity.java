@@ -60,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         /*bottomNavigationView = findViewById(R.id.bottom_nav);
         NavController navController = Navigation.findNavController(this, R.id.contentContainer);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);*/
+
+
+
     }
 }
 
