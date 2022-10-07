@@ -76,7 +76,7 @@ public class FullscreenImageFragment extends Fragment {
     protected void bdGetPhoto(ImageView iv, Fotografia photo){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(photo.getFoto());
         try {
-            File localFile = File.createTempFile("tempFile", ".png");
+            File localFile = File.createTempFile("tempFile", photo.getFoto().substring(photo.getFoto().lastIndexOf(".")));
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
