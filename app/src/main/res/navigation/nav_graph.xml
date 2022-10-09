@@ -101,9 +101,9 @@
 
     <fragment
         android:id="@+id/closeFragment"
-        android:name="com.example.artcitytourapp.fragments.CloseSitesFragment"
+        android:name="com.example.artcitytourapp.fragments.MapsFragment"
         android:label="fragment_close"
-        tools:layout="@layout/fragment_close_sites" />
+        tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/planningFragment"
         android:name="com.example.artcitytourapp.fragments.PlanningFragment"
@@ -127,9 +127,9 @@
     </fragment>
     <fragment
         android:id="@+id/siteFragmentReview"
-        android:name="com.example.artcitytourapp.fragments.SiteFragment"
+        android:name="com.example.artcitytourapp.fragments.SiteReviewFragment"
         android:label="fragment_site_review"
-        tools:layout="@layout/fragment_site" >
+        tools:layout="@layout/fragment_site_review" >
         <argument
             android:name="Sitio"
             app:argType="Sitio.Sitio" />

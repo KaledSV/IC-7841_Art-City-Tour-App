@@ -5,11 +5,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,6 +44,15 @@ public class ScheduleFragment extends Fragment {
             site = (Sitio) b.get("Sitio");
             bdGetHorarioIdSite(site.getIdSite(),site.getNombre());
         }
+
+        ImageView backBtn = (ImageView) view.findViewById(R.id.backButton);
+        backBtn.setClickable(true);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigateUp();
+            }
+        });
         return view;
     }
     protected void bdGetHorarioIdSite(String siteId,String nombre){

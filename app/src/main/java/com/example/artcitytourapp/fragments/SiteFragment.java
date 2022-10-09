@@ -234,6 +234,19 @@ public class SiteFragment extends Fragment {
                 .show();
     }
 
+    public void errorUploding(){
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Error")
+                .setMessage("Ha ocurrido un error al subir la fotografía/reseña a la base de datos")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
+    }
+
     // setFavStatus and button functionality
     protected void setFavButon(){
         VisitanteSingleton user = VisitanteSingleton.getInstance();
@@ -245,11 +258,11 @@ public class SiteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (user.siteFavoriteStatus(site)){
-                    user.bdRemoveFavorite(site.getIdSite());
+                    user.bdRemoveFavorite(site.getIdSite(), view);
                     setFavoriteImage(false, favImage);
                 }
                 else{
-                    user.bdAddFavorite(site.getIdSite());
+                    user.bdAddFavorite(site.getIdSite(), view);
                     setFavoriteImage(true, favImage);
                 }
             }
@@ -387,7 +400,7 @@ public class SiteFragment extends Fragment {
     protected void bdGetPhoto(ImageView iv, String imgPath){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
         try {
-            File localFile = File.createTempFile("tempFile", ".png");
+            File localFile = File.createTempFile("tempFile", imgPath.substring(imgPath.lastIndexOf(".")));
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -464,7 +477,7 @@ public class SiteFragment extends Fragment {
         resLikes.setText(String.valueOf(resenna.getLikes()));
         TextView resDislikes = ressenaView.findViewById(R.id.countDislikes);
         resDislikes.setText(String.valueOf(resenna.getDislikes()));
-        TextView resComment = ressenaView.findViewById(R.id.viewComentario);
+        ExpandableTextView resComment = (ExpandableTextView) ressenaView.findViewById(R.id.expand_text_view);
         resComment.setText(resenna.getComentario());
         if (resenna.isTieneFotos()){
             LinearLayout layoutImagenes = ressenaView.findViewById(R.id.layoutImages);
@@ -536,7 +549,7 @@ public class SiteFragment extends Fragment {
     protected void bdGetPhotoReview(ImageView iv, String imgPath){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
         try {
-            File localFile = File.createTempFile("tempFile", ".png");
+            File localFile = File.createTempFile("tempFile", imgPath.substring(imgPath.lastIndexOf(".")));
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -827,7 +840,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });
@@ -849,7 +862,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });
@@ -883,7 +896,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });
@@ -932,7 +945,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });
@@ -954,7 +967,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });
@@ -1009,7 +1022,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });
@@ -1031,7 +1044,7 @@ public class SiteFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding();
                         Log.w("Error", "Error adding document", e);
                     }
                 });

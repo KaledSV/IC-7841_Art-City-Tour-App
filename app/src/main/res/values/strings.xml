@@ -69,4 +69,9 @@
     <string name="fav">Favoritos</string>
     <string name="recommended">Recomendados</string>
     <string name="your_fav">Tus Favoritos</string>
+    <string name="review_opinion">¡Tu opinión nos importa!</string>
+    <string name="prev_reviews">Reseñas anteriores</string>
+    <string name="site_name">Nombre del sitio</string>
+    <string name="dir2_text1"><u>Abrir en Google Maps</u></string>
+    <string name="dir2_text2"><u>Abrir en Waze</u></string>
 </resources>

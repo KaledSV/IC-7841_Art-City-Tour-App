@@ -1,38 +1,20 @@
 package com.example.artcitytourapp.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import android.annotation.SuppressLint;
-import android.app.FragmentManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import com.example.artcitytourapp.R;
 import com.example.artcitytourapp.fragments.CloseSitesFragment;
 import com.example.artcitytourapp.fragments.PlanningFragment;
 import com.example.artcitytourapp.fragments.ReviewFragment;
 import com.example.artcitytourapp.fragments.SitesFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +37,41 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_nav);
         NavController navController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem sitesItem = menu.findItem(R.id.sitesFragment);
+        MenuItem closeItem = menu.findItem(R.id.closeFragment);
+        MenuItem planningItem = menu.findItem(R.id.planningFragment);
+        MenuItem reviewItem = menu.findItem(R.id.reviewFragment);
+
+        sitesItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                navController.navigate(R.id.sitesFragment);
+                return true;
+            }
+        });
+        closeItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                navController.navigate(R.id.closeFragment);
+                return true;
+            }
+        });
+        planningItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                navController.navigate(R.id.planningFragment);
+                return true;
+            }
+        });
+        reviewItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                navController.navigate(R.id.reviewFragment);
+                return true;
+            }
+        });
 
         // Fragment
         /*bottomNavigationView = findViewById(R.id.bottom_nav);
