@@ -2,15 +2,27 @@ package com.example.artcitytourapp.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.SearchView;
 
 import com.example.artcitytourapp.R;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+
+import Sitio.Sitio;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,15 +32,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 public class SearchFragment extends Fragment {
 
     public View view;
-    public BottomSheetBehavior bsb;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private SearchView mSearchview;
+    private RecyclerView mRecyclerview;
+    private Query mSiteDatabase;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -46,8 +53,6 @@ public class SearchFragment extends Fragment {
     public static SearchFragment newInstance(String param1, String param2) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,25 +60,62 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+    }
+
+    FirebaseRecyclerOptions<Sitio> options =
+            new FirebaseRecyclerOptions.Builder<Sitio>()
+                    .setQuery(mSiteDatabase)
+                    .build();
+
+    //Clase que acomoda a los sitios obtenidos de la busqueda
+    public class SiteviewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public SiteviewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mView = itemView;
         }
+    }
+
+    private void firebaseSiteSearch(){
+        //Necesita un adaptador para mostrar los resultados obtenidos de firebase
+        FirebaseRecyclerAdapter<Sitio,SiteviewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Sitio, SiteviewHolder>()
+        {
+
+            @NonNull
+            @Override
+            public SiteviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                return null;
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull SiteviewHolder holder, int position, @NonNull Sitio model) {
+
+            }
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        // Find the view
-        FrameLayout bottomSheetLayout = view.findViewById(R.id.standard_bottom_sheet);
+        mSearchview = view.findViewById(R.id.searchView);
+        mRecyclerview = (RecyclerView) view.findViewById(R.id.result_list);
+        mSiteDatabase = FirebaseDatabase.getInstance().getReference("Sitios");
 
-        //Initialize the bottom sheet behavior i guess
-        //bsb = BottomSheetBehavior.from(bottomSheetLayout);
+
+
+        mSearchview.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseSiteSearch();
+            }
+        });
+
         return view;
     }
 }
