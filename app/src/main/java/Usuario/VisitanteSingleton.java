@@ -1,8 +1,11 @@
 package Usuario;
 
+import android.content.DialogInterface;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -102,7 +105,20 @@ public class VisitanteSingleton extends Usuario {
         return user.getSitiosFavoritos().contains(espSite.getIdSite());
     }
 
-    public void bdRemoveFavorite(String idSite){
+    public void errorUploding(View view){
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Error")
+                .setMessage("Ha ocurrido un error al subir la fotografía/reseña a la base de datos")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    public void bdRemoveFavorite(String idSite, View view){
         VisitanteSingleton user = VisitanteSingleton.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Favoritos")
@@ -118,13 +134,14 @@ public class VisitanteSingleton extends Usuario {
                             }
                             user.getSitiosFavoritos().remove(idSite);
                         } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
+                            errorUploding(view);
+                            Log.w("TAG", "Error removing documents.", task.getException());
                         }
                     }
                 });
     }
 
-    public void bdAddFavorite(String idSite){
+    public void bdAddFavorite(String idSite, View view){
         VisitanteSingleton user = VisitanteSingleton.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -142,7 +159,7 @@ public class VisitanteSingleton extends Usuario {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // todo error window
+                        errorUploding(view);
                         Log.w("Error", "Error adding document", e);
                     }
                 });

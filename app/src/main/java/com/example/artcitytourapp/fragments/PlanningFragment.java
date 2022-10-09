@@ -35,10 +35,22 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(window != 0){
+                    int pLRoute = myRouteBtn.getPaddingLeft();
+                    int pTRoute = myRouteBtn.getPaddingTop();
+                    int pRRoute = myRouteBtn.getPaddingRight();
+                    int pBRoute = myRouteBtn.getPaddingBottom();
                     myRouteBtn.setBackgroundResource(R.drawable.selected_button_border);
                     myRouteBtn.setTextColor(getResources().getColor(R.color.positive_600));
+                    myRouteBtn.setPadding(pLRoute, pTRoute, pRRoute, pBRoute);
+
+                    int pLFav = favBtn.getPaddingLeft();
+                    int pTFav = favBtn.getPaddingTop();
+                    int pRFav = favBtn.getPaddingRight();
+                    int pBFav = favBtn.getPaddingBottom();
                     favBtn.setBackgroundResource(R.drawable.unselected_button_border);
                     favBtn.setTextColor(getResources().getColor(R.color.grey_400));
+                    favBtn.setPadding(pLFav, pTFav, pRFav, pBFav);
+
                     window = 0;
                     SubPlanningFragment subPlanning = new SubPlanningFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
@@ -54,12 +66,23 @@ public class PlanningFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(window != 1) {
+                    int pLFav = favBtn.getPaddingLeft();
+                    int pTFav = favBtn.getPaddingTop();
+                    int pRFav = favBtn.getPaddingRight();
+                    int pBFav = favBtn.getPaddingBottom();
                     favBtn.setBackgroundResource(R.drawable.selected_button_border);
                     favBtn.setTextColor(getResources().getColor(R.color.positive_600));
+                    favBtn.setPadding(pLFav, pTFav, pRFav, pBFav);
+
+                    int pLRoute = myRouteBtn.getPaddingLeft();
+                    int pTRoute = myRouteBtn.getPaddingTop();
+                    int pRRoute = myRouteBtn.getPaddingRight();
+                    int pBRoute = myRouteBtn.getPaddingBottom();
                     myRouteBtn.setBackgroundResource(R.drawable.unselected_button_border);
                     myRouteBtn.setTextColor(getResources().getColor(R.color.grey_400));
-                    window = 1;
+                    myRouteBtn.setPadding(pLRoute, pTRoute, pRRoute, pBRoute);
 
+                    window = 1;
                     SubFavoriteFragment subFavorite = new SubFavoriteFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.planningContainer, subFavorite, "subFavoriteFragment")

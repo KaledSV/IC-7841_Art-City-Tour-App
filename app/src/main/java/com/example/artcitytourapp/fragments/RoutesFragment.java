@@ -90,7 +90,7 @@ public class RoutesFragment extends Fragment {
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
 
         try {
-            File localFile = File.createTempFile("tempFile", ".png");
+            File localFile = File.createTempFile("tempFile", imgPath.substring(imgPath.lastIndexOf(".")));
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -151,7 +151,6 @@ public class RoutesFragment extends Fragment {
     }
 
     protected void addOneRoute(Ruta route){
-        Log.d(route.getIdRoute(), route.getFieldValues());
         TableRow row = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.routes_row, null);
         ImageView iv = (ImageView) row.findViewById(R.id.imageView);
         TextView tiv = (TextView) row.findViewById(R.id.imageViewText);

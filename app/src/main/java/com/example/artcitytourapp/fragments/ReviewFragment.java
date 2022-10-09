@@ -161,7 +161,7 @@ public class ReviewFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", espSite);
-                Navigation.findNavController(view).navigate(R.id.siteFragment, b);
+                Navigation.findNavController(view).navigate(R.id.siteFragmentReview, b);
             }
         });
 
@@ -173,26 +173,17 @@ public class ReviewFragment extends Fragment {
 
 
         try {
-            File localFile = File.createTempFile("tempFile", ".png");
+            File localFile = File.createTempFile("tempFile", imgPath.substring(imgPath.lastIndexOf(".")));
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 125, 125, false));
+                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250, 250, false));
                 }
             });
         }
         catch (IOException e){
             e.printStackTrace();
         }
-
-        // click de la foto para favoritos
-        iv.setClickable(true);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // todo agregar addFavorite(espSite)
-            }
-        });
     }
 }
