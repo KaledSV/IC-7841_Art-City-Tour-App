@@ -493,6 +493,9 @@ public class SiteFragment extends Fragment {
         resDislikes.setText(String.valueOf(resenna.getDislikes()));
         ExpandableTextView resComment = (ExpandableTextView) ressenaView.findViewById(R.id.expand_text_view);
         resComment.setText(resenna.getComentario());
+        Button likeBtn = ressenaView.findViewById(R.id.likeBtn);
+        Button dislikeBtn = ressenaView.findViewById(R.id.dislikeBtn);
+
         if (resenna.isTieneFotos()){
             LinearLayout layoutImagenes = ressenaView.findViewById(R.id.layoutImages);
             bdGetPhotosByReview(resenna.getIdResenna(), layoutImagenes);
@@ -500,7 +503,84 @@ public class SiteFragment extends Fragment {
         else{
             ressenaView.findViewById(R.id.containerImgs).setVisibility(View.GONE);
         }
+        setLikeAndDislikeBtn(resenna, likeBtn, dislikeBtn, resLikes, resDislikes);
         layoutResenas.addView(ressenaView);
+    }
+
+    protected void setLikeAndDislikeBtn(Resenna resenna, Button likeBtn, Button dislikeBtn, TextView resLikes,TextView resDislikes){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        setLikeImage(user.reviewLikeStatus(resenna.getIdResenna()), likeBtn);
+        setDislikeImage(user.reviewDislikeStatus(resenna.getIdResenna()), dislikeBtn);
+
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.reviewLikeStatus(resenna.getIdResenna())){
+                    user.removeLike(resenna.getIdResenna(), view, resenna);
+
+                    // Deactivates like button and counter
+                    setLikeImage(false, likeBtn);
+                }
+                else{
+                    if (user.reviewDislikeStatus(resenna.getIdResenna())){
+                        user.removeDislike(resenna.getIdResenna(), view, resenna);
+
+                        // Update dislike button and counter if already used
+                        setDislikeImage(false, dislikeBtn);
+                        resDislikes.setText(String.valueOf(resenna.getDislikes()));
+                    }
+                    user.addLike(resenna.getIdResenna(), view, resenna);
+
+                    // Activates like button and counter
+                    setLikeImage(true, likeBtn);
+                }
+                resLikes.setText(String.valueOf(resenna.getLikes()));
+            }
+        });
+
+        dislikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.reviewDislikeStatus(resenna.getIdResenna())){
+                    user.removeDislike(resenna.getIdResenna(), view, resenna);
+
+                    // Deactivates dislike button and counter
+                    setDislikeImage(false, dislikeBtn);
+                }
+                else{
+                    if (user.reviewLikeStatus(resenna.getIdResenna())){
+                        user.removeLike(resenna.getIdResenna(), view, resenna);
+
+                        // Update like button and counter if already used
+                        setLikeImage(false, likeBtn);
+                        resLikes.setText(String.valueOf(resenna.getLikes()));
+                    }
+                    user.addDislike(resenna.getIdResenna(), view, resenna);
+
+                    // Activates dislike button and counter
+                    setDislikeImage(true, dislikeBtn);
+                }
+                resDislikes.setText(String.valueOf(resenna.getDislikes()));
+            }
+        });
+    }
+
+    protected void setLikeImage(Boolean likeStatus, Button like){
+        if (likeStatus){
+            like.setBackgroundResource(R.drawable.ic_baseline_thumb_up_24_positive);
+        }
+        else{
+            like.setBackgroundResource(R.drawable.ic_baseline_thumb_up_24);
+        }
+    }
+
+    protected void setDislikeImage(Boolean dislikeStatus, Button dislike){
+        if (dislikeStatus){
+            dislike.setBackgroundResource(R.drawable.ic_baseline_thumb_down_24_positive);
+        }
+        else{
+            dislike.setBackgroundResource(R.drawable.ic_baseline_thumb_down_24);
+        }
     }
 
     protected void bdGetPhotosByReview(String idRessena, LinearLayout layout){
