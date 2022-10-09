@@ -143,11 +143,11 @@ public class SubFavoriteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (user.siteFavoriteStatus(espSite)){
-                    user.bdRemoveFavorite(espSite.getIdSite());
+                    user.bdRemoveFavorite(espSite.getIdSite(), view);
                     setFavoriteImage(false, heartImageView);
                 }
                 else{
-                    user.bdAddFavorite(espSite.getIdSite());
+                    user.bdAddFavorite(espSite.getIdSite(), view);
                     setFavoriteImage(true, heartImageView);
                 }
             }

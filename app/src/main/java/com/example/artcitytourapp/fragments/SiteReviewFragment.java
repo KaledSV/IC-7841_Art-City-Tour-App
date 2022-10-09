@@ -71,7 +71,7 @@ import Resenna.Resenna;
 import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
-public class SiteFragment extends Fragment {
+public class SiteReviewFragment extends Fragment {
     View view;
     ViewFlipper flipper;
     LinearLayout layoutResenas;
@@ -88,11 +88,9 @@ public class SiteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_site, container, false);
+        view = inflater.inflate(R.layout.fragment_site_review, container, false);
 
         // Data of fragment
-        ExpandableTextView expTv = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
-        expTv.setText(getString(R.string.description_SiteInfo));
 
         Button addResena = (Button) view.findViewById(R.id.addReviews_SiteDes);
         addResena.setOnClickListener(new View.OnClickListener() {
@@ -130,16 +128,6 @@ public class SiteFragment extends Fragment {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", site);
                 Navigation.findNavController(view).navigate(R.id.galleryFragment, b);
-            }
-        });
-        ImageView buttonSchedule = view.findViewById(R.id.moreDats_SiteInfo);
-        buttonSchedule.setClickable(true);
-        buttonSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle b = new Bundle();
-                b.putSerializable("Sitio", site);
-                Navigation.findNavController(view).navigate(R.id.scheduleFragment, b);
             }
         });
 
@@ -191,26 +179,18 @@ public class SiteFragment extends Fragment {
 
     }
 
-
     // Activity methods
     @SuppressLint("SetTextI18n")
     protected void loadData(){
         Log.w("TAG", site.getFieldValues());
         final TextView lblNameRoute = view.findViewById(R.id.siteRoute_SiteInfo);
         final TextView lblNameSite = view.findViewById(R.id.siteName_SiteInfo);
-        final ExpandableTextView lblDescription = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
-        final TextView lblexpectedTime = view.findViewById(R.id.timeExp_SiteInfo);
-        final TextView lblcapacity = view.findViewById(R.id.capacity_SiteInfo);
 
         lblNameRoute.setText(site.getNombreRuta());
         lblNameSite.setText(site.getNombre());
-        lblDescription.setText(site.getDescripcion());
-        lblexpectedTime.setText("Tiempo de espera: " + Integer.toString(site.getTiempoEspera()));
-        lblcapacity.setText("Capacidad Maxima: " + Integer.toString(site.getCapacidad()));
 
         bdGetReviewsIdBySite(site.getIdSite());
         bdGetPhotosIdSite(site.getIdSite());
-        bdGetHorarioDiaIdSite(site.getIdSite());
         setFavButon();
     }
 
@@ -221,7 +201,7 @@ public class SiteFragment extends Fragment {
         photo = null;
     }
 
-    protected void emptyValues(){
+    public void emptyValues(){
         new AlertDialog.Builder(requireContext())
                 .setTitle("Debe rellenar todos los campos")
                 .setMessage("La opinion o la calificacion del sitio estan vacias")
@@ -276,62 +256,6 @@ public class SiteFragment extends Fragment {
         else{
             iv.setImageResource(R.drawable.ic_baseline_favorite_off_grey_24);
         }
-    }
-
-    // schedule of the day
-    protected void bdGetHorarioDiaIdSite(String siteId){
-        LinearLayout layoutH = view.findViewById(R.id.layoutH);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Calendar c = Calendar.getInstance();
-        int nD = c.get(Calendar.DAY_OF_WEEK);
-        String varDia = "";
-        switch (nD){
-            case Calendar.SUNDAY: varDia = "Domingo";
-                break;
-            case Calendar.MONDAY: varDia = "Lunes";
-                break;
-            case Calendar.TUESDAY: varDia = "Martes";
-                break;
-            case Calendar.WEDNESDAY: varDia = "Miercoles";
-                break;
-            case Calendar.THURSDAY: varDia = "Jueves";
-                break;
-            case Calendar.FRIDAY: varDia = "Viernes";
-                break;
-            case Calendar.SATURDAY: varDia = "Sabado";
-                break;
-        }
-
-        String finalVarDia = varDia;
-        db.collection("Horario")
-                .whereEqualTo("idSitio", siteId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String dia = (String) document.getData().get("dia");
-                                TextView lyh = layoutH.findViewById(R.id.day_SiteInfo);
-                                TextView lyh2 = layoutH.findViewById(R.id.timeRange_SiteInfo);
-                                if(finalVarDia.equals(dia)){
-                                    String abierto = (String) document.getData().get("abierto");
-                                    String cerrado = (String) document.getData().get("cerrado");
-                                    lyh.setText(finalVarDia);
-                                    lyh2.setText(abierto+"-"+cerrado);
-                                    break;
-                                }
-                                else{
-                                    lyh.setText(finalVarDia);
-                                    lyh2.setText("Cerrado");
-                                }
-                            }
-                        } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
-                        }
-                    }
-                });
     }
 
     // Preview of gallery
@@ -1048,15 +972,5 @@ public class SiteFragment extends Fragment {
                         Log.w("Error", "Error adding document", e);
                     }
                 });
-    }
-
-    // Schedule database methods
-
-    protected String getTodaysSchedule(int SiteId){
-        return "a";
-    }
-
-    protected String getTodaysHours(int SiteId){
-        return "a";
     }
 }

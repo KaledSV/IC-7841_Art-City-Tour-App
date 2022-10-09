@@ -69,4 +69,7 @@
     <string name="fav">Favoritos</string>
     <string name="recommended">Recomendados</string>
     <string name="your_fav">Tus Favoritos</string>
+    <string name="review_opinion">¡Tu opinión nos importa!</string>
+    <string name="prev_reviews">Reseñas anteriores</string>
+    <string name="site_name">Nombre del sitio</string>
 </resources>
