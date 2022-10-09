@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class FullscreenImageFragment extends Fragment {
         resLikes.setText(String.valueOf(photo.getLikes()));
         TextView resDislikes = descripcionWindow.findViewById(R.id.countDislikes);
         resDislikes.setText(String.valueOf(photo.getDislikes()));
-        TextView resComment = descripcionWindow.findViewById(R.id.viewComentario);
+        ExpandableTextView resComment = (ExpandableTextView) descripcionWindow.findViewById(R.id.expand_text_view);
         resComment.setText(photo.getDescripcion());
 
         bdGetPhoto(imageViewDetalle, photo);

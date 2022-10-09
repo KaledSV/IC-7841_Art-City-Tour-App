@@ -477,7 +477,7 @@ public class SiteFragment extends Fragment {
         resLikes.setText(String.valueOf(resenna.getLikes()));
         TextView resDislikes = ressenaView.findViewById(R.id.countDislikes);
         resDislikes.setText(String.valueOf(resenna.getDislikes()));
-        TextView resComment = ressenaView.findViewById(R.id.viewComentario);
+        ExpandableTextView resComment = (ExpandableTextView) ressenaView.findViewById(R.id.expand_text_view);
         resComment.setText(resenna.getComentario());
         if (resenna.isTieneFotos()){
             LinearLayout layoutImagenes = ressenaView.findViewById(R.id.layoutImages);
