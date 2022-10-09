@@ -65,14 +65,14 @@ public class GalleryFragment extends Fragment {
                 Navigation.findNavController(view).navigate(R.id.PhotoFragment, b);
             }
         });
-        ImageView backBtn = (ImageView) view.findViewById(R.id.backImageSiteInfo);
+        /*ImageView backBtn = (ImageView) view.findViewById(R.id.backImageSiteInfo);
         backBtn.setClickable(true);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(view).navigateUp();
             }
-        });
+        });*/
         return view;
     }
 

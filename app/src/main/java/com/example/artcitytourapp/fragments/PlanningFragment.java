@@ -23,6 +23,7 @@ public class PlanningFragment extends Fragment {
         final TextView myRouteBtn = (TextView) view.findViewById(R.id.myRouteLbl);
         final TextView favBtn = (TextView) view.findViewById(R.id.favLbl);
         SubPlanningFragment subPlanning = new SubPlanningFragment();
+        //MapsFragment subPlanning = new MapsFragment();
         requireActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.planningContainer, subPlanning, "subPlanningFragment")
                 .addToBackStack(null)

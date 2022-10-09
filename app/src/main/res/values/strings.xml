@@ -69,4 +69,6 @@
     <string name="fav">Favoritos</string>
     <string name="recommended">Recomendados</string>
     <string name="your_fav">Tus Favoritos</string>
+    <string name="dir2_text1"><u>Abrir en Google Maps</u></string>
+    <string name="dir2_text2"><u>Abrir en Waze</u></string>
 </resources>

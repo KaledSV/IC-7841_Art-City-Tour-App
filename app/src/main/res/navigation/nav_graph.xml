@@ -101,9 +101,9 @@
 
     <fragment
         android:id="@+id/closeFragment"
-        android:name="com.example.artcitytourapp.fragments.CloseSitesFragment"
+        android:name="com.example.artcitytourapp.fragments.MapsFragment"
         android:label="fragment_close"
-        tools:layout="@layout/fragment_close_sites" />
+        tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/planningFragment"
         android:name="com.example.artcitytourapp.fragments.PlanningFragment"
