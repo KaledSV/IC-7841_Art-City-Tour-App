@@ -477,8 +477,6 @@ public class SiteFragment extends Fragment {
     }
 
     protected void addReview(Resenna resenna){
-        final View resenaWindow = getLayoutInflater().inflate(R.layout.fragment_resena, null);
-
         Date timeD = resenna.getFechaSubida();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String date = sdf.format(timeD);

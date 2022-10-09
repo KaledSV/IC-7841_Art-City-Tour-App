@@ -110,8 +110,6 @@ public class ReviewFragment extends Fragment {
             addTableRow(i[0], espSite, "Imagenes Interfaz/notFoundImage.png");
         }
         else {
-
-            Log.d("xd", espSite.getIdFotoPredeterminada());
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("Fotografia").document(espSite.getIdFotoPredeterminada());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

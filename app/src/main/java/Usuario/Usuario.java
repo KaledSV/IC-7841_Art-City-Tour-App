@@ -5,12 +5,12 @@ public abstract class Usuario {
     //Atributos
     private String id;
     private String nombre;
-    private int numero;
+    private long numero;
     private String correo;
     private String contrasenna;
 
     //Constructor
-    public Usuario(String id, String nombre, int numero, String correo, String contrasenna) {
+    public Usuario(String id, String nombre, long numero, String correo, String contrasenna) {
         this.id = id;
         this.nombre = nombre;
         this.numero = numero;
@@ -39,11 +39,11 @@ public abstract class Usuario {
         this.nombre = nombre;
     }
 
-    public int getNumero() {
+    public long getNumero() {
         return numero;
     }
 
-    public void setNumero(int numero) {
+    public void setNumero(long numero) {
         this.numero = numero;
     }
 
