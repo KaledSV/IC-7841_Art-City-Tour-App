@@ -63,10 +63,10 @@ public class SearchFragment extends Fragment {
 
     }
 
-    FirebaseRecyclerOptions<Sitio> options =
+    /*FirebaseRecyclerOptions<Sitio> options =
             new FirebaseRecyclerOptions.Builder<Sitio>()
                     .setQuery(mSiteDatabase)
-                    .build();
+                    .build();*/
 
     //Clase que acomoda a los sitios obtenidos de la busqueda
     public class SiteviewHolder extends RecyclerView.ViewHolder{
@@ -80,7 +80,7 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    private void firebaseSiteSearch(){
+    /*private void firebaseSiteSearch(){
         //Necesita un adaptador para mostrar los resultados obtenidos de firebase
         FirebaseRecyclerAdapter<Sitio,SiteviewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Sitio, SiteviewHolder>()
         {
@@ -96,7 +96,7 @@ public class SearchFragment extends Fragment {
 
             }
         };
-    }
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,7 +112,7 @@ public class SearchFragment extends Fragment {
         mSearchview.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseSiteSearch();
+                //firebaseSiteSearch();
             }
         });
 

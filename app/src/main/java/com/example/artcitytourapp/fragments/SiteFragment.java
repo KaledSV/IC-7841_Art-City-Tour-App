@@ -9,12 +9,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
@@ -60,6 +62,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -437,9 +440,11 @@ public class SiteFragment extends Fragment {
 
     protected void bdGetReviewsBySite(ArrayList<String> resenaIDs){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ArrayList<Resenna> resennas = new ArrayList<Resenna>();
         for(String resenaId : resenaIDs){
             DocumentReference docRef = db.collection("Resena").document(resenaId);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -448,7 +453,13 @@ public class SiteFragment extends Fragment {
                             Resenna resenna = document.toObject(Resenna.class);
                             assert resenna != null;
                             resenna.setIdResenna(resenaId);
-                            addReview(resenna);
+                            resennas.add(resenna);
+                            if (resennas.size() == resenaIDs.size()) {
+                                sortResennas(resennas);
+                                for (Resenna review : resennas){
+                                    addReview(review);
+                                }
+                            }
                         } else {
                             Log.d("TAG", "No such document");
                         }
@@ -460,10 +471,15 @@ public class SiteFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    protected void sortResennas(ArrayList<Resenna> resennas){
+        resennas.sort(Comparator.comparing(Resenna::getFechaSubida));
+    }
+
     protected void addReview(Resenna resenna){
         final View resenaWindow = getLayoutInflater().inflate(R.layout.fragment_resena, null);
 
-        java.sql.Date timeD = new java.sql.Date(resenna.getFechaSubida().getSeconds() * 1000L);
+        Date timeD = resenna.getFechaSubida();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String date = sdf.format(timeD);
 
