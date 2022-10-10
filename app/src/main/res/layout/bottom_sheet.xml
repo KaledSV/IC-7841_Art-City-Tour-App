@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="500dp"
     android:background="@drawable/layout_bg"
     android:orientation="horizontal"
     app:behavior_peekHeight="62dp"
@@ -28,7 +28,7 @@
             app:srcCompat="@drawable/ic_baseline_bar_24" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tituloLugares"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|top"
@@ -42,19 +42,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/layoutCerca"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/result_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

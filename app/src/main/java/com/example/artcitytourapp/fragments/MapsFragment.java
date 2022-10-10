@@ -2,6 +2,9 @@ package com.example.artcitytourapp.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -21,6 +24,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,6 +60,7 @@ import com.google.maps.android.PolyUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +68,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import Sitio.Sitio;
+import Sitio.Coordenada;
 
 public class MapsFragment extends Fragment {
     View view;
@@ -104,12 +112,15 @@ public class MapsFragment extends Fragment {
             LocationListener locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+                    /*View viewSearchFragment = SearchFragment.getSearchVista();
+                    LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);*/
+                    //aqui empieza
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("Sitios").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                HashMap<Float, String> sitiosDistancia = new HashMap<Float, String>();
+                                HashMap<Float, Coordenada> sitiosDistancia = new HashMap<Float, Coordenada>();
                                 float[] distance = new float[1];
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     Log.d("res", document.getId() + " => " +document.get("nombre")+"=>" +document.get("coordenadas"));
@@ -119,20 +130,27 @@ public class MapsFragment extends Fragment {
                                     LatLng coordenada = new LatLng(lat,lng);
                                     mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(document.get("nombre").toString()));
                                     Location.distanceBetween(lat,lng,location.getLatitude(),location.getLongitude(),distance);
-                                    sitiosDistancia.put(distance[0], document.get("nombre").toString());
+                                    Coordenada c = new Coordenada(document.get("nombre").toString(),lat,lng);
+                                    sitiosDistancia.put(distance[0], c);
                                     //trazarRuta(location,String.valueOf(lat),String.valueOf(lng));
                                     //obtenerDistancia(location,String.valueOf(lat),String.valueOf(lng));
+
+                                    /*TextView txt = new TextView(getContext());
+                                    txt.setText(document.get("nombre").toString() +"-"+Float.toString(distance[0]));
+                                    layoutVertical.addView(txt);*/
                                 }
-                                TreeMap<Float, String> t = new TreeMap<>();
+                                TreeMap<Float, Coordenada> t = new TreeMap<>();
                                 t.putAll(sitiosDistancia);
                                 for (Float key : t.keySet()) {
-                                    System.out.println("Clave: " + key + ", Valor: " + t.get(key));
+                                    System.out.println("Clave: " + key + ", Valor: " + t.get(key).nombre);
+                                    obtenerDistancia(location,String.valueOf(t.get(key).latitud),String.valueOf(t.get(key).longitud),t.get(key).nombre);
                                 }
                             } else {
                                 Log.w("res", "Error getting documents.", task.getException());
                             }
                         }
                     });
+                    //qui termina
                     LatLng miUbicacion = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(miUbicacion).title("ubicacion actual"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(miUbicacion));
@@ -202,7 +220,9 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
-    private void obtenerDistancia(Location l1,String lat,String lng){
+    private void obtenerDistancia(Location l1, String lat,String lng, String nombre){
+        View viewSearchFragment = SearchFragment.getSearchVista();
+        LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);
         String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&mode=walking"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -212,7 +232,29 @@ public class MapsFragment extends Fragment {
                     jso = new JSONObject(response);
                     JSONArray jRoutes1 = jso.getJSONArray("routes");
                     JSONArray jLegs1 = ((JSONObject)(jRoutes1.get(0))).getJSONArray("legs");
-                    Log.i("distancia: ",""+((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                    //View results = new View(getContext());
+                    //results = getLayoutInflater().inflate(R.layout.result_layout, null);
+                    //TextView txt = new TextView(getContext());
+                    //txt.setText(nombre+"-"+((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                    View results = getLayoutInflater().inflate(R.layout.result_layout, null);
+                    TextView titulo = new TextView(getContext());
+                    TextView distancia = new TextView(getContext());
+                    //TextView imagen = new ImageView(getContext());
+                    titulo = results.findViewById(R.id.site_name);
+                    titulo.setText(nombre);
+                    distancia = results.findViewById(R.id.site_distance);
+                    distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                    results.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            viewSearchFragment.findViewById(R.id.includeLugares).setVisibility(View.INVISIBLE);
+                            ConstraintLayout cly = viewSearchFragment.findViewById(R.id.cl);
+                            View direccion1 = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
+                            cly.addView(direccion1);
+                            //View dir = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
+                        }
+                    });
+                    layoutVertical.addView(results);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

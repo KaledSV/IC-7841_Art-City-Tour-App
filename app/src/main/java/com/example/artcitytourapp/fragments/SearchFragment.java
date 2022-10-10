@@ -31,7 +31,7 @@ import Sitio.Sitio;
  */
 public class SearchFragment extends Fragment {
 
-    public View view;
+    private static View view;
 
     private SearchView mSearchview;
     private RecyclerView mRecyclerview;
@@ -63,10 +63,10 @@ public class SearchFragment extends Fragment {
 
     }
 
-    FirebaseRecyclerOptions<Sitio> options =
+    /*FirebaseRecyclerOptions<Sitio> options =
             new FirebaseRecyclerOptions.Builder<Sitio>()
-                    .setQuery(mSiteDatabase)
-                    .build();
+                    //.setQuery(mSiteDatabase)
+                    .build();*/
 
     //Clase que acomoda a los sitios obtenidos de la busqueda
     public class SiteviewHolder extends RecyclerView.ViewHolder{
@@ -80,7 +80,7 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    private void firebaseSiteSearch(){
+    private void firebaseSiteSearch(){/*
         //Necesita un adaptador para mostrar los resultados obtenidos de firebase
         FirebaseRecyclerAdapter<Sitio,SiteviewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Sitio, SiteviewHolder>()
         {
@@ -95,7 +95,7 @@ public class SearchFragment extends Fragment {
             protected void onBindViewHolder(@NonNull SiteviewHolder holder, int position, @NonNull Sitio model) {
 
             }
-        };
+        };*/
     }
 
     @Override
@@ -104,7 +104,7 @@ public class SearchFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_search, container, false);
 
         mSearchview = view.findViewById(R.id.searchView);
-        mRecyclerview = (RecyclerView) view.findViewById(R.id.result_list);
+        //mRecyclerview = (RecyclerView) view.findViewById(R.id.result_list);
         mSiteDatabase = FirebaseDatabase.getInstance().getReference("Sitios");
 
 
@@ -116,6 +116,9 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        return view;
+    }
+    public static View getSearchVista(){
         return view;
     }
 }

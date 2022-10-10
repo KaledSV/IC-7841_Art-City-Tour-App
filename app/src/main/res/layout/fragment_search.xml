@@ -2,10 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl"
     android:layout_width="match_parent"
     android:layout_height="700dp"
-    tools:context=".fragments.SearchFragment"
-    >
+    tools:context=".fragments.SearchFragment">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="com.example.artcitytourapp.fragments.MapsFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -14,9 +20,14 @@
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@color/white"
+            android:queryHint="buscar" />
 
-        <include layout="@layout/bottom_sheet"></include>
+        <include
+            android:id="@+id/includeLugares"
+            layout="@layout/bottom_sheet"></include>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
