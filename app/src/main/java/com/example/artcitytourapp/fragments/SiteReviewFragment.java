@@ -9,12 +9,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
@@ -46,25 +48,25 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.firestore.FieldPath;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import Fotografia.Fotografia;
 import Resenna.Resenna;
@@ -361,9 +363,11 @@ public class SiteReviewFragment extends Fragment {
 
     protected void bdGetReviewsBySite(ArrayList<String> resenaIDs){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ArrayList<Resenna> resennas = new ArrayList<Resenna>();
         for(String resenaId : resenaIDs){
             DocumentReference docRef = db.collection("Resena").document(resenaId);
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -372,7 +376,13 @@ public class SiteReviewFragment extends Fragment {
                             Resenna resenna = document.toObject(Resenna.class);
                             assert resenna != null;
                             resenna.setIdResenna(resenaId);
-                            addReview(resenna);
+                            resennas.add(resenna);
+                            if (resennas.size() == resenaIDs.size()) {
+                                sortResennas(resennas);
+                                for (Resenna review : resennas){
+                                    addReview(review);
+                                }
+                            }
                         } else {
                             Log.d("TAG", "No such document");
                         }
@@ -384,10 +394,13 @@ public class SiteReviewFragment extends Fragment {
         }
     }
 
-    protected void addReview(Resenna resenna){
-        final View resenaWindow = getLayoutInflater().inflate(R.layout.fragment_resena, null);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    protected void sortResennas(ArrayList<Resenna> resennas){
+        resennas.sort(Comparator.comparing(Resenna::getFechaSubida));
+    }
 
-        java.sql.Date timeD = new java.sql.Date(resenna.getFechaSubida().getSeconds() * 1000L);
+    protected void addReview(Resenna resenna){
+        Date timeD = resenna.getFechaSubida();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String date = sdf.format(timeD);
 
@@ -403,6 +416,9 @@ public class SiteReviewFragment extends Fragment {
         resDislikes.setText(String.valueOf(resenna.getDislikes()));
         ExpandableTextView resComment = (ExpandableTextView) ressenaView.findViewById(R.id.expand_text_view);
         resComment.setText(resenna.getComentario());
+        Button likeBtn = ressenaView.findViewById(R.id.likeBtn);
+        Button dislikeBtn = ressenaView.findViewById(R.id.dislikeBtn);
+
         if (resenna.isTieneFotos()){
             LinearLayout layoutImagenes = ressenaView.findViewById(R.id.layoutImages);
             bdGetPhotosByReview(resenna.getIdResenna(), layoutImagenes);
@@ -410,7 +426,84 @@ public class SiteReviewFragment extends Fragment {
         else{
             ressenaView.findViewById(R.id.containerImgs).setVisibility(View.GONE);
         }
+        setLikeAndDislikeBtn(resenna, likeBtn, dislikeBtn, resLikes, resDislikes);
         layoutResenas.addView(ressenaView);
+    }
+
+    protected void setLikeAndDislikeBtn(Resenna resenna, Button likeBtn, Button dislikeBtn, TextView resLikes,TextView resDislikes){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        setLikeImage(user.reviewLikeStatus(resenna.getIdResenna()), likeBtn);
+        setDislikeImage(user.reviewDislikeStatus(resenna.getIdResenna()), dislikeBtn);
+
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.reviewLikeStatus(resenna.getIdResenna())){
+                    user.removeLike(resenna.getIdResenna(), view, resenna);
+
+                    // Deactivates like button and counter
+                    setLikeImage(false, likeBtn);
+                }
+                else{
+                    if (user.reviewDislikeStatus(resenna.getIdResenna())){
+                        user.removeDislike(resenna.getIdResenna(), view, resenna);
+
+                        // Update dislike button and counter if already used
+                        setDislikeImage(false, dislikeBtn);
+                        resDislikes.setText(String.valueOf(resenna.getDislikes()));
+                    }
+                    user.addLike(resenna.getIdResenna(), view, resenna);
+
+                    // Activates like button and counter
+                    setLikeImage(true, likeBtn);
+                }
+                resLikes.setText(String.valueOf(resenna.getLikes()));
+            }
+        });
+
+        dislikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.reviewDislikeStatus(resenna.getIdResenna())){
+                    user.removeDislike(resenna.getIdResenna(), view, resenna);
+
+                    // Deactivates dislike button and counter
+                    setDislikeImage(false, dislikeBtn);
+                }
+                else{
+                    if (user.reviewLikeStatus(resenna.getIdResenna())){
+                        user.removeLike(resenna.getIdResenna(), view, resenna);
+
+                        // Update like button and counter if already used
+                        setLikeImage(false, likeBtn);
+                        resLikes.setText(String.valueOf(resenna.getLikes()));
+                    }
+                    user.addDislike(resenna.getIdResenna(), view, resenna);
+
+                    // Activates dislike button and counter
+                    setDislikeImage(true, dislikeBtn);
+                }
+                resDislikes.setText(String.valueOf(resenna.getDislikes()));
+            }
+        });
+    }
+
+    protected void setLikeImage(Boolean likeStatus, Button like){
+        if (likeStatus){
+            like.setBackgroundResource(R.drawable.ic_baseline_thumb_up_24_positive);
+        }
+        else{
+            like.setBackgroundResource(R.drawable.ic_baseline_thumb_up_24);
+        }
+    }
+
+    protected void setDislikeImage(Boolean dislikeStatus, Button dislike){
+        if (dislikeStatus){
+            dislike.setBackgroundResource(R.drawable.ic_baseline_thumb_down_24_positive);
+        }
+        else{
+            dislike.setBackgroundResource(R.drawable.ic_baseline_thumb_down_24);
+        }
     }
 
     protected void bdGetPhotosByReview(String idRessena, LinearLayout layout){

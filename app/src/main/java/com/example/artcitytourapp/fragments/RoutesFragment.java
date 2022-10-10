@@ -60,7 +60,8 @@ public class RoutesFragment extends Fragment {
 
         // data of fragment
         // todo remove
-        VisitanteSingleton user = VisitanteSingleton.AlterSingleton("1", "Kaled", 86254968, "kaledsv@gmail.com", "password");
+        //VisitanteSingleton user = VisitanteSingleton.AlterSingleton("1", "Kaled", 86254968, "kaledsv@gmail.com", "password");
+        VisitanteSingleton.LoginVisitante("kaledsv@gmail.com", "password");
         prepareTable();
         loadData();
         return view;

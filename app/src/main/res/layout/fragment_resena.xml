@@ -23,16 +23,16 @@
             android:id="@+id/textViewUser"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.25"
+            android:layout_weight="0.2"
             android:background="@drawable/fui_ic_anonymous_white_24dp"
             android:backgroundTint="#CC0096"
-            android:minHeight="90dp"
+            android:minHeight="80dp"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.45"
+            android:layout_weight="0.4"
             android:orientation="vertical">
 
             <TextView
@@ -52,11 +52,13 @@
             android:id="@+id/countLikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.05"
-            android:text="100" />
+            android:layout_weight="0.09"
+            android:layout_marginEnd="5dp"
+            android:text="100"
+            android:textAlignment="textEnd" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/likeBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
@@ -64,7 +66,7 @@
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/dislikeBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.1"
@@ -75,9 +77,10 @@
             android:id="@+id/countDislikes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.05"
+            android:layout_weight="0.09"
+            android:layout_marginStart="5dp"
             android:text="100"
-            android:textAlignment="textEnd" />
+            android:textAlignment="viewStart" />
 
     </LinearLayout>
 
