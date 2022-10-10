@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/direccion1Banner"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.direccion1">
@@ -27,7 +28,7 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="200dp"
+                    android:layout_width="150dp"
                     android:layout_height="100dp"
                     android:layout_weight="1"
                     tools:src="@drawable/m4" />
@@ -44,6 +45,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/titL"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
@@ -55,8 +57,8 @@
 
                         <TextView
                             android:id="@+id/tituloLugares"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_width="40dp"
+                            android:layout_height="30dp"
                             android:layout_margin="5dp"
                             android:layout_weight="1"
                             android:background="@drawable/ic_baseline_favorite_off_grey_24" />
@@ -86,8 +88,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="20 m"
-                            android:textAlignment="viewEnd"
+                            android:text="24.4 km"
+                            android:textAlignment="center"
                             android:textColor="@color/grey_800"
                             android:textSize="15dp" />
 

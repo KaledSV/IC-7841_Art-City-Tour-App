@@ -35,10 +35,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_weight="1"
+                        android:width="100dp"
                         android:fontFamily="@font/roboto_bold"
                         android:text="1 min"
                         android:textColor="@color/grey_800"
-                        android:textSize="20sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/textView6"

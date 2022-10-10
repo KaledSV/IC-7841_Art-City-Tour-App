@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -250,7 +251,29 @@ public class MapsFragment extends Fragment {
                             viewSearchFragment.findViewById(R.id.includeLugares).setVisibility(View.INVISIBLE);
                             ConstraintLayout cly = viewSearchFragment.findViewById(R.id.cl);
                             View direccion1 = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
+                            TextView txtTitulo = direccion1.findViewById(R.id.titL);
+                            txtTitulo.setText(nombre);
+                            TextView txtDis = direccion1.findViewById(R.id.textView4);
+                            TextView dis = view.findViewById(R.id.site_distance);
+                            txtDis.setText(dis.getText());
+                            Button btnDir = direccion1.findViewById(R.id.button3);
+                            btnDir.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    viewSearchFragment.findViewById(R.id.direccion1Banner).setVisibility(View.INVISIBLE);
+                                    ConstraintLayout cly2 = viewSearchFragment.findViewById(R.id.cl);
+                                    View direccion2 = getLayoutInflater().inflate(R.layout.fragment_direccion2, null);
+                                    TextView titulo = direccion2.findViewById(R.id.textView8);
+                                    titulo.setText(nombre);
+                                    TextView dis2 = direccion2.findViewById(R.id.textView6);
+                                    TextView txtDis1 = txtDis;
+                                    dis2.setText(txtDis1.getText());
+                                    cly2.addView(direccion2);
+                                    trazarRuta(l1,lat,lng);
+                                }
+                            });
                             cly.addView(direccion1);
+
                             //View dir = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
                         }
                     });

@@ -25,6 +25,64 @@
             android:background="@color/white"
             android:queryHint="buscar" />
 
+        <HorizontalScrollView
+            android:layout_width="358dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:layout_margin="70dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/button15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/roboto_medium"
+                    android:hint="Filtros"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/button14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/roboto_medium"
+                    android:hint="Cercania"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/button13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/roboto_medium"
+                    android:hint="tiempo de espera"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/button6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/roboto_medium"
+                    android:hint="accesibilidad"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
         <include
             android:id="@+id/includeLugares"
             layout="@layout/bottom_sheet"></include>
