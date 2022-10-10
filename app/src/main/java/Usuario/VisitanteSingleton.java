@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Fotografia.Fotografia;
 import Resenna.Resenna;
 import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
@@ -37,6 +38,8 @@ public class VisitanteSingleton extends Usuario {
     private List<String> sitiosIdFavoritos = null;
     private List<String> reviewIdLike = null;
     private List<String> reviewIdDislike = null;
+    private List<String> photoIdLike = null;
+    private List<String> photoIdDislike = null;
 
     // Private constructor prevents instantiation from other classes
     public static VisitanteSingleton AlterSingleton(String id, String nombre, long numero, String correo, String contrasenna) {
@@ -72,6 +75,8 @@ public class VisitanteSingleton extends Usuario {
                                 VisitanteSingleton.AlterSingleton(doc.getId(), (String)doc.get("nombre"), (long)doc.get("numero"), correo, contrasenna);
                                 instance.setReviewIdLike((List<String>)doc.get("reviewIdLike"));
                                 instance.setReviewIdDislike((List<String>) doc.get("reviewIdDislike"));
+                                instance.setPhotoIdLike((List<String>)doc.get("photoIdLike"));
+                                instance.setPhotoIdDislike((List<String>) doc.get("photoIdDislike"));
                             }
                         } else {
                             // todo login incorrecto
@@ -126,6 +131,22 @@ public class VisitanteSingleton extends Usuario {
             this.reviewIdDislike = new ArrayList<String>();
         else
             this.reviewIdDislike = reviewIdDislike;
+    }
+
+    public List<String> getPhotoIdLike() {
+        return photoIdLike;
+    }
+
+    public void setPhotoIdLike(List<String> photoIdLike) {
+        this.photoIdLike = photoIdLike;
+    }
+
+    public List<String> getPhotoIdDislike() {
+        return photoIdDislike;
+    }
+
+    public void setPhotoIdDislike(List<String> photoIdDislike) {
+        this.photoIdDislike = photoIdDislike;
     }
 
     public void bdGetFavoritos(){
@@ -214,16 +235,8 @@ public class VisitanteSingleton extends Usuario {
                 });
     }
 
-    // Review methods
-    public boolean reviewLikeStatus(String reviewId){
-        return instance.getReviewIdLike().contains(reviewId);
-    }
-
-    public boolean reviewDislikeStatus(String reviewId){
-        return instance.getReviewIdDislike().contains(reviewId);
-    }
-
-    public void errorUplodingReviewChange(View view){
+    //Error method for likes
+    public void errorUplodingLikeChange(View view){
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Error")
                 .setMessage("Ha ocurrido un error al intentar dar like o dislike en la base de datos")
@@ -234,6 +247,15 @@ public class VisitanteSingleton extends Usuario {
                     }
                 })
                 .show();
+    }
+
+    // Review methods
+    public boolean reviewLikeStatus(String reviewId){
+        return instance.getReviewIdLike().contains(reviewId);
+    }
+
+    public boolean reviewDislikeStatus(String reviewId){
+        return instance.getReviewIdDislike().contains(reviewId);
     }
 
     public void bdUpdateLike(View view, Resenna resenna, boolean increment){
@@ -250,7 +272,7 @@ public class VisitanteSingleton extends Usuario {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        errorUplodingReviewChange(view);
+                        errorUplodingLikeChange(view);
                         Log.w("TAG", "Error updating document", e);
                     }
                 });
@@ -274,7 +296,7 @@ public class VisitanteSingleton extends Usuario {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        errorUplodingReviewChange(view);
+                        errorUplodingLikeChange(view);
                         Log.w("TAG", "Error updating document", e);
                     }
                 });
@@ -284,7 +306,7 @@ public class VisitanteSingleton extends Usuario {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Usuarios")
                 .document(instance.getId())
-                .update("reviewIdDislike", instance.getReviewIdLike())
+                .update("reviewIdDislike", instance.getReviewIdDislike())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -294,7 +316,7 @@ public class VisitanteSingleton extends Usuario {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        errorUplodingReviewChange(view);
+                        errorUplodingLikeChange(view);
                         Log.w("TAG", "Error updating document", e);
                     }
                 });
@@ -318,7 +340,7 @@ public class VisitanteSingleton extends Usuario {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        errorUplodingReviewChange(view);
+                        errorUplodingLikeChange(view);
                         Log.w("TAG", "Error updating document", e);
                     }
                 });
@@ -342,5 +364,122 @@ public class VisitanteSingleton extends Usuario {
     public void addDislike(String idReview, View view, Resenna resenna){
         instance.getReviewIdDislike().add(idReview);
         bdUpdateDislike(view, resenna, true);
+    }
+
+    // Photo methods
+    public boolean photoLikeStatus(String idPhoto){
+        return instance.getPhotoIdLike().contains(idPhoto);
+    }
+
+    public boolean photoDislikeStatus(String idPhoto){
+        return instance.getPhotoIdDislike().contains(idPhoto);
+    }
+
+    public void bdUpdateLikePhoto(View view, Fotografia foto, boolean increment){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Usuarios")
+                .document(instance.getId())
+                .update("photoIdLike", instance.getPhotoIdLike())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errorUplodingLikeChange(view);
+                        Log.w("TAG", "Error updating document", e);
+                    }
+                });
+
+        int i = 0;
+        if (increment)
+            i++;
+        else
+            i--;
+        int numLike = foto.getLikes();
+        foto.setLikes(numLike + i);
+        db.collection("Fotografia")
+                .document(foto.getIdFoto())
+                .update("likes", FieldValue.increment(i))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errorUplodingLikeChange(view);
+                        Log.w("TAG", "Error updating document", e);
+                    }
+                });
+    }
+
+    public void bdUpdateDislikePhoto(View view, Fotografia foto, boolean increment){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Usuarios")
+                .document(instance.getId())
+                .update("photoIdDislike", instance.getPhotoIdDislike())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errorUplodingLikeChange(view);
+                        Log.w("TAG", "Error updating document", e);
+                    }
+                });
+
+        int i = 0;
+        if (increment)
+            i++;
+        else
+            i--;
+        int numDislike = foto.getDislikes();
+        foto.setDislikes(numDislike + i);
+        db.collection("Fotografia")
+                .document(foto.getIdFoto())
+                .update("dislikes", FieldValue.increment(i))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        errorUplodingLikeChange(view);
+                        Log.w("TAG", "Error updating document", e);
+                    }
+                });
+    }
+
+    public void removeLikePhoto(String idPhoto, View view, Fotografia foto){
+        instance.getPhotoIdLike().remove(idPhoto);
+        bdUpdateLikePhoto(view, foto, false);
+    }
+
+    public void addLikePhoto(String idPhoto, View view, Fotografia foto){
+        instance.getPhotoIdLike().add(idPhoto);
+        bdUpdateLikePhoto(view, foto, true);
+    }
+
+    public void removeDislikePhoto(String idPhoto, View view, Fotografia foto){
+        instance.getPhotoIdDislike().remove(idPhoto);
+        bdUpdateDislikePhoto(view, foto, false);
+    }
+
+    public void addDislikePhoto(String idPhoto, View view, Fotografia foto){
+        instance.getPhotoIdDislike().add(idPhoto);
+        bdUpdateDislikePhoto(view, foto, true);
     }
 }

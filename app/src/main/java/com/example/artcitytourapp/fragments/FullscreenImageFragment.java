@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import Fotografia.Fotografia;
+import Resenna.Resenna;
+import Usuario.VisitanteSingleton;
 
 
 public class FullscreenImageFragment extends Fragment {
@@ -71,7 +74,87 @@ public class FullscreenImageFragment extends Fragment {
         ExpandableTextView resComment = (ExpandableTextView) descripcionWindow.findViewById(R.id.expand_text_view);
         resComment.setText(photo.getDescripcion());
 
+        Button likeBtn = descripcionWindow.findViewById(R.id.likeBtn);
+        Button dislikeBtn = descripcionWindow.findViewById(R.id.dislikeBtn);
+        setLikeAndDislikeBtn(photo, likeBtn, dislikeBtn, resLikes, resDislikes);
+
         bdGetPhoto(imageViewDetalle, photo);
+    }
+
+    protected void setLikeAndDislikeBtn(Fotografia photo, Button likeBtn, Button dislikeBtn, TextView resLikes, TextView resDislikes){
+        VisitanteSingleton user = VisitanteSingleton.getInstance();
+        setLikeImage(user.photoLikeStatus(photo.getIdFoto()), likeBtn);
+        setDislikeImage(user.photoDislikeStatus(photo.getIdFoto()), dislikeBtn);
+
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.photoLikeStatus(photo.getIdFoto())){
+                    user.removeLikePhoto(photo.getIdFoto(), view, photo);
+
+                    // Deactivates like button and counter
+                    setLikeImage(false, likeBtn);
+                }
+                else{
+                    if (user.photoDislikeStatus(photo.getIdFoto())){
+                        user.removeDislikePhoto(photo.getIdFoto(), view, photo);
+
+                        // Update dislike button and counter if already used
+                        setDislikeImage(false, dislikeBtn);
+                        resDislikes.setText(String.valueOf(photo.getDislikes()));
+                    }
+                    user.addLikePhoto(photo.getIdFoto(), view, photo);
+
+                    // Activates like button and counter
+                    setLikeImage(true, likeBtn);
+                }
+                resLikes.setText(String.valueOf(photo.getLikes()));
+            }
+        });
+
+        dislikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.photoDislikeStatus(photo.getIdFoto())){
+                    user.removeDislikePhoto(photo.getIdFoto(), view, photo);
+
+                    // Deactivates dislike button and counter
+                    setDislikeImage(false, dislikeBtn);
+                }
+                else{
+                    if (user.photoLikeStatus(photo.getIdFoto())){
+                        user.removeLikePhoto(photo.getIdFoto(), view, photo);
+
+                        // Update like button and counter if already used
+                        setLikeImage(false, likeBtn);
+                        resLikes.setText(String.valueOf(photo.getLikes()));
+                    }
+                    user.addDislikePhoto(photo.getIdFoto(), view, photo);
+
+                    // Activates dislike button and counter
+                    setDislikeImage(true, dislikeBtn);
+                }
+                resDislikes.setText(String.valueOf(photo.getDislikes()));
+            }
+        });
+    }
+
+    protected void setLikeImage(Boolean likeStatus, Button like){
+        if (likeStatus){
+            like.setBackgroundResource(R.drawable.ic_baseline_thumb_up_24_positive);
+        }
+        else{
+            like.setBackgroundResource(R.drawable.ic_baseline_thumb_up_24);
+        }
+    }
+
+    protected void setDislikeImage(Boolean dislikeStatus, Button dislike){
+        if (dislikeStatus){
+            dislike.setBackgroundResource(R.drawable.ic_baseline_thumb_down_24_positive);
+        }
+        else{
+            dislike.setBackgroundResource(R.drawable.ic_baseline_thumb_down_24);
+        }
     }
 
     protected void bdGetPhoto(ImageView iv, Fotografia photo){
