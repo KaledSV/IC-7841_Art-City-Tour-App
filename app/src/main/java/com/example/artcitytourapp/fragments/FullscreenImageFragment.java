@@ -86,21 +86,22 @@ public class FullscreenImageFragment extends Fragment {
 
         Button likeBtn = descripcionWindow.findViewById(R.id.likeBtn);
         Button dislikeBtn = descripcionWindow.findViewById(R.id.dislikeBtn);
-        Button shareBtn = descripcionWindow.findViewById(R.id.shareImage_Fullscreen);
 
         setLikeAndDislikeBtn(photo, likeBtn, dislikeBtn, resLikes, resDislikes);
 
         bdGetPhoto(imageViewDetalle, photo);
 
-        setShareButton(shareBtn);
+        setShareButton();
     }
 
-    protected void setShareButton(Button shrBtn) {
+    protected void setShareButton() {
         ImageView imageViewDetalle = view.findViewById(R.id.imagen_detalle);
+        ImageView shrBtn = (ImageView) view.findViewById(R.id.shareImage_Fullscreen);
         shrBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 shareImage(imageViewDetalle.getDrawingCache());
+
             }
         });
 
@@ -110,14 +111,15 @@ public class FullscreenImageFragment extends Fragment {
     private void shareImage(Bitmap image) {
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("image/jpeg");
-        Uri bmpUri;
+        
+        /*Uri bmpUri;
         String base = "Prueba envío imagenes";
         bmpUri = saveImage(image,getApplicationContext());
         sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         sendIntent.putExtra(Intent.EXTRA_STREAM,bmpUri);
         sendIntent.putExtra(Intent.EXTRA_SUBJECT,"Art City Tour App");
         sendIntent.putExtra(Intent.EXTRA_TEXT,base);
-        startActivity(Intent.createChooser(sendIntent,"Compartir Imagen"));
+        startActivity(Intent.createChooser(sendIntent,"Compartir Imagen"));*/
     }
 
     private static Uri saveImage(Bitmap image, Context context){
