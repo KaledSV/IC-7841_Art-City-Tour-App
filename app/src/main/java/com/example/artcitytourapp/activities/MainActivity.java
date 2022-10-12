@@ -5,9 +5,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.artcitytourapp.R;
 import com.example.artcitytourapp.fragments.CloseSitesFragment;
@@ -30,6 +32,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //URI with site data for sharing
+
+        Uri uri = getIntent().getData();
+
+        if (uri != null) //Display the URI for parsing
+            Toast.makeText(MainActivity.this,"Sharing URI:"+uri.toString(),Toast.LENGTH_LONG).show();
+        
         //FragmentContainerView
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.contentContainer);
