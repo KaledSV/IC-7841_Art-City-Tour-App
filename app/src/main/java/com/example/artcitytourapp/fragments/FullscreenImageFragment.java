@@ -1,12 +1,19 @@
 package com.example.artcitytourapp.fragments;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +31,11 @@ import com.google.firebase.storage.StorageReference;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 import Fotografia.Fotografia;
 import Resenna.Resenna;
@@ -76,9 +86,62 @@ public class FullscreenImageFragment extends Fragment {
 
         Button likeBtn = descripcionWindow.findViewById(R.id.likeBtn);
         Button dislikeBtn = descripcionWindow.findViewById(R.id.dislikeBtn);
+        Button shareBtn = descripcionWindow.findViewById(R.id.shareImage_Fullscreen);
+
         setLikeAndDislikeBtn(photo, likeBtn, dislikeBtn, resLikes, resDislikes);
 
         bdGetPhoto(imageViewDetalle, photo);
+
+        setShareButton(shareBtn);
+    }
+
+    protected void setShareButton(Button shrBtn) {
+        ImageView imageViewDetalle = view.findViewById(R.id.imagen_detalle);
+        shrBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareImage(imageViewDetalle.getDrawingCache());
+            }
+        });
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void shareImage(Bitmap image) {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("image/jpeg");
+        Uri bmpUri;
+        String base = "Prueba envío imagenes";
+        bmpUri = saveImage(image,getApplicationContext());
+        sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        sendIntent.putExtra(Intent.EXTRA_STREAM,bmpUri);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT,"Art City Tour App");
+        sendIntent.putExtra(Intent.EXTRA_TEXT,base);
+        startActivity(Intent.createChooser(sendIntent,"Compartir Imagen"));
+    }
+
+    private static Uri saveImage(Bitmap image, Context context){
+        File imageFolder = new File(context.getCacheDir(),"images");
+        Uri uri = null;
+        try{
+            imageFolder.mkdirs();
+            File file = new File(imageFolder,"shared_images.jpg");
+            FileOutputStream stream = new FileOutputStream(file);
+
+            image.compress(Bitmap.CompressFormat.JPEG,90,stream);
+
+            stream.flush();
+            stream.close();
+
+            uri = FileProvider.getUriForFile(Objects.requireNonNull(context.getApplicationContext()),"com.example.artcitytourapp"+".provider", file);
+
+        } catch (FileNotFoundException e) {
+            Log.d("FNF","Exception"+e.getMessage());
+        } catch (IOException e) {
+            Log.d("Tag","Exception"+e.getMessage());
+        }
+
+        return uri;
     }
 
     protected void setLikeAndDislikeBtn(Fotografia photo, Button likeBtn, Button dislikeBtn, TextView resLikes, TextView resDislikes){
