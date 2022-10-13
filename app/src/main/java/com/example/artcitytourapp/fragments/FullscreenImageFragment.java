@@ -1,19 +1,13 @@
 package com.example.artcitytourapp.fragments;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,23 +16,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.artcitytourapp.R;
-import com.example.artcitytourapp.activities.Adapters.GalleryImagesAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Objects;
 
 import Fotografia.Fotografia;
-import Resenna.Resenna;
 import Usuario.VisitanteSingleton;
 
 
@@ -97,53 +89,25 @@ public class FullscreenImageFragment extends Fragment {
     protected void setShareButton() {
         ImageView imageViewDetalle = view.findViewById(R.id.imagen_detalle);
         ImageView shrBtn = (ImageView) view.findViewById(R.id.shareImage_Fullscreen);
-        shrBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shareImage(imageViewDetalle.getDrawingCache());
 
-            }
-        });
+        shrBtn.setOnClickListener(view -> shareImage(imageViewDetalle));
 
     }
 
     @SuppressLint("RestrictedApi")
-    private void shareImage(Bitmap image) {
+    private void shareImage(ImageView Image) {
+        Bitmap ImageBitmap = ((BitmapDrawable)Image.getDrawable()).getBitmap(); // Gets the bitmap ( image ) associated with the imageview
+        String base = "Visitá los sitios culturales del Art City Tour App!";
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("image/jpeg");
-        
-        /*Uri bmpUri;
-        String base = "Prueba envío imagenes";
-        bmpUri = saveImage(image,getApplicationContext());
-        sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        sendIntent.putExtra(Intent.EXTRA_STREAM,bmpUri);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), ImageBitmap, "Art City Tour", null);
+        Uri imageUri =  Uri.parse(path);
+        sendIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
         sendIntent.putExtra(Intent.EXTRA_SUBJECT,"Art City Tour App");
         sendIntent.putExtra(Intent.EXTRA_TEXT,base);
-        startActivity(Intent.createChooser(sendIntent,"Compartir Imagen"));*/
-    }
-
-    private static Uri saveImage(Bitmap image, Context context){
-        File imageFolder = new File(context.getCacheDir(),"images");
-        Uri uri = null;
-        try{
-            imageFolder.mkdirs();
-            File file = new File(imageFolder,"shared_images.jpg");
-            FileOutputStream stream = new FileOutputStream(file);
-
-            image.compress(Bitmap.CompressFormat.JPEG,90,stream);
-
-            stream.flush();
-            stream.close();
-
-            uri = FileProvider.getUriForFile(Objects.requireNonNull(context.getApplicationContext()),"com.example.artcitytourapp"+".provider", file);
-
-        } catch (FileNotFoundException e) {
-            Log.d("FNF","Exception"+e.getMessage());
-        } catch (IOException e) {
-            Log.d("Tag","Exception"+e.getMessage());
-        }
-
-        return uri;
+        startActivity(Intent.createChooser(sendIntent, "Enviar imagenes"));
     }
 
     protected void setLikeAndDislikeBtn(Fotografia photo, Button likeBtn, Button dislikeBtn, TextView resLikes, TextView resDislikes){

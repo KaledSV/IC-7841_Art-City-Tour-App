@@ -117,7 +117,7 @@ public class SiteFragment extends Fragment {
         shareSite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                share( );
+                share();
             }
         });
 
@@ -189,10 +189,8 @@ public class SiteFragment extends Fragment {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,base + site.getNombre() + "\n Mas informacion en: "+Uri);
         sendIntent.setType("text/plain");
-
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
-
     }
 
 
