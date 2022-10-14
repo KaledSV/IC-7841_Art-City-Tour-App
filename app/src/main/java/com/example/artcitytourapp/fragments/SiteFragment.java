@@ -185,7 +185,14 @@ public class SiteFragment extends Fragment {
     private void share() {
         Intent sendIntent = new Intent();
         String base = "Mirá que chiva el sitio: ";
-        String Uri = "https://act.navigation.app/Sitio/" + site.getIdSite();
+        Uri.Builder builder = new Uri.Builder(); //Query builder URI for easier parsing
+        builder.scheme("https")
+                .authority("act.navigation.app")
+                .appendPath("Sitio")
+                .appendQueryParameter("id", site.getIdSite())
+                .appendQueryParameter("sort", "relevance")
+                .fragment("Sitios");
+        String Uri = builder.build().toString();
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT,base + site.getNombre() + "\n Mas informacion en: "+Uri);
         sendIntent.setType("text/plain");
