@@ -14,6 +14,7 @@
         android:layout_height="wrap_content" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/CoordLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,12 +27,14 @@
             android:queryHint="buscar" />
 
         <HorizontalScrollView
+            android:id="@+id/HorScrollView"
             android:layout_width="358dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
             android:layout_margin="70dp">
 
             <LinearLayout
+                android:id="@+id/LinearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
