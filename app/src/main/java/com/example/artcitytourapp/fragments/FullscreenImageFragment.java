@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import Fotografia.Fotografia;
 import Usuario.VisitanteSingleton;
@@ -61,7 +62,7 @@ public class FullscreenImageFragment extends Fragment {
         layoutDescripcionImagen.addView(descripcionWindow);
         ImageView imageViewDetalle = view.findViewById(R.id.imagen_detalle);
 
-        java.sql.Date timeD = new java.sql.Date(photo.getFechaSubida().getSeconds() * 1000L);
+        Date timeD = photo.getFechaSubida();
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String date = sdf.format(timeD);
 
