@@ -1,34 +1,40 @@
 package com.example.artcitytourapp.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.artcitytourapp.R;
-import com.example.artcitytourapp.fragments.CloseSitesFragment;
-import com.example.artcitytourapp.fragments.PlanningFragment;
-import com.example.artcitytourapp.fragments.ReviewFragment;
-import com.example.artcitytourapp.fragments.SitesFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.Objects;
+import java.util.Set;
+
+import Sitio.Sitio;
 
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
-    SitesFragment sites = new SitesFragment();
-    CloseSitesFragment close = new CloseSitesFragment();
-    PlanningFragment planning = new PlanningFragment();
-    ReviewFragment review = new ReviewFragment();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //FragmentContainerView
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
@@ -73,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //URI with site data for sharing
+        Uri uri = getIntent().getData();
+
+        if (uri != null) //Display the URI for parsing
+        {
+            Set<String> args = uri.getQueryParameterNames();
+            String idSitio = uri.getQueryParameter("id");  //will return "V-Maths-Addition "
+            getSiteData(idSitio);
+        }
+
         // Fragment
         /*bottomNavigationView = findViewById(R.id.bottom_nav);
         NavController navController = Navigation.findNavController(this, R.id.contentContainer);
@@ -80,6 +96,36 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+    protected void getSiteData(String siteId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference docRef = db.collection("Sitios").document(siteId);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) { //Creates site object
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Sitio site = document.toObject(Sitio.class);
+                        assert site != null;
+                        site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                        site.setIdSite(siteId);
+                        Bundle b = new Bundle();
+                        b.putSerializable("Sitio", site);
+                        //There has to be a better way to do this
+                        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                                .findFragmentById(R.id.contentContainer);
+                        NavController navController = navHostFragment.getNavController();
+                        navController.navigate(R.id.siteFragment, b);
+                    } else {
+                        Log.d("TAG", "No such document");
+                    }
+                } else {
+                    Log.d("TAG", "get failed with ", task.getException());
+                }
+            }
+        });
     }
 }
 

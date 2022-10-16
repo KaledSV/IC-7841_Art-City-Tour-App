@@ -117,7 +117,7 @@ public class SiteFragment extends Fragment {
         shareSite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                share( );
+                share();
             }
         });
 
@@ -185,13 +185,19 @@ public class SiteFragment extends Fragment {
     private void share() {
         Intent sendIntent = new Intent();
         String base = "Mirá que chiva el sitio: ";
+        Uri.Builder builder = new Uri.Builder(); //Query builder URI for easier parsing
+        builder.scheme("https")
+                .authority("act.navigation.app")
+                .appendPath("Sitio")
+                .appendQueryParameter("id", site.getIdSite())
+                .appendQueryParameter("sort", "relevance")
+                .fragment("Sitios");
+        String Uri = builder.build().toString();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT,base + site.getNombre());
+        sendIntent.putExtra(Intent.EXTRA_TEXT,base + site.getNombre() + "\n Mas informacion en: "+Uri);
         sendIntent.setType("text/plain");
-
         Intent shareIntent = Intent.createChooser(sendIntent, null);
         startActivity(shareIntent);
-
     }
 
 
@@ -355,7 +361,11 @@ public class SiteFragment extends Fragment {
                                 bdGetPhotosBySite(fotosIDs);
                             }
                             else{
-                                bdGetPhotosBySite((ArrayList<String>) fotosIDs.subList(0, 2));
+                                ArrayList<String> fotosIDsShorted = new ArrayList<String>();
+                                for (int i=0; i<3; i++){
+                                    fotosIDsShorted.add(fotosIDs.get(i));
+                                }
+                                bdGetPhotosBySite(fotosIDsShorted);
                             }
                         } else {
                             Log.w("TAG", "Error getting documents.", task.getException());
@@ -984,7 +994,7 @@ public class SiteFragment extends Fragment {
                         for (Uri photo : photos){
                             uploadPhotoReviewMedia(photo, documentReference.getId());
                         }
-                        cleanData();
+                        //cleanData();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

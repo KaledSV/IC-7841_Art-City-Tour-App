@@ -2,19 +2,11 @@ package com.example.artcitytourapp.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,14 +14,16 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,8 +35,6 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import Sitio.Sitio;
@@ -55,6 +47,7 @@ public class SitesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_sites, container, false);
+
         Bundle b = getArguments();
         if (b != null) {
             idRoute = (String) b.get("idRuta");
@@ -70,6 +63,7 @@ public class SitesFragment extends Fragment {
                 Navigation.findNavController(view).navigateUp();
             }
         });
+
         return view;
     }
     protected void bdSetRouteName(String routeId){
@@ -123,7 +117,7 @@ public class SitesFragment extends Fragment {
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful()) { //Creates site object
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             Sitio site = document.toObject(Sitio.class);
@@ -196,7 +190,7 @@ public class SitesFragment extends Fragment {
         // click de la fila
         LinearLayout siteData = (LinearLayout) siteRow.findViewById(R.id.siteData);
         siteData.setClickable(true);
-        siteData.setOnClickListener(new View.OnClickListener() {
+        siteData.setOnClickListener(new View.OnClickListener() { //Sitio
             @Override
             public void onClick(View v) {
                 Bundle b = new Bundle();
@@ -207,7 +201,7 @@ public class SitesFragment extends Fragment {
             }
         });
 
-        siteImageLayout.setClickable(true);
+        siteImageLayout.setClickable(true); //Favoritos
         siteImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

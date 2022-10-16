@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -211,6 +212,7 @@ public class MapsFragment extends Fragment {
             }
         }
         Log.d("prueba","llegue aqui4");
+        view.setId(View.generateViewId());
         return view;
     }
     public void getLocalizacion() {
@@ -266,6 +268,7 @@ public class MapsFragment extends Fragment {
                     //TextView txt = new TextView(getContext());
                     //txt.setText(nombre+"-"+((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
                     View results = getLayoutInflater().inflate(R.layout.result_layout, null);
+                    results.setId(View.generateViewId());
                     TextView titulo = new TextView(getContext());
                     TextView distancia = new TextView(getContext());
                     //TextView imagen = new ImageView(getContext());
@@ -279,6 +282,7 @@ public class MapsFragment extends Fragment {
                             viewSearchFragment.findViewById(R.id.includeLugares).setVisibility(View.INVISIBLE);
                             ConstraintLayout cly = viewSearchFragment.findViewById(R.id.cl);
                             View direccion1 = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
+                            direccion1.setId(View.generateViewId());
                             TextView txtTitulo = direccion1.findViewById(R.id.titL);
                             txtTitulo.setText(nombre);
                             TextView txtDis = direccion1.findViewById(R.id.textView4);
@@ -291,7 +295,7 @@ public class MapsFragment extends Fragment {
                                     viewSearchFragment.findViewById(R.id.direccion1Banner).setVisibility(View.INVISIBLE);
                                     ConstraintLayout cly2 = viewSearchFragment.findViewById(R.id.cl);
                                     View direccion2 = getLayoutInflater().inflate(R.layout.fragment_direccion2, null);
-                                    TextView titulo = direccion2.findViewById(R.id.textView8);
+                                    direccion2.setId(View.generateViewId());                                    TextView titulo = direccion2.findViewById(R.id.textView8);
                                     titulo.setText(nombre);
                                     TextView dis2 = direccion2.findViewById(R.id.textView6);
                                     TextView txtDis1 = txtDis;
@@ -302,6 +306,14 @@ public class MapsFragment extends Fragment {
                             });
                             cly.addView(direccion1);
 
+                            ConstraintSet set = new ConstraintSet();
+                            set.clone(cly);
+                            set.connect(direccion1.getId(), ConstraintSet.TOP, cly.getId(), ConstraintSet.TOP, 0);
+                            set.connect(direccion1.getId(), ConstraintSet.BOTTOM, cly.getId(), ConstraintSet.BOTTOM, 0);
+                            set.connect(direccion1.getId(), ConstraintSet.LEFT, cly.getId(), ConstraintSet.LEFT, 0);
+                            set.connect(direccion1.getId(), ConstraintSet.RIGHT, cly.getId(), ConstraintSet.RIGHT, 0);
+                            set.setVerticalBias(direccion1.getId(), 0.95f);
+                            set.applyTo(cly);
                             //View dir = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
                         }
                     });

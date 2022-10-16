@@ -278,7 +278,11 @@ public class SiteReviewFragment extends Fragment {
                                 bdGetPhotosBySite(fotosIDs);
                             }
                             else{
-                                bdGetPhotosBySite((ArrayList<String>) fotosIDs.subList(0, 2));
+                                ArrayList<String> fotosIDsShorted = new ArrayList<String>();
+                                for (int i=0; i<3; i++) {
+                                    fotosIDsShorted.add(fotosIDs.get(i));
+                                }
+                                bdGetPhotosBySite(fotosIDsShorted);
                             }
                         } else {
                             Log.w("TAG", "Error getting documents.", task.getException());
@@ -907,7 +911,7 @@ public class SiteReviewFragment extends Fragment {
                         for (Uri photo : photos){
                             uploadPhotoReviewMedia(photo, documentReference.getId());
                         }
-                        cleanData();
+                        //cleanData();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
