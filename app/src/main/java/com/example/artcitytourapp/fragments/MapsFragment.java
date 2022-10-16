@@ -1,5 +1,6 @@
 package com.example.artcitytourapp.fragments;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -184,6 +185,33 @@ public class MapsFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_maps, container, false);
+        View viewSearchFragment = SearchFragment.getSearchVista();
+        Bundle b = getArguments();
+        Log.d("prueba","llegue aqui1");
+        if (b != null) {
+            int tipoFiltro = (int) b.get("tipoFiltro");
+            Log.d("prueba","llegue aqui2");
+            switch(tipoFiltro){
+                case 1:
+                    Button botonf1 = (Button) viewSearchFragment.findViewById(R.id.botonf1);
+                    Log.d("prueba","llegue aqui3");
+                    botonf1.setBackgroundColor(0x00FF00);
+                    break;
+                case 2:
+                    Button botonf2 = (Button) viewSearchFragment.findViewById(R.id.botonf2);
+                    botonf2.setBackgroundColor(0x00FF00);
+                    break;
+                case 3:
+                    Button botonf3 = (Button) viewSearchFragment.findViewById(R.id.botonf3);
+                    botonf3.setBackgroundColor(0x00FF00);
+                    break;
+                case 4:
+                    Button botonf4 = (Button) viewSearchFragment.findViewById(R.id.botonf4);
+                    botonf4.setBackgroundColor(0x00FF00);
+                    break;
+            }
+        }
+        Log.d("prueba","llegue aqui4");
         view.setId(View.generateViewId());
         return view;
     }

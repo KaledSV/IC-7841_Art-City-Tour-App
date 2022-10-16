@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -51,6 +52,19 @@ public class RoutesFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_routes, container, false);
 
         ImageView appLogo = (ImageView) view.findViewById(R.id.appLogo);
+        SearchView sv = (SearchView) view.findViewById(R.id.searchView);
+        sv.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.searchFragment2);
+            }
+        });
+        sv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.searchFragment2);
+            }
+        });
         appLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
