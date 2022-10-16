@@ -14,20 +14,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -43,19 +48,40 @@ import Usuario.VisitanteSingleton;
 public class ReviewFragment extends Fragment {
     View view;
     TableLayout table;
+    String palabraBuscada;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view =  inflater.inflate(R.layout.fragment_review, container, false);
         final TextView fragmetTitle = view.findViewById(R.id.lblReviewTitle);
+        final SearchView barraDeBusqueda = view.findViewById(R.id.searchView);
+        barraDeBusqueda.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                palabraBuscada = s;
+                table.removeAllViews();
+                prepareTable();
+                bdGetSitesVisited(true);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if(s.length()==0){
+                    table.removeAllViews();
+                    prepareTable();
+                    bdGetSitesVisited(false);
+                }
+                return false;
+            }
+        });
         fragmetTitle.setText(getResources().getString(R.string.review));
-
         prepareTable();
-        bdGetSitesVisited();
+        bdGetSitesVisited(false);
         return view;
     }
 
-    protected void bdGetSitesVisited(){
+
+    protected void bdGetSitesVisited(boolean busquedaXNombre){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         VisitanteSingleton user = VisitanteSingleton.getInstance();
         // Create a new user with a first and last name
@@ -69,7 +95,18 @@ public class ReviewFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 sitesIDs.add((String) document.getData().get("idSitio"));
                             }
-                            bdGetSites(sitesIDs);
+                            //si el usuario coloca alguna palabra en el search view
+                            if(busquedaXNombre){
+                                if(palabraBuscada!=null){
+                                    //Si el campo de texto es diferente a vacio
+                                    if(palabraBuscada.length()!=0){
+                                        bdGetSitesByLike(sitesIDs);
+                                    }
+                                }
+                            }
+                            else{
+                                bdGetSites(sitesIDs);
+                            }
                         } else {
                             Log.w("TAG", "Error getting documents.", task.getException());
                         }
@@ -77,6 +114,44 @@ public class ReviewFragment extends Fragment {
                 });
     }
 
+    //obtiene la lista de sitios visitados de un usuario
+    //muestra sus sitios favoritos que contengan
+    //un nombre parecido al buscado en el searchview
+    protected void bdGetSitesByLike(ArrayList<String> sitesId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String x;
+        final int[] i = {0};
+        for(String siteId : sitesId){
+            DocumentReference docRef = db.collection("Sitios").document(siteId);//.collection("nombre").startAt("museo del");
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String nombre = document.get("nombre").toString();
+                            String nombre2 = nombre.toLowerCase();
+                            if(nombre.startsWith(palabraBuscada)||nombre2.startsWith(palabraBuscada)){
+                                Sitio site = document.toObject(Sitio.class);
+                                assert site != null;
+                                site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                                site.setIdSite(siteId);
+                                bdGetSiteFoto(i, site);
+                                i[0]++;
+                            }
+                        } else {
+                            Log.d("TAG", "No such document");
+                        }
+                    } else {
+                        Log.d("TAG", "get failed with ", task.getException());
+                    }
+                }
+            });
+        }
+    }
+
+    //obtiene la lista de sitios visitados de un usuario
+    //muestra sus sitios favoritos
     protected void bdGetSites(ArrayList<String> sitesId){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final int[] i = {0};
@@ -139,6 +214,7 @@ public class ReviewFragment extends Fragment {
         table.setStretchAllColumns(true);
         table.setWeightSum(1); //numero de columnas
     }
+
 
     protected void addTableRow(int i, Sitio espSite, String imgPath) {
         TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.sites_row, null);

@@ -1,35 +1,40 @@
 package com.example.artcitytourapp.fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.support.v4.media.MediaBrowserCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -41,107 +46,120 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
-public class SitesFragment extends Fragment {
+public class SearchFragment2 extends Fragment {
     View view;
     TableLayout table;
-    String idRoute;
+    String palabraBuscada1;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_sites, container, false);
-        Bundle b = getArguments();
-        if (b != null) {
-            idRoute = (String) b.get("idRuta");
-            prepareTable();
-            bdSetRouteName(idRoute);
-            bdGetSitesByRoute(idRoute);
-        }
-        ImageView backBtn = (ImageView) view.findViewById(R.id.backImageSitesList);
-        backBtn.setClickable(true);
-        backBtn.setOnClickListener(new View.OnClickListener() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        view =  inflater.inflate(R.layout.fragment_search2, container, false);
+        final SearchView barraDeBusqueda1 = view.findViewById(R.id.searchViewSearch2);
+        final Button bf1 = view.findViewById(R.id.botonf1);
+        final Button bf2 = view.findViewById(R.id.botonf2);
+        final Button bf3 = view.findViewById(R.id.botonf3);
+        final Button bf4 = view.findViewById(R.id.botonf4);
+        bf1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigateUp();
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 1);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
             }
         });
+        bf2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 2);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        bf3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 3);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        bf4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 4);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        barraDeBusqueda1.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                palabraBuscada1 = s;
+                table.removeAllViews();
+                prepareTable();
+                bdGetSites(true);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if(s.length()==0){
+                    table.removeAllViews();
+                    prepareTable();
+                    bdGetSites(false);
+                }
+                return false;
+            }
+        });
+        prepareTable();
+        bdGetSites(false);
         return view;
     }
-    protected void bdSetRouteName(String routeId){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("Rutas").document(routeId);
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        //Ruta ruta = document.toObject(Ruta.class);
-                        final TextView lblNameRoutes = view.findViewById(R.id.lblNameRoute);
-                        //assert ruta != null;
-                        lblNameRoutes.setText((String)document.getString("nombre"));
-                    } else {
-                        Log.d("TAG", "No such document");
-                    }
-                } else {
-                    Log.d("TAG", "get failed with ", task.getException());
-                }
-            }
-        });
-    }
 
-    protected void bdGetSitesByRoute(String routeId){
+
+    protected void bdGetSites(boolean busquedaXNomb){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("RutasXSitios")
-                .whereEqualTo("idRuta", routeId)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("Sitios")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            ArrayList<String> sitesIDs = new ArrayList<String>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                sitesIDs.add((String) document.getData().get("idSitio"));
+                                String nombre = document.get("nombre").toString();
+                                String nombre2 = nombre.toLowerCase();
+                                if(busquedaXNomb){
+                                    if(nombre.startsWith(palabraBuscada1)||nombre2.startsWith(palabraBuscada1)){
+                                        Sitio site = document.toObject(Sitio.class);
+                                        assert site != null;
+                                        site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                                        site.setIdSite(document.getId());
+                                        bdGetSiteFoto(site);
+                                        //Log.d("TAG", document.getId() + " => " + document.getData());
+                                    }
+                                }else{
+                                    Sitio site = document.toObject(Sitio.class);
+                                    assert site != null;
+                                    site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                                    site.setIdSite(document.getId());
+                                    bdGetSiteFoto(site);
+                                    //Log.d("TAG", document.getId() + " => " + document.getData());
+                                }
                             }
-                            bdGetSites(sitesIDs);
                         } else {
-                            Log.w("TAG", "Error getting documents.", task.getException());
+                            Log.d("TAG", "Error getting documents: ", task.getException());
                         }
                     }
                 });
-    }
 
-    protected void bdGetSites(ArrayList<String> sitesId){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        for(String siteId : sitesId){
-            DocumentReference docRef = db.collection("Sitios").document(siteId);
-            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            Sitio site = document.toObject(Sitio.class);
-                            assert site != null;
-                            site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
-                            site.setIdSite(siteId);
-                            bdGetSiteFoto(site);
-                        } else {
-                            Log.d("TAG", "No such document");
-                        }
-                    } else {
-                        Log.d("TAG", "get failed with ", task.getException());
-                    }
-                }
-            });
-        }
     }
-
     protected void bdGetSiteFoto(Sitio espSite){
         if (espSite.getIdFotoPredeterminada() == null){
             addTableRow(espSite, "Imagenes Interfaz/notFoundImage.png");
@@ -221,10 +239,8 @@ public class SitesFragment extends Fragment {
                 }
             }
         });
-
         table.addView(siteRow);
     }
-
     protected void imageRow(ImageView iv, String imgPath){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
         try {
@@ -241,7 +257,6 @@ public class SitesFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
     protected void setFavoriteImage(Boolean status, ImageView iv){
         if (status){
             iv.setImageResource(R.drawable.favorite_on);

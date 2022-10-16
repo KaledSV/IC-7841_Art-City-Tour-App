@@ -111,7 +111,6 @@
         tools:layout="@layout/fragment_planning" />
 
 
-
     <fragment
         android:id="@+id/reviewFragment"
         android:name="com.example.artcitytourapp.fragments.ReviewFragment"
@@ -134,4 +133,9 @@
             android:name="Sitio"
             app:argType="Sitio.Sitio" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment2"
+        android:name="com.example.artcitytourapp.fragments.SearchFragment2"
+        android:label="fragment_search2"
+        tools:layout="@layout/fragment_search2" />
 </navigation>
