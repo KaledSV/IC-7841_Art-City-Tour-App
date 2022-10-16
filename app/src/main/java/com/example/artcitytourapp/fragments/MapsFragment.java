@@ -3,6 +3,7 @@ package com.example.artcitytourapp.fragments;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -12,15 +13,21 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +37,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -65,6 +73,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -80,33 +89,10 @@ public class MapsFragment extends Fragment {
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-
-            /*LatLng sydney = new LatLng(9.933230174080439, -84.0727511011615);
-            googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            //googleMap.setMinZoomPreference(3000);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            googleMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );*/
             mMap = googleMap;
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
             mMap.setMyLocationEnabled(true);
@@ -115,45 +101,7 @@ public class MapsFragment extends Fragment {
             LocationListener locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    /*View viewSearchFragment = SearchFragment.getSearchVista();
-                    LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);*/
-                    //aqui empieza
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("Sitios").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                HashMap<Float, Coordenada> sitiosDistancia = new HashMap<Float, Coordenada>();
-                                float[] distance = new float[1];
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    Log.d("res", document.getId() + " => " +document.get("nombre")+"=>" +document.get("coordenadas"));
-                                    GeoPoint punto = document.getGeoPoint("coordenadas");
-                                    double lat = punto.getLatitude();
-                                    double lng = punto.getLongitude();
-                                    LatLng coordenada = new LatLng(lat,lng);
-                                    mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(document.get("nombre").toString()));
-                                    Location.distanceBetween(lat,lng,location.getLatitude(),location.getLongitude(),distance);
-                                    Coordenada c = new Coordenada(document.get("nombre").toString(),lat,lng);
-                                    sitiosDistancia.put(distance[0], c);
-                                    //trazarRuta(location,String.valueOf(lat),String.valueOf(lng));
-                                    //obtenerDistancia(location,String.valueOf(lat),String.valueOf(lng));
-
-                                    /*TextView txt = new TextView(getContext());
-                                    txt.setText(document.get("nombre").toString() +"-"+Float.toString(distance[0]));
-                                    layoutVertical.addView(txt);*/
-                                }
-                                TreeMap<Float, Coordenada> t = new TreeMap<>();
-                                t.putAll(sitiosDistancia);
-                                for (Float key : t.keySet()) {
-                                    System.out.println("Clave: " + key + ", Valor: " + t.get(key).nombre);
-                                    obtenerDistancia(location,String.valueOf(t.get(key).latitud),String.valueOf(t.get(key).longitud),t.get(key).nombre);
-                                }
-                            } else {
-                                Log.w("res", "Error getting documents.", task.getException());
-                            }
-                        }
-                    });
-                    //qui termina
+                    obtenerLugaresCercaDeTi(location);
                     LatLng miUbicacion = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(miUbicacion).title("ubicacion actual"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(miUbicacion));
@@ -179,6 +127,7 @@ public class MapsFragment extends Fragment {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -186,35 +135,66 @@ public class MapsFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_maps, container, false);
         View viewSearchFragment = SearchFragment.getSearchVista();
-        Bundle b = getArguments();
-        Log.d("prueba","llegue aqui1");
-        if (b != null) {
-            int tipoFiltro = (int) b.get("tipoFiltro");
-            Log.d("prueba","llegue aqui2");
-            switch(tipoFiltro){
+        if (CloseSitesFragment.getArgumento1() != 0) {
+            switch(CloseSitesFragment.getArgumento1()){
                 case 1:
-                    Button botonf1 = (Button) viewSearchFragment.findViewById(R.id.botonf1);
-                    Log.d("prueba","llegue aqui3");
-                    botonf1.setBackgroundColor(0x00FF00);
+                    Button botonf1 = (Button) viewSearchFragment.findViewById(R.id.botonff1);
+                    mostrarResultadoFiltro(botonf1);
                     break;
                 case 2:
-                    Button botonf2 = (Button) viewSearchFragment.findViewById(R.id.botonf2);
-                    botonf2.setBackgroundColor(0x00FF00);
+                    Button botonf2 = (Button) viewSearchFragment.findViewById(R.id.botonff2);
+                    mostrarResultadoFiltro(botonf2);
                     break;
                 case 3:
-                    Button botonf3 = (Button) viewSearchFragment.findViewById(R.id.botonf3);
-                    botonf3.setBackgroundColor(0x00FF00);
+                    Button botonf3 = (Button) viewSearchFragment.findViewById(R.id.botonff3);
+                    mostrarResultadoFiltro(botonf3);
                     break;
                 case 4:
-                    Button botonf4 = (Button) viewSearchFragment.findViewById(R.id.botonf4);
-                    botonf4.setBackgroundColor(0x00FF00);
+                    Button botonf4 = (Button) viewSearchFragment.findViewById(R.id.botonff4);
+                    mostrarResultadoFiltro(botonf4);
                     break;
             }
         }
-        Log.d("prueba","llegue aqui4");
+        CloseSitesFragment.setArgumento1(0);
         view.setId(View.generateViewId());
         return view;
     }
+    public void obtenerLugaresCercaDeTi(Location location){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Sitios").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                ArrayList<Coordenada> listaCoordenadas = new ArrayList<>();
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        GeoPoint punto = document.getGeoPoint("coordenadas");
+                        double lat = punto.getLatitude();
+                        double lng = punto.getLongitude();
+                        LatLng coordenada = new LatLng(lat,lng);
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(document.get("nombre").toString()));
+                        Coordenada c = new Coordenada(document.get("nombre").toString(),lat,lng);
+                        listaCoordenadas.add(c);
+                    }
+                    for (int i=0;i<listaCoordenadas.size();i++){
+                        obtenerDistancia(location,String.valueOf(listaCoordenadas.get(i).latitud),String.valueOf(listaCoordenadas.get(i).longitud),listaCoordenadas.get(i).nombre);
+                    }
+                } else {
+                    Log.w("res", "Error getting documents.", task.getException());
+                }
+            }
+        });
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void mostrarResultadoFiltro(Button b){
+        View viewSearchFragment = SearchFragment.getSearchVista();
+        ObjectAnimator animation = ObjectAnimator.ofFloat(viewSearchFragment.findViewById(R.id.includeLugares), "translationY", -1000f);
+        animation.setDuration(2000);
+        animation.start();
+        b.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(204, 0, 150)));
+        b.setForegroundTintList(ColorStateList.valueOf(Color.rgb(0, 255, 0)));
+        b.setHintTextColor(Color.WHITE);
+    }
+
     public void getLocalizacion() {
         int permiso = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if(permiso == PackageManager.PERMISSION_DENIED){
@@ -254,7 +234,7 @@ public class MapsFragment extends Fragment {
     private void obtenerDistancia(Location l1, String lat,String lng, String nombre){
         View viewSearchFragment = SearchFragment.getSearchVista();
         LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);
-        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&mode=walking"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
+        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -263,19 +243,19 @@ public class MapsFragment extends Fragment {
                     jso = new JSONObject(response);
                     JSONArray jRoutes1 = jso.getJSONArray("routes");
                     JSONArray jLegs1 = ((JSONObject)(jRoutes1.get(0))).getJSONArray("legs");
-                    //View results = new View(getContext());
-                    //results = getLayoutInflater().inflate(R.layout.result_layout, null);
-                    //TextView txt = new TextView(getContext());
-                    //txt.setText(nombre+"-"+((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
                     View results = getLayoutInflater().inflate(R.layout.result_layout, null);
                     results.setId(View.generateViewId());
                     TextView titulo = new TextView(getContext());
                     TextView distancia = new TextView(getContext());
-                    //TextView imagen = new ImageView(getContext());
+                    TextView address = new TextView(getContext());
                     titulo = results.findViewById(R.id.site_name);
                     titulo.setText(nombre);
                     distancia = results.findViewById(R.id.site_distance);
                     distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                    address = results.findViewById(R.id.site_address);
+                    address.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9,40));
+                    /*((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text");
+                    ((JSONObject)jLegs1.get(0)).getJSONObject("end_address").toString()*/;
                     results.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -292,29 +272,47 @@ public class MapsFragment extends Fragment {
                             btnDir.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    viewSearchFragment.findViewById(R.id.direccion1Banner).setVisibility(View.INVISIBLE);
+                                    viewSearchFragment.findViewById(direccion1.getId()).setVisibility(View.INVISIBLE);
                                     ConstraintLayout cly2 = viewSearchFragment.findViewById(R.id.cl);
                                     View direccion2 = getLayoutInflater().inflate(R.layout.fragment_direccion2, null);
-                                    direccion2.setId(View.generateViewId());                                    TextView titulo = direccion2.findViewById(R.id.textView8);
+                                    direccion2.setId(View.generateViewId());
+                                    TextView titulo = direccion2.findViewById(R.id.textView8);
                                     titulo.setText(nombre);
                                     TextView dis2 = direccion2.findViewById(R.id.textView6);
                                     TextView txtDis1 = txtDis;
                                     dis2.setText(txtDis1.getText());
+                                    TextView addressBanner2 = direccion2.findViewById(R.id.textView9);
+                                    TextView DurationBanner2 = direccion2.findViewById(R.id.textView7);
+                                    TextView wazeLink = direccion2.findViewById(R.id.textView10);
+                                    TextView googleMapsLink = direccion2.findViewById(R.id.textView11);
+                                    try {
+                                        DurationBanner2.setText(((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text"));
+                                        addressBanner2.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    googleMapsLink.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://maps.google.com/?q="+lat+","+lng));
+                                            startActivity(browserIntent);
+
+                                        }
+                                    });
+                                    wazeLink.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q="+lat+","+lng));
+                                            startActivity(browserIntent);
+                                        }
+                                    });
                                     cly2.addView(direccion2);
+                                    ajustarPosicionBanner(direccion2,cly2);
                                     trazarRuta(l1,lat,lng);
                                 }
                             });
                             cly.addView(direccion1);
-
-                            ConstraintSet set = new ConstraintSet();
-                            set.clone(cly);
-                            set.connect(direccion1.getId(), ConstraintSet.TOP, cly.getId(), ConstraintSet.TOP, 0);
-                            set.connect(direccion1.getId(), ConstraintSet.BOTTOM, cly.getId(), ConstraintSet.BOTTOM, 0);
-                            set.connect(direccion1.getId(), ConstraintSet.LEFT, cly.getId(), ConstraintSet.LEFT, 0);
-                            set.connect(direccion1.getId(), ConstraintSet.RIGHT, cly.getId(), ConstraintSet.RIGHT, 0);
-                            set.setVerticalBias(direccion1.getId(), 0.95f);
-                            set.applyTo(cly);
-                            //View dir = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
+                            ajustarPosicionBanner(direccion1,cly);
                         }
                     });
                     layoutVertical.addView(results);
@@ -331,6 +329,16 @@ public class MapsFragment extends Fragment {
             }
         });
         queue.add(stringRequest);
+    }
+    public void ajustarPosicionBanner(View bannerDireccion,ConstraintLayout layoutBanner){
+        ConstraintSet set = new ConstraintSet();
+        set.clone(layoutBanner);
+        set.connect(bannerDireccion.getId(), ConstraintSet.TOP, layoutBanner.getId(), ConstraintSet.TOP, 0);
+        set.connect(bannerDireccion.getId(), ConstraintSet.BOTTOM, layoutBanner.getId(), ConstraintSet.BOTTOM, 0);
+        set.connect(bannerDireccion.getId(), ConstraintSet.LEFT, layoutBanner.getId(), ConstraintSet.LEFT, 0);
+        set.connect(bannerDireccion.getId(), ConstraintSet.RIGHT, layoutBanner.getId(), ConstraintSet.RIGHT, 0);
+        set.setVerticalBias(bannerDireccion.getId(), 0.95f);
+        set.applyTo(layoutBanner);
     }
     private void trazarRutaAux(JSONObject jso) {
         JSONArray jRoutes;

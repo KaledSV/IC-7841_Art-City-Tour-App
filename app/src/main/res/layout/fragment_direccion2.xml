@@ -46,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:width="300dp"
+                        android:width="100dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="(20 m)"
                         android:textColor="@color/grey_400"
