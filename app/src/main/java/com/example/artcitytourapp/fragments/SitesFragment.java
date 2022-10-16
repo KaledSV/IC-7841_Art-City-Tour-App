@@ -195,7 +195,7 @@ public class SitesFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", espSite);
-                //b.putSerializable("idRuta", idRoute);
+                b.putSerializable("idRuta", idRoute);
 
                 Navigation.findNavController(view).navigate(R.id.siteFragment, b);
             }

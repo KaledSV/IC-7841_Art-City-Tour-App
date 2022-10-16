@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,12 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import Fotografia.Fotografia;
+import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
 
 public class FullscreenImageFragment extends Fragment {
     View view;
     Fotografia photo;
+
+    private Sitio site;
+    private String idRoute;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,9 +53,19 @@ public class FullscreenImageFragment extends Fragment {
         Bundle b = this.getArguments();
         //recibir el id de la imagen mediante intent
         if (b != null) {
+            site = (Sitio) b.get("Sitio");
+            idRoute = (String) b.get("idRuta");
             photo = (Fotografia) b.get("photo");
             loadData();
         }
+        ImageView backBtn = (ImageView) view.findViewById(R.id.backImageGallery);
+        backBtn.setClickable(true);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigateUp();
+            }
+        });
 
         return view;
     }
@@ -76,6 +91,8 @@ public class FullscreenImageFragment extends Fragment {
         resDislikes.setText(String.valueOf(photo.getDislikes()));
         ExpandableTextView resComment = (ExpandableTextView) descripcionWindow.findViewById(R.id.expand_text_view);
         resComment.setText(photo.getDescripcion());
+        final TextView lblNameSite = view.findViewById(R.id.lblNameSite);
+        lblNameSite.setText(site.getNombre());
 
         Button likeBtn = descripcionWindow.findViewById(R.id.likeBtn);
         Button dislikeBtn = descripcionWindow.findViewById(R.id.dislikeBtn);
