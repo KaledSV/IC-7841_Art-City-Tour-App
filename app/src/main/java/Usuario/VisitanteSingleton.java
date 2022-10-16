@@ -175,6 +175,10 @@ public class VisitanteSingleton extends Usuario {
         return instance.getSitiosFavoritos().contains(espSite.getIdSite());
     }
 
+    public boolean siteFavoriteStatus(String idSite){
+        return instance.getSitiosFavoritos().contains(idSite);
+    }
+
     public void errorUploding(View view){
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Error")

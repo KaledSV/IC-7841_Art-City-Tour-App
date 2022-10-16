@@ -30,13 +30,13 @@
                     android:id="@+id/imageView3"
                     android:layout_width="150dp"
                     android:layout_height="100dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0.3"
                     tools:src="@drawable/m4" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.7"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -49,18 +49,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.8"
                             android:fontFamily="@font/roboto_bold"
                             android:text="Museo del Banco Central"
                             android:textColor="@color/grey_800"
                             android:textSize="20dp" />
 
-                        <TextView
-                            android:id="@+id/tituloLugares"
+                        <ImageView
+                            android:id="@+id/favImageMap"
                             android:layout_width="40dp"
-                            android:layout_height="30dp"
+                            android:layout_height="40dp"
                             android:layout_margin="5dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.2"
                             android:background="@drawable/ic_baseline_favorite_off_grey_24" />
 
                     </LinearLayout>
