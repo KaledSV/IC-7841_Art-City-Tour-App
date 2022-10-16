@@ -11,6 +11,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
@@ -93,6 +94,7 @@ public class MapsFragment extends Fragment {
     View view;
     GoogleMap mMap;
     JSONObject jso;
+    int filtroNum = 0;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -108,6 +110,7 @@ public class MapsFragment extends Fragment {
             LocationListener locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+                    //En colocar filtro se comprueba si existe un filtro o no existe
                     obtenerLugaresCercaDeTi(location);
                     LatLng miUbicacion = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(miUbicacion).title("ubicacion actual"));
@@ -142,29 +145,51 @@ public class MapsFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_maps, container, false);
         View viewSearchFragment = SearchFragment.getSearchVista();
+        Button botonf1 = (Button) viewSearchFragment.findViewById(R.id.botonff1);
+        Button botonf2 = (Button) viewSearchFragment.findViewById(R.id.botonff2);
+        Button botonf3 = (Button) viewSearchFragment.findViewById(R.id.botonff3);
+        Button botonf4 = (Button) viewSearchFragment.findViewById(R.id.botonff4);
+        ArrayList<Button> listaBotonesFiltro = new ArrayList<>();
+        listaBotonesFiltro.add(botonf1);
+        listaBotonesFiltro.add(botonf2);
+        listaBotonesFiltro.add(botonf3);
+        listaBotonesFiltro.add(botonf4);
+        for(int i=1;i<=listaBotonesFiltro.size();i++){
+            recargarFiltro(listaBotonesFiltro.get(i-1),i);
+        }
         if (CloseSitesFragment.getArgumento1() != 0) {
             switch(CloseSitesFragment.getArgumento1()){
                 case 1:
-                    Button botonf1 = (Button) viewSearchFragment.findViewById(R.id.botonff1);
                     mostrarResultadoFiltro(botonf1);
+                    filtroNum = 1;
                     break;
                 case 2:
-                    Button botonf2 = (Button) viewSearchFragment.findViewById(R.id.botonff2);
                     mostrarResultadoFiltro(botonf2);
+                    filtroNum = 2;
                     break;
                 case 3:
-                    Button botonf3 = (Button) viewSearchFragment.findViewById(R.id.botonff3);
                     mostrarResultadoFiltro(botonf3);
+                    filtroNum = 3;
                     break;
                 case 4:
-                    Button botonf4 = (Button) viewSearchFragment.findViewById(R.id.botonff4);
                     mostrarResultadoFiltro(botonf4);
+                    filtroNum = 4;
                     break;
             }
         }
         CloseSitesFragment.setArgumento1(0);
         view.setId(View.generateViewId());
         return view;
+    }
+    public void recargarFiltro(Button varButton,int tipoFiltro2){
+        varButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", tipoFiltro2);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
     }
     public void obtenerLugaresCercaDeTi(Location location){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -189,7 +214,7 @@ public class MapsFragment extends Fragment {
                         fotos.add(idfoto);
                     }
                     for (int i=0;i<listaCoordenadas.size();i++){
-                        obtenerDistancia(location,String.valueOf(listaCoordenadas.get(i).latitud),String.valueOf(listaCoordenadas.get(i).longitud),listaCoordenadas.get(i).nombre, idSitios.get(i), fotos.get(i));
+                        desplegarCarrusel(location,String.valueOf(listaCoordenadas.get(i).latitud),String.valueOf(listaCoordenadas.get(i).longitud),listaCoordenadas.get(i).nombre, idSitios.get(i), fotos.get(i));
                     }
                 } else {
                     Log.w("res", "Error getting documents.", task.getException());
@@ -244,7 +269,7 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
-    private void obtenerDistancia(Location l1, String lat,String lng, String nombre, String idsitio, String idfoto){
+    private void desplegarCarrusel(Location l1, String lat,String lng, String nombre, String idsitio, String idfoto){
         View viewSearchFragment = SearchFragment.getSearchVista();
         LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);
         String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
@@ -264,7 +289,8 @@ public class MapsFragment extends Fragment {
                     ImageView imagen = results.findViewById(R.id.siteImageViewResult);
                     bdGetSiteFoto(imagen, idfoto);
                     titulo.setText(nombre);
-                    distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                    //distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                    colocarFiltro(viewSearchFragment.findViewById(R.id.tituloLugares), distancia);
                     address.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9,40));
                     /*((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text");
                     ((JSONObject)jLegs1.get(0)).getJSONObject("end_address").toString()*/;
@@ -365,6 +391,31 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
+    public void colocarFiltro(TextView titulo,TextView dis){
+        //FuncionOrdenarMayorAmenor()
+        switch (filtroNum){
+            case 0:
+                titulo.setText("Lugares cerca de ti");
+                dis.setText("1 KM");
+                break;
+            case 1:
+                titulo.setText("Filtro");
+                break;
+            case 2:
+                titulo.setText("Lugares cerca de ti");
+                dis.setText("1 KM");
+                break;
+            case 3:
+                titulo.setText("Tiempo de espera");
+                dis.setText("5 MIN");
+                break;
+            case 4:
+                titulo.setText("Accesibilidad para silla de ruedas");
+                dis.setText("ACCESIBLE");
+                break;
+        }
+    }
+
     public void ajustarPosicionBanner(View bannerDireccion,ConstraintLayout layoutBanner){
         ConstraintSet set = new ConstraintSet();
         set.clone(layoutBanner);

@@ -33,11 +33,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|top"
             android:layout_weight="1"
-            android:fontFamily="@font/roboto_regular"
+            android:fontFamily="@font/roboto_black"
             android:text="Lugares cerca de ti"
             android:textAlignment="center"
-            android:textColor="#78909C"
-            android:textSize="14pt" />
+            android:textColor="@color/grey_800"
+            android:textSize="24dp" />
 
     </LinearLayout>
 
