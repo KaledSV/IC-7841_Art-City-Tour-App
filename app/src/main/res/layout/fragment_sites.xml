@@ -39,7 +39,7 @@
             app:layout_constraintEnd_toStartOf="@+id/lblNameRoute"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="?attr/actionModeCloseDrawable" />
+            app:srcCompat="@drawable/ic_baseline_keyboard_arrow_left_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView

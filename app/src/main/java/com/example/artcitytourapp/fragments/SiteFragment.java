@@ -81,6 +81,7 @@ public class SiteFragment extends Fragment {
     private AlertDialog resenaDialog, resenaAndPhotoDialog, resenaPhotosDialog, photoDialog;
     ActivityResultLauncher<String> mPhoto, mPhotos;
     private Sitio site;
+    private String idRoute;
 
     private int calification = 0;
     private String opinion = "";
@@ -92,6 +93,14 @@ public class SiteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_site, container, false);
+
+        // load all data from database
+        Bundle b = this.getArguments();
+        if (b != null) {
+            site = (Sitio) b.get("Sitio");
+            idRoute = (String) b.get("idRuta");
+            loadData();
+        }
 
         // Data of fragment
         ExpandableTextView expTv = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
@@ -132,6 +141,7 @@ public class SiteFragment extends Fragment {
             public void onClick(View v) {
                 Bundle b = new Bundle();
                 b.putSerializable("Sitio", site);
+                b.putSerializable("idRuta", idRoute);
                 Navigation.findNavController(view).navigate(R.id.galleryFragment, b);
             }
         });
@@ -171,13 +181,6 @@ public class SiteFragment extends Fragment {
                 Navigation.findNavController(view).navigateUp();
             }
         });
-        // load all data from database
-        Bundle b = this.getArguments();
-        if (b != null) {
-            site = (Sitio) b.get("Sitio");
-            //idRoute = (String) b.get("idRuta");
-            loadData();
-        }
 
         return view;
     }
@@ -225,6 +228,7 @@ public class SiteFragment extends Fragment {
 
     protected void cleanData(){
         opinion = "";
+        description = "";
         calification = 0;
         photos.clear();
         photo = null;

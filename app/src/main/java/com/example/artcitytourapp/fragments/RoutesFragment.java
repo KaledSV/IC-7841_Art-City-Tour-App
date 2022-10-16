@@ -145,6 +145,11 @@ public class RoutesFragment extends Fragment {
         loadImage(iv, route.getFotoPredeterminada());
         loadImage(iv2, route2.getFotoPredeterminada());
 
+        iv.setBackgroundResource(R.drawable.round_outline);
+        iv.setClipToOutline(true);
+        iv2.setBackgroundResource(R.drawable.round_outline);
+        iv2.setClipToOutline(true);
+
         setRedirect(iv, route);
         setRedirect(iv2, route2);
 
