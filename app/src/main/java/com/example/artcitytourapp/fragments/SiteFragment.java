@@ -103,9 +103,6 @@ public class SiteFragment extends Fragment {
         }
 
         // Data of fragment
-        ExpandableTextView expTv = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
-        expTv.setText(getString(R.string.description_SiteInfo));
-
         Button addResena = (Button) view.findViewById(R.id.addReviews_SiteDes);
         addResena.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,6 +291,8 @@ public class SiteFragment extends Fragment {
     // schedule of the day
     protected void bdGetHorarioDiaIdSite(String siteId){
         LinearLayout layoutH = view.findViewById(R.id.layoutH);
+        TextView lyh = layoutH.findViewById(R.id.day_SiteInfo);
+        TextView lyh2 = layoutH.findViewById(R.id.timeRange_SiteInfo);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Calendar c = Calendar.getInstance();
@@ -324,21 +323,21 @@ public class SiteFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            boolean notFound = true;
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 String dia = (String) document.getData().get("dia");
-                                TextView lyh = layoutH.findViewById(R.id.day_SiteInfo);
-                                TextView lyh2 = layoutH.findViewById(R.id.timeRange_SiteInfo);
                                 if(finalVarDia.equals(dia)){
                                     String abierto = (String) document.getData().get("abierto");
                                     String cerrado = (String) document.getData().get("cerrado");
                                     lyh.setText(finalVarDia);
                                     lyh2.setText(abierto+"-"+cerrado);
+                                    notFound = false;
                                     break;
                                 }
-                                else{
-                                    lyh.setText(finalVarDia);
-                                    lyh2.setText("Cerrado");
-                                }
+                            }
+                            if (notFound){
+                                lyh.setText(finalVarDia);
+                                lyh2.setText("Cerrado");
                             }
                         } else {
                             Log.w("TAG", "Error getting documents.", task.getException());
