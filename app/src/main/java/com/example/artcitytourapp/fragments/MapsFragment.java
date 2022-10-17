@@ -35,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -225,9 +227,15 @@ public class MapsFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void mostrarResultadoFiltro(Button b){
         View viewSearchFragment = SearchFragment.getSearchVista();
-        ObjectAnimator animation = ObjectAnimator.ofFloat(viewSearchFragment.findViewById(R.id.includeLugares), "translationY", -1000f);
+        ConstraintLayout bt_sheet = viewSearchFragment.findViewById(R.id.includeLugares);
+        if (BottomSheetBehavior.from(bt_sheet).getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            BottomSheetBehavior.from(bt_sheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+
+        /*ObjectAnimator animation = ObjectAnimator.ofFloat(viewSearchFragment.findViewById(R.id.includeLugares), "translationY", -1000f,0);
+        ObjectAnimator animation2 = ObjectAnimator.ofFloat(viewSearchFragment.findViewById(R.id.includeLugares), "translationY", 0,-1000f);
         animation.setDuration(2000);
-        animation.start();
+        animation.start();*/
         b.setBackgroundTintList(ColorStateList.valueOf(Color.rgb(204, 0, 150)));
         b.setForegroundTintList(ColorStateList.valueOf(Color.rgb(0, 255, 0)));
         b.setHintTextColor(Color.WHITE);
@@ -238,7 +246,6 @@ public class MapsFragment extends Fragment {
         if(permiso == PackageManager.PERMISSION_DENIED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
             }
-
             else{
                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             }
