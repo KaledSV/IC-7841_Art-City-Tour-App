@@ -52,12 +52,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:layout_weight="0.1"
                 android:fontFamily="@font/roboto_bold"
-                android:text="20 m"
-                android:textAlignment="center"
+                android:text="20 KM"
+                android:textAlignment="textStart"
                 android:textColor="@color/grey_800"
-                android:textSize="16sp"
-                android:layout_weight="0.1"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
