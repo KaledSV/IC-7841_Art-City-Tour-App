@@ -61,7 +61,7 @@
                             android:layout_height="40dp"
                             android:layout_margin="5dp"
                             android:layout_weight="0.2"
-                            android:background="@drawable/ic_baseline_favorite_off_grey_24" />
+                            android:background="@color/white" />
 
                     </LinearLayout>
 
