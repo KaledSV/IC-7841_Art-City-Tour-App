@@ -23,8 +23,26 @@ public class Sitio implements Serializable, Parcelable {
     private int capacidad;
     private int tiempoEspera;
     private String idFotoPredeterminada;
+    private float distancia;
+    private boolean accRuedas;
     List<Fotografia> fotos = null;
     List<Resenna> resenna = null;
+
+    public float getDistancia() {
+        return distancia;
+    }
+
+    public void setDistancia(float distancia) {
+        this.distancia = distancia;
+    }
+
+    public boolean getAccRuedas() {
+        return accRuedas;
+    }
+
+    public void setAccRuedas(boolean accRuedas) {
+        this.accRuedas = accRuedas;
+    }
 
     public String getIdSite() {
         return idSite;

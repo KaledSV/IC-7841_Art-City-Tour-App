@@ -196,31 +196,49 @@ public class MapsFragment extends Fragment {
         db.collection("Sitios").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                ArrayList<Coordenada> listaCoordenadas = new ArrayList<>();
-                ArrayList<String> fotos = new ArrayList<>();
-                ArrayList<String> idSitios = new ArrayList<>();
+                ArrayList<Sitio> sites = new ArrayList<>();
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String idfoto = (String)document.get("idFotoPredeterminada");
-                        String idSitio = document.getId();
-                        GeoPoint punto = document.getGeoPoint("coordenadas");
-                        double lat = punto.getLatitude();
-                        double lng = punto.getLongitude();
-                        LatLng coordenada = new LatLng(lat,lng);
-                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(document.get("nombre").toString()));
-                        Coordenada c = new Coordenada(document.get("nombre").toString(),lat,lng);
-                        listaCoordenadas.add(c);
-                        idSitios.add(idSitio);
-                        fotos.add(idfoto);
+                        Sitio site = document.toObject(Sitio.class);
+                        assert site != null;
+                        site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                        site.setIdSite(document.getId().toString());
+                        LatLng coordenada = new LatLng(site.getCoordenadas().getLatitude(),site.getCoordenadas().getLongitude());
+                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(site.getNombre()));
+                        sites.add(site);
                     }
-                    for (int i=0;i<listaCoordenadas.size();i++){
-                        desplegarCarrusel(location,String.valueOf(listaCoordenadas.get(i).latitud),String.valueOf(listaCoordenadas.get(i).longitud),listaCoordenadas.get(i).nombre, idSitios.get(i), fotos.get(i));
+                    for(int i=0;i<sites.size();i++){
+                        Log.d("prueba",sites.get(i).getNombre());
+                        Log.d("prueba",String.valueOf(sites.get(i).getDistancia()));
+                        obtenerDistancia(location,sites.get(i));
+                    }
+                    //ordenarlos ascendente
+                    sites = OrdenarAscendenteXDistancia(sites);
+                    for (int i=0;i<sites.size();i++){
+                        Log.d("prueba2",sites.get(i).getNombre());
+                        Log.d("prueba2",String.valueOf(sites.get(i).getDistancia()));
+                        desplegarCarrusel(location,sites.get(i));
                     }
                 } else {
                     Log.w("res", "Error getting documents.", task.getException());
                 }
             }
         });
+    }
+
+    public ArrayList<Sitio> OrdenarAscendenteXDistancia(ArrayList<Sitio> A){
+        int i, j;
+        float aux;
+        for (i = 0; i < A.size() - 1; i++) {
+            for (j = 0; j < A.size() - i - 1; j++) {
+                if (A.get(j+1).getDistancia() < A.get(j).getDistancia()) {
+                    aux = A.get(j+1).getDistancia();
+                    A.get(j+1).setDistancia(A.get(j).getDistancia());
+                    A.get(j).setDistancia(aux);
+                }
+            }
+        }
+        return A;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void mostrarResultadoFiltro(Button b){
@@ -245,7 +263,7 @@ public class MapsFragment extends Fragment {
         }
     }
     private void trazarRuta(Location l1,String lat,String lng){
-        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&destination=9.99074,-83.03596"+ "&mode=walking"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
+        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -269,10 +287,38 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
-    private void desplegarCarrusel(Location l1, String lat,String lng, String nombre, String idsitio, String idfoto){
+    public void obtenerDistancia(Location l1,Sitio s){
+        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())+ "&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    jso = new JSONObject(response);
+                    JSONArray jRoutes1 = jso.getJSONArray("routes");
+                    JSONArray jLegs1 = ((JSONObject)(jRoutes1.get(0))).getJSONArray("legs");
+                    String distancia = ((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text");
+                    distancia = distancia.substring(0,distancia.length()-3);
+                    Log.d("Prueba3",distancia);
+                    s.setDistancia(Float.valueOf(distancia));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("errorJson",error.toString());
+
+            }
+        });
+        queue.add(stringRequest);
+    }
+    private void desplegarCarrusel(Location l1,Sitio s){
         View viewSearchFragment = SearchFragment.getSearchVista();
         LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);
-        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+lat+","+lng+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
+        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -287,10 +333,11 @@ public class MapsFragment extends Fragment {
                     TextView distancia = results.findViewById(R.id.site_distance);
                     TextView address = results.findViewById(R.id.site_address);
                     ImageView imagen = results.findViewById(R.id.siteImageViewResult);
-                    bdGetSiteFoto(imagen, idfoto);
-                    titulo.setText(nombre);
+                    bdGetSiteFoto(imagen, s.getIdFotoPredeterminada());
+                    titulo.setText(s.getNombre());
                     //distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
-                    colocarFiltro(viewSearchFragment.findViewById(R.id.tituloLugares), distancia);
+                    String distanciaTexto = ((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text");
+                    colocarFiltro(viewSearchFragment.findViewById(R.id.tituloLugares), distancia,distanciaTexto,s.getTiempoEspera(),s.getAccRuedas());
                     address.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9,40));
                     /*((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text");
                     ((JSONObject)jLegs1.get(0)).getJSONObject("end_address").toString()*/;
@@ -303,10 +350,14 @@ public class MapsFragment extends Fragment {
                             direccion1.setId(View.generateViewId());
 
                             TextView txtTitulo = direccion1.findViewById(R.id.titL);
-                            txtTitulo.setText(nombre);
+                            txtTitulo.setText(s.getNombre());
                             TextView txtDis = direccion1.findViewById(R.id.textView4);
                             TextView dis = view.findViewById(R.id.site_distance);
-                            txtDis.setText(dis.getText());
+                            try {
+                                txtDis.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                             Button btnDir = direccion1.findViewById(R.id.button3);
                             btnDir.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -316,10 +367,14 @@ public class MapsFragment extends Fragment {
                                     View direccion2 = getLayoutInflater().inflate(R.layout.fragment_direccion2, null);
                                     direccion2.setId(View.generateViewId());
                                     TextView titulo = direccion2.findViewById(R.id.textView8);
-                                    titulo.setText(nombre);
+                                    titulo.setText(s.getNombre());
                                     TextView dis2 = direccion2.findViewById(R.id.textView6);
                                     TextView txtDis1 = txtDis;
-                                    dis2.setText(txtDis1.getText());
+                                    try {
+                                        dis2.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                     TextView addressBanner2 = direccion2.findViewById(R.id.textView9);
                                     TextView DurationBanner2 = direccion2.findViewById(R.id.textView7);
                                     TextView wazeLink = direccion2.findViewById(R.id.textView10);
@@ -333,7 +388,7 @@ public class MapsFragment extends Fragment {
                                     googleMapsLink.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://maps.google.com/?q="+lat+","+lng));
+                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://maps.google.com/?q="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())));
                                             startActivity(browserIntent);
 
                                         }
@@ -341,13 +396,13 @@ public class MapsFragment extends Fragment {
                                     wazeLink.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q="+lat+","+lng));
+                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())));
                                             startActivity(browserIntent);
                                         }
                                     });
                                     cly2.addView(direccion2);
                                     ajustarPosicionBanner(direccion2,cly2);
-                                    trazarRuta(l1,lat,lng);
+                                    trazarRuta(l1,String.valueOf(s.getCoordenadas().getLatitude()),String.valueOf(s.getCoordenadas().getLongitude()));
                                 }
                             });
 
@@ -356,17 +411,17 @@ public class MapsFragment extends Fragment {
 
                             VisitanteSingleton user = VisitanteSingleton.getInstance();
                             ImageView favBtn = direccion1.findViewById(R.id.favImageMap);
-                            setFavoriteImage(user.siteFavoriteStatus(idsitio), favBtn);
+                            setFavoriteImage(user.siteFavoriteStatus(s.getIdSite()), favBtn);
                             favBtn.setClickable(true); //Favoritos
                             favBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (user.siteFavoriteStatus(idsitio)){
-                                        user.bdRemoveFavorite(idsitio, view);
+                                    if (user.siteFavoriteStatus(s.getIdSite())){
+                                        user.bdRemoveFavorite(s.getIdSite(), view);
                                         setFavoriteImage(false, favBtn);
                                     }
                                     else{
-                                        user.bdAddFavorite(idsitio, view);
+                                        user.bdAddFavorite(s.getIdSite(), view);
                                         setFavoriteImage(true, favBtn);
                                     }
                                 }
@@ -391,27 +446,31 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
-    public void colocarFiltro(TextView titulo,TextView dis){
-        //FuncionOrdenarMayorAmenor()
+    public void colocarFiltro(TextView titulo,TextView label,String distanciaTexto,int tiempoEspera,Boolean accesible){
         switch (filtroNum){
             case 0:
                 titulo.setText("Lugares cerca de ti");
-                dis.setText("1 KM");
+                label.setText(distanciaTexto);
                 break;
             case 1:
                 titulo.setText("Filtro");
+                label.setText("nada");
                 break;
             case 2:
                 titulo.setText("Lugares cerca de ti");
-                dis.setText("1 KM");
+                label.setText(distanciaTexto);
                 break;
             case 3:
                 titulo.setText("Tiempo de espera");
-                dis.setText("5 MIN");
+                label.setText(String.valueOf(tiempoEspera) + "Min");
                 break;
             case 4:
                 titulo.setText("Accesibilidad para silla de ruedas");
-                dis.setText("ACCESIBLE");
+                if(accesible){
+                    label.setText("ACCESIBLE");
+                }else{
+                    label.setText("NO ACCESIBLE");
+                }
                 break;
         }
     }
