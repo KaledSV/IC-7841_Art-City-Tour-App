@@ -97,6 +97,7 @@ public class MapsFragment extends Fragment {
     GoogleMap mMap;
     JSONObject jso;
     int filtroNum = 0;
+    int distanceSites = 0;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -200,6 +201,7 @@ public class MapsFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 ArrayList<Sitio> sites = new ArrayList<>();
                 if (task.isSuccessful()) {
+                    distanceSites = 0;
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Sitio site = document.toObject(Sitio.class);
                         assert site != null;
@@ -208,24 +210,22 @@ public class MapsFragment extends Fragment {
                         LatLng coordenada = new LatLng(site.getCoordenadas().getLatitude(),site.getCoordenadas().getLongitude());
                         mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(site.getNombre()));
                         sites.add(site);
+                        obtenerDistancia(location, site, sites);
                     }
-                    for(int i=0;i<sites.size();i++){
-                        Log.d("prueba",sites.get(i).getNombre());
-                        Log.d("prueba",String.valueOf(sites.get(i).getDistancia()));
-                        obtenerDistancia(location,sites.get(i));
-                    }
-                    //ordenarlos ascendente
-                    sites = OrdenarAscendenteXDistancia(sites);
-                    for (int i=0;i<sites.size();i++){
-                        Log.d("prueba2",sites.get(i).getNombre());
-                        Log.d("prueba2",String.valueOf(sites.get(i).getDistancia()));
-                        desplegarCarrusel(location,sites.get(i));
-                    }
+
                 } else {
                     Log.w("res", "Error getting documents.", task.getException());
                 }
             }
         });
+    }
+
+    public void orderAfterDistances(Location location, ArrayList<Sitio> sites){
+        if (distanceSites == sites.size()){
+            //ordenarlos ascendente
+            sites = OrdenarAscendenteXDistancia(sites);
+            desplegarCarrusel(location,sites);
+        }
     }
 
     public ArrayList<Sitio> OrdenarAscendenteXDistancia(ArrayList<Sitio> A){
@@ -294,7 +294,7 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
-    public void obtenerDistancia(Location l1,Sitio s){
+    public void obtenerDistancia(Location l1, Sitio s, ArrayList<Sitio> sites){
         String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())+ "&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -306,8 +306,11 @@ public class MapsFragment extends Fragment {
                     JSONArray jLegs1 = ((JSONObject)(jRoutes1.get(0))).getJSONArray("legs");
                     String distancia = ((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text");
                     distancia = distancia.substring(0,distancia.length()-3);
+                    distancia = distancia.replace(",", "");
                     Log.d("Prueba3",distancia);
-                    s.setDistancia(Float.valueOf(distancia));
+                    s.setDistancia(Float.parseFloat(distancia));
+                    distanceSites++;
+                    orderAfterDistances(l1, sites);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -322,137 +325,143 @@ public class MapsFragment extends Fragment {
         });
         queue.add(stringRequest);
     }
-    private void desplegarCarrusel(Location l1,Sitio s){
-        View viewSearchFragment = SearchFragment.getSearchVista();
-        LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);
-        String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    jso = new JSONObject(response);
-                    JSONArray jRoutes1 = jso.getJSONArray("routes");
-                    JSONArray jLegs1 = ((JSONObject)(jRoutes1.get(0))).getJSONArray("legs");
-                    View results = getLayoutInflater().inflate(R.layout.result_layout, null);
-                    results.setId(View.generateViewId());
-                    TextView titulo = results.findViewById(R.id.site_name);
-                    TextView distancia = results.findViewById(R.id.site_distance);
-                    TextView address = results.findViewById(R.id.site_address);
-                    ImageView imagen = results.findViewById(R.id.siteImageViewResult);
-                    bdGetSiteFoto(imagen, s.getIdFotoPredeterminada());
-                    titulo.setText(s.getNombre());
-                    //distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
-                    String distanciaTexto = ((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text");
-                    colocarFiltro(viewSearchFragment.findViewById(R.id.tituloLugares), distancia,distanciaTexto,s.getTiempoEspera(),s.getAccRuedas());
-                    address.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9,40));
-                    /*((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text");
-                    ((JSONObject)jLegs1.get(0)).getJSONObject("end_address").toString()*/;
-                    results.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            viewSearchFragment.findViewById(R.id.includeLugares).setVisibility(View.INVISIBLE);
-                            ConstraintLayout cly = viewSearchFragment.findViewById(R.id.cl);
-                            View direccion1 = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
-                            direccion1.setId(View.generateViewId());
+    private void desplegarCarrusel(Location l1, ArrayList<Sitio> sites){
+        if (sites.size()>0){
+            Sitio s = sites.get(0);
+            Log.d("Prueba Jacobniana", s.getNombre() + ": " + s.getDistancia());
+            View viewSearchFragment = SearchFragment.getSearchVista();
+            LinearLayout layoutVertical = (LinearLayout) viewSearchFragment.findViewById(R.id.layoutCerca);
+            String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+l1.getLatitude()+","+l1.getLongitude()+"&destination="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())+"&mode=drive"+"&key=AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio";
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        jso = new JSONObject(response);
+                        JSONArray jRoutes1 = jso.getJSONArray("routes");
+                        JSONArray jLegs1 = ((JSONObject)(jRoutes1.get(0))).getJSONArray("legs");
+                        View results = getLayoutInflater().inflate(R.layout.result_layout, null);
+                        results.setId(View.generateViewId());
+                        TextView titulo = results.findViewById(R.id.site_name);
+                        TextView distancia = results.findViewById(R.id.site_distance);
+                        TextView address = results.findViewById(R.id.site_address);
+                        ImageView imagen = results.findViewById(R.id.siteImageViewResult);
+                        bdGetSiteFoto(imagen, s.getIdFotoPredeterminada());
+                        titulo.setText(s.getNombre());
+                        //distancia.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                        String distanciaTexto = ((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text");
+                        colocarFiltro(viewSearchFragment.findViewById(R.id.tituloLugares), distancia,distanciaTexto,s.getTiempoEspera(),s.getAccRuedas());
+                        address.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9,40));
+                        /*((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text");
+                        ((JSONObject)jLegs1.get(0)).getJSONObject("end_address").toString()*/;
+                        results.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                viewSearchFragment.findViewById(R.id.includeLugares).setVisibility(View.INVISIBLE);
+                                ConstraintLayout cly = viewSearchFragment.findViewById(R.id.cl);
+                                View direccion1 = getLayoutInflater().inflate(R.layout.fragment_direccion1, null);
+                                direccion1.setId(View.generateViewId());
 
-                            TextView txtTitulo = direccion1.findViewById(R.id.titL);
-                            txtTitulo.setText(s.getNombre());
-                            TextView txtDis = direccion1.findViewById(R.id.textView4);
-                            TextView dis = view.findViewById(R.id.site_distance);
-                            try {
-                                txtDis.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                TextView txtTitulo = direccion1.findViewById(R.id.titL);
+                                txtTitulo.setText(s.getNombre());
+                                TextView txtDis = direccion1.findViewById(R.id.textView4);
+                                TextView dis = view.findViewById(R.id.site_distance);
+                                try {
+                                    txtDis.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Button btnDir = direccion1.findViewById(R.id.button3);
+                                btnDir.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        viewSearchFragment.findViewById(direccion1.getId()).setVisibility(View.INVISIBLE);
+                                        ConstraintLayout cly2 = viewSearchFragment.findViewById(R.id.cl);
+                                        View direccion2 = getLayoutInflater().inflate(R.layout.fragment_direccion2, null);
+                                        direccion2.setId(View.generateViewId());
+                                        TextView titulo = direccion2.findViewById(R.id.textView8);
+                                        titulo.setText(s.getNombre());
+                                        TextView dis2 = direccion2.findViewById(R.id.textView6);
+                                        TextView txtDis1 = txtDis;
+                                        try {
+                                            dis2.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        TextView addressBanner2 = direccion2.findViewById(R.id.textView9);
+                                        TextView DurationBanner2 = direccion2.findViewById(R.id.textView7);
+                                        TextView wazeLink = direccion2.findViewById(R.id.textView10);
+                                        TextView googleMapsLink = direccion2.findViewById(R.id.textView11);
+                                        try {
+                                            DurationBanner2.setText(((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text"));
+                                            addressBanner2.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        googleMapsLink.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://maps.google.com/?q="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())));
+                                                startActivity(browserIntent);
+
+                                            }
+                                        });
+                                        wazeLink.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())));
+                                                startActivity(browserIntent);
+                                            }
+                                        });
+                                        cly2.addView(direccion2);
+                                        ajustarPosicionBanner(direccion2,cly2);
+                                        trazarRuta(l1,String.valueOf(s.getCoordenadas().getLatitude()),String.valueOf(s.getCoordenadas().getLongitude()));
+                                    }
+                                });
+
+                                ImageView photoView = direccion1.findViewById(R.id.imageView3);
+                                photoView.setImageDrawable(imagen.getDrawable());
+
+                                VisitanteSingleton user = VisitanteSingleton.getInstance();
+                                ImageView favBtn = direccion1.findViewById(R.id.favImageMap);
+                                setFavoriteImage(user.siteFavoriteStatus(s.getIdSite()), favBtn);
+                                favBtn.setClickable(true); //Favoritos
+                                favBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (user.siteFavoriteStatus(s.getIdSite())){
+                                            user.bdRemoveFavorite(s.getIdSite(), view);
+                                            setFavoriteImage(false, favBtn);
+                                        }
+                                        else{
+                                            user.bdAddFavorite(s.getIdSite(), view);
+                                            setFavoriteImage(true, favBtn);
+                                        }
+                                    }
+                                });
+
+                                cly.addView(direccion1);
+                                ajustarPosicionBanner(direccion1,cly);
                             }
-                            Button btnDir = direccion1.findViewById(R.id.button3);
-                            btnDir.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    viewSearchFragment.findViewById(direccion1.getId()).setVisibility(View.INVISIBLE);
-                                    ConstraintLayout cly2 = viewSearchFragment.findViewById(R.id.cl);
-                                    View direccion2 = getLayoutInflater().inflate(R.layout.fragment_direccion2, null);
-                                    direccion2.setId(View.generateViewId());
-                                    TextView titulo = direccion2.findViewById(R.id.textView8);
-                                    titulo.setText(s.getNombre());
-                                    TextView dis2 = direccion2.findViewById(R.id.textView6);
-                                    TextView txtDis1 = txtDis;
-                                    try {
-                                        dis2.setText(((JSONObject)jLegs1.get(0)).getJSONObject("distance").getString("text"));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    TextView addressBanner2 = direccion2.findViewById(R.id.textView9);
-                                    TextView DurationBanner2 = direccion2.findViewById(R.id.textView7);
-                                    TextView wazeLink = direccion2.findViewById(R.id.textView10);
-                                    TextView googleMapsLink = direccion2.findViewById(R.id.textView11);
-                                    try {
-                                        DurationBanner2.setText(((JSONObject)jLegs1.get(0)).getJSONObject("duration").getString("text"));
-                                        addressBanner2.setText(((JSONObject)jLegs1.get(0)).getString("end_address").substring(9));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    googleMapsLink.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://maps.google.com/?q="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())));
-                                            startActivity(browserIntent);
-
-                                        }
-                                    });
-                                    wazeLink.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://maps.google.com/?q="+String.valueOf(s.getCoordenadas().getLatitude())+","+String.valueOf(s.getCoordenadas().getLongitude())));
-                                            startActivity(browserIntent);
-                                        }
-                                    });
-                                    cly2.addView(direccion2);
-                                    ajustarPosicionBanner(direccion2,cly2);
-                                    trazarRuta(l1,String.valueOf(s.getCoordenadas().getLatitude()),String.valueOf(s.getCoordenadas().getLongitude()));
-                                }
-                            });
-
-                            ImageView photoView = direccion1.findViewById(R.id.imageView3);
-                            photoView.setImageDrawable(imagen.getDrawable());
-
-                            VisitanteSingleton user = VisitanteSingleton.getInstance();
-                            ImageView favBtn = direccion1.findViewById(R.id.favImageMap);
-                            setFavoriteImage(user.siteFavoriteStatus(s.getIdSite()), favBtn);
-                            favBtn.setClickable(true); //Favoritos
-                            favBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (user.siteFavoriteStatus(s.getIdSite())){
-                                        user.bdRemoveFavorite(s.getIdSite(), view);
-                                        setFavoriteImage(false, favBtn);
-                                    }
-                                    else{
-                                        user.bdAddFavorite(s.getIdSite(), view);
-                                        setFavoriteImage(true, favBtn);
-                                    }
-                                }
-                            });
-
-                            cly.addView(direccion1);
-                            ajustarPosicionBanner(direccion1,cly);
-                        }
-                    });
-                    layoutVertical.addView(results);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                        });
+                        layoutVertical.addView(results);
+                        sites.remove(0);
+                        desplegarCarrusel(l1, sites);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("errorJson",error.toString());
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("errorJson",error.toString());
 
-            }
-        });
-        queue.add(stringRequest);
+                }
+            });
+            queue.add(stringRequest);
+        }
     }
+
     public void colocarFiltro(TextView titulo,TextView label,String distanciaTexto,int tiempoEspera,Boolean accesible){
         switch (filtroNum){
             case 0:
