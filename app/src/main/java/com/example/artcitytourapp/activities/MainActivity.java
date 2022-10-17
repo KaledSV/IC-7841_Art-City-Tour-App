@@ -84,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (uri != null) //Display the URI for parsing
         {
-            Set<String> args = uri.getQueryParameterNames();
-            String idSitio = uri.getQueryParameter("id");  //will return "V-Maths-Addition "
+            Set<String> args = uri.getQueryParameterNames(); // Retrieves all arguments usable with the URI
+            String idSitio = uri.getQueryParameter("id");
             getSiteData(idSitio);
         }
 
