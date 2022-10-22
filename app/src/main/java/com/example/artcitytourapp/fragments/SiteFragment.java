@@ -71,6 +71,7 @@ import java.util.Objects;
 
 import Fotografia.Fotografia;
 import Resenna.Resenna;
+import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
@@ -116,6 +117,14 @@ public class SiteFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 createPhotoDialog();
+            }
+        });
+
+        Button addPlan = (Button) view.findViewById(R.id.addPlanButton_SiteInfo);
+        addPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RutaPersonalizada.getInstance().addSiteMyRoute(site.getIdSite(), view);
             }
         });
 

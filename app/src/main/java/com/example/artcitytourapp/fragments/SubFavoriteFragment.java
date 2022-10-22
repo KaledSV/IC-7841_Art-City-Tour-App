@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
@@ -80,7 +81,7 @@ public class SubFavoriteFragment extends Fragment {
     }
     protected void bdGetSiteFoto(Sitio espSite){
         if (espSite.getIdFotoPredeterminada() == null){
-            addTableRow(espSite, "Imagenes Interfaz/notFoundImage.png");
+            addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png");
         }
         else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -92,9 +93,9 @@ public class SubFavoriteFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             if (document.get("foto") == null) {
-                                addTableRow(espSite, "Imagenes Interfaz/notFoundImage.png");
+                                addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png");
                             } else {
-                                addTableRow(espSite, (String) Objects.requireNonNull(document.get("foto")));
+                                addTableRowFav(espSite, (String) Objects.requireNonNull(document.get("foto")));
                             }
                         } else {
                             Log.d("TAG", "No such document");
@@ -107,7 +108,7 @@ public class SubFavoriteFragment extends Fragment {
         }
     }
 
-    protected void addTableRow(Sitio espSite, String imgPath) {
+    protected void addTableRowFav(Sitio espSite, String imgPath) {
         TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.fav_rows, null);
         VisitanteSingleton user = VisitanteSingleton.getInstance();
 
@@ -153,13 +154,20 @@ public class SubFavoriteFragment extends Fragment {
             }
         });
 
-        addSiteImageView.setClickable(true);
-        addSiteImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // todo add to personalized plan
-            }
-        });
+        if (RutaPersonalizada.getInstance().getMyRouteSitesIds().contains(espSite.getIdSite())){
+            addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
+        }
+        else{
+            addSiteImageView.setImageResource(R.drawable.ic_baseline_add_google_24);
+            addSiteImageView.setClickable(true);
+            addSiteImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RutaPersonalizada.getInstance().addSiteMyRoute(espSite.getIdSite(), view);
+                    addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
+                }
+            });
+        }
 
         table.addView(siteRow);
     }

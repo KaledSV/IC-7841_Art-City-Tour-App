@@ -7,8 +7,9 @@
     tools:context=".fragments.SubFavoriteFragment">
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        app:layout_constraintWidth_percent="0.85"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +35,7 @@
                 android:id="@+id/tableFavSitesList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:shrinkColumns="*" />
+                />
 
             <TextView
                 android:id="@+id/lblRecommended"
@@ -51,7 +52,7 @@
                 android:id="@+id/tableRecSitesList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:shrinkColumns="*"/>
+                />
 
         </LinearLayout>
     </ScrollView>

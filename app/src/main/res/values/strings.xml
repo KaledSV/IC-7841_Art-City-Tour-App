@@ -20,7 +20,7 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="routeName_routeList">Cargando…</string>
+    <string name="loading">Cargando…</string>
     <string name="descriptionList_routeList">Lista de sitios</string>
     <string name="cercania_sitesList">Cercania</string>
     <string name="resenas_sitesList">Reseñas</string>
@@ -74,4 +74,8 @@
     <string name="site_name">Nombre del sitio</string>
     <string name="dir2_text1"><u>Abrir en Google Maps</u></string>
     <string name="dir2_text2"><u>Abrir en Waze</u></string>
+    <string name="plan_title">Por amor a Chepe</string>
+    <string name="order_list">Ordenar \n lista</string>
+    <string name="propia">Propia</string>
+    <string name="compartida">Compartida</string>
 </resources>

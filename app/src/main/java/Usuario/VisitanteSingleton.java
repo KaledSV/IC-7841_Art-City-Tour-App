@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import Fotografia.Fotografia;
 import Resenna.Resenna;
@@ -63,7 +65,6 @@ public class VisitanteSingleton extends Usuario {
     @SuppressWarnings("unchecked")
     public static void LoginVisitante(String correo, String contrasenna){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        // Create a new user with a first and last name
         db.collection("Usuarios")
                 .whereEqualTo("correo", correo)
                 .whereEqualTo("contraseña", contrasenna)
@@ -77,6 +78,7 @@ public class VisitanteSingleton extends Usuario {
                                 instance.setReviewIdDislike((List<String>) doc.get("reviewIdDislike"));
                                 instance.setPhotoIdLike((List<String>)doc.get("photoIdLike"));
                                 instance.setPhotoIdDislike((List<String>) doc.get("photoIdDislike"));
+                                RutaPersonalizada.alterRutaPersonalizada((String) doc.get("rutaPersonal"), (String) doc.get("rutaCompartida"));
                             }
                         } else {
                             // todo login incorrecto
@@ -149,7 +151,8 @@ public class VisitanteSingleton extends Usuario {
         this.photoIdDislike = photoIdDislike;
     }
 
-    public void bdGetFavoritos(){
+    // load methods
+    private void bdGetFavoritos(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Create a new user with a first and last name
         db.collection("Favoritos")

@@ -2,7 +2,7 @@
 <TableRow
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="left|center_vertical"
     android:padding="10dp">
 
@@ -36,7 +36,7 @@
     <LinearLayout
         android:id="@+id/siteData"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -63,7 +63,6 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:padding="5dp"
-        android:layout_weight="0.05"
-        android:background="@drawable/ic_baseline_add_google_24"/>
+        android:layout_weight="0.05"/>
 
 </TableRow>

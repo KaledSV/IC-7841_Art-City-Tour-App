@@ -12,7 +12,7 @@
         android:background="@drawable/row_border"
         android:fontFamily="@font/roboto_regular"
         android:paddingBottom="10dp"
-        android:text="@string/routeName_routeList"
+        android:text="@string/loading"
         android:textAlignment="center"
         android:textColor="#80005D"
         android:textSize="32sp"
