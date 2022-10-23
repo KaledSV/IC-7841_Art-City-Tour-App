@@ -21,10 +21,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArtCityTourApp"
         tools:targetApi="31">
-
-        <!--
-             TODO: Api de google maps.
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCZlQBg07B2uDEW3B-Ym7p3kKOM8JcuNio" />

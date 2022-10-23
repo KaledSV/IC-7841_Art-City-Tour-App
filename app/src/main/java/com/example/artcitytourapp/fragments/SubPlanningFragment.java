@@ -66,7 +66,6 @@ public class SubPlanningFragment extends Fragment {
                 FragmentContainerView listContainer = view.findViewById(R.id.listContainer);
                 listContainer.removeAllViewsInLayout();
                 if (b){
-                    // todo start editing and change layout
                     SubPlanningOrderSitesListFragment subPlanningOrder = new SubPlanningOrderSitesListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.listContainer, subPlanningOrder, "subPlanningOrderListFragment")

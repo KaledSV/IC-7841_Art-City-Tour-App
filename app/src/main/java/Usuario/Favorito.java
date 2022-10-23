@@ -12,8 +12,4 @@ public class Favorito {
     public Favorito(List<Sitio> sitios) {
         this.sitios = sitios;
     }
-
-
-    //Métodos
-    //TODO
 }
