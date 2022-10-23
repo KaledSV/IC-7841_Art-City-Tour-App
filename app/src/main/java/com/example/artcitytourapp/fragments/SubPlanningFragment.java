@@ -4,7 +4,9 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainer;
+import androidx.fragment.app.FragmentContainerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import Ruta.RutaPersonalizada;
+import Sitio.SitioPersonalizado;
 
 public class SubPlanningFragment extends Fragment {
     View view;
@@ -25,12 +28,29 @@ public class SubPlanningFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_sub_planning, container, false);
+
+        for (SitioPersonalizado site : RutaPersonalizada.getInstance().getMyRoute()){
+            Log.d("WEEEEEEEEEEEEEEEEEEEe", site.getFieldValues());
+        }
+        for (SitioPersonalizado site : RutaPersonalizada.getInstance().getSharedRoute()){
+            Log.d("eEEEEEEEEEEEEEEEEEEEW", site.getFieldValues());
+        }
+        Log.d("WEEEEEEEEEEEE",  RutaPersonalizada.getInstance().getName() + " " +  RutaPersonalizada.getInstance().getCantSitios());
+        Log.d("WEEEEEEEEEEEE",  RutaPersonalizada.getInstance().getMyRoutePersonalizedSitesIds().toString());
+        Log.d("WEEEEEEEEEEEE",  RutaPersonalizada.getInstance().getMyRouteSitesIds().toString());
         loadData();
         return view;
     }
 
     public void loadData(){
         RutaPersonalizada ruta = RutaPersonalizada.getInstance();
+        String cantidad = String.valueOf(ruta.getCantSitios());
+        if (ruta.getCantSitios() > 1){
+            cantidad += " sitios";
+        }
+        else{
+            cantidad += " sitio";
+        }
 
         final EditText editPlanTitle = view.findViewById(R.id.editPlanTitle);
         final TextView lblNumSites = view.findViewById(R.id.lblNumSites);
@@ -39,10 +59,12 @@ public class SubPlanningFragment extends Fragment {
         final TextView listDes = view.findViewById(R.id.listDes);
 
         editPlanTitle.setText(ruta.getName());
-        lblNumSites.setText(ruta.getCantSitios());
+        lblNumSites.setText(cantidad);
         orderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                FragmentContainerView listContainer = view.findViewById(R.id.listContainer);
+                listContainer.removeAllViewsInLayout();
                 if (b){
                     // todo start editing and change layout
                     SubPlanningOrderSitesListFragment subPlanningOrder = new SubPlanningOrderSitesListFragment();
@@ -65,8 +87,9 @@ public class SubPlanningFragment extends Fragment {
         listSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                FragmentContainerView listContainer = view.findViewById(R.id.listContainer);
+                listContainer.removeAllViewsInLayout();
                 if (b){
-                    // todo change shared list
                     listDes.setText(R.string.compartida);
                     SubPlanningSharedRouteListFragment subPlanningSharedRoute = new SubPlanningSharedRouteListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
@@ -75,7 +98,6 @@ public class SubPlanningFragment extends Fragment {
                             .commit();
                 }
                 else{
-                    // todo change my list
                     listDes.setText(R.string.propia);
                     SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()

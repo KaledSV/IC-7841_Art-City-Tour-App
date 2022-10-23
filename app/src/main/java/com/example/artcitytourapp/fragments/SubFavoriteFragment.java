@@ -163,7 +163,7 @@ public class SubFavoriteFragment extends Fragment {
             addSiteImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RutaPersonalizada.getInstance().addSiteMyRoute(espSite.getIdSite(), view);
+                    RutaPersonalizada.getInstance().addSiteMyRoute(espSite, view);
                     addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
                 }
             });

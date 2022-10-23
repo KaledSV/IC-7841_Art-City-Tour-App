@@ -124,7 +124,7 @@ public class SiteFragment extends Fragment {
         addPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RutaPersonalizada.getInstance().addSiteMyRoute(site.getIdSite(), view);
+                RutaPersonalizada.getInstance().addSiteMyRoute(site, view);
             }
         });
 
@@ -213,7 +213,6 @@ public class SiteFragment extends Fragment {
     // Activity methods
     @SuppressLint("SetTextI18n")
     protected void loadData(){
-        Log.w("TAG", site.getFieldValues());
         final TextView lblNameRoute = view.findViewById(R.id.siteRoute_SiteInfo);
         final TextView lblNameSite = view.findViewById(R.id.siteName_SiteInfo);
         final ExpandableTextView lblDescription = (ExpandableTextView) view.findViewById(R.id.expand_text_view);
