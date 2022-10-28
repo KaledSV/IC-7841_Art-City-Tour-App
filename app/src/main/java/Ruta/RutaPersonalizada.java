@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -267,7 +268,7 @@ public class RutaPersonalizada {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             SitioPersonalizado pSite = new SitioPersonalizado("", site.getIdSite(), site.getNombre(),
-                    site.getTipoSitio(), site.getIdFotoPredeterminada(), "", date);
+                    site.getTipoSitio(), site.getIdFotoPredeterminada(), "", new Timestamp(date));
             Map<String, Object> data = new HashMap<>();
             data.put("comentario", pSite.getComentario());
             data.put("horaVisita", pSite.getHoraVisita());

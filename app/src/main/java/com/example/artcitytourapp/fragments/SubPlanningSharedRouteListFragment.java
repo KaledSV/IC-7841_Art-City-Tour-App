@@ -76,7 +76,7 @@ public class SubPlanningSharedRouteListFragment extends Fragment {
         TextView siteScheduleTextView = (TextView) siteRow.findViewById(R.id.siteScheduleTextView);
         TextView siteTextView = (TextView) siteRow.findViewById(R.id.siteTextView);
         TextView siteTypeTextView = (TextView) siteRow.findViewById(R.id.siteTypeTextView);
-        EditText editTextComment = (EditText) siteRow.findViewById(R.id.editTextComment);
+        TextView editTextComment = (TextView) siteRow.findViewById(R.id.editTextComment);
         ImageView removeBtn = (ImageView) siteRow.findViewById(R.id.removeBtn);
 
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -86,7 +86,7 @@ public class SubPlanningSharedRouteListFragment extends Fragment {
         editTextComment.setClickable(false);
         removeBtn.setVisibility(View.GONE);
 
-        if (site.getHoraVisita().compareTo(new Date()) < 0)
+        if (site.getHoraVisita().toDate().compareTo(new Date()) < 0)
             siteScheduleTextView.setText(R.string.no_schedule);
         else
             siteScheduleTextView.setText(formatter.format(site.getHoraVisita()));

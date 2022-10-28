@@ -78,11 +78,17 @@
     <string name="propia">Propia</string>
     <string name="compartida">Compartida</string>
     <string name="add_comentary">Agregar comentario al plan…</string>
+    <string name="add_comentary_dialog">Agregar comentario</string>
+    <string name="add_schedule_dialog">Agregar horario de visita</string>
     <string name="no_comentary">No hay comentario del sitio</string>
     <string name="add_schedule">Agregar hora de visita</string>
+    <string name="add">Agregar</string>
     <string name="no_schedule">No hay hora de visita</string>
     <string name="no_shared_route">Pide a tu amigo que te comparta su plan y clickea su link!</string>
     <string name="add_sites">Agregá sitios</string>
     <string name="description_explore">Personalizá tu ruta del Art City Tour</string>
     <string name="explore">Explorar</string>
+    <string name="ex_comment">Ej. comentario</string>
+    <string name="select_date">Seleccione la fecha</string>
+    <string name="select_hour">Seleccione la hora</string>
 </resources>

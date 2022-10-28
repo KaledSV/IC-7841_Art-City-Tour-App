@@ -65,15 +65,16 @@
                 app:srcCompat="@drawable/ic_baseline_remove_circle_24" />
         </LinearLayout>
 
-        <EditText
+        <TextView
             android:id="@+id/editTextComment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/add_comentary"
-            android:inputType="textPersonName"
             android:text="@string/add_comentary"
-            tools:ignore="TouchTargetSizeCheck,TouchTargetSizeCheck" />
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/comment_background"
+            android:layout_marginTop="5dp"
+            />
     </LinearLayout>
 </TableRow>
