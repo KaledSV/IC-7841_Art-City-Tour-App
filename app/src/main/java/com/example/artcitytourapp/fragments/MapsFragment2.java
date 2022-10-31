@@ -1,4 +1,6 @@
-package com.example.artcitytourapp;
+package com.example.artcitytourapp.fragments;
+
+import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -25,7 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.artcitytourapp.fragments.MapsFragment;
+import com.example.artcitytourapp.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,13 +37,29 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import Ruta.RutaPersonalizada;
+import Sitio.Sitio;
+import Sitio.SitioPersonalizado;
 
 public class MapsFragment2 extends Fragment {
     GoogleMap mMap;
@@ -65,12 +84,15 @@ public class MapsFragment2 extends Fragment {
                 public void onLocationChanged(Location location) {
                     LatLng miUbicacion = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(miUbicacion).title("ubicacion actual"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(miUbicacion));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo( 17.0f ));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(miUbicacion,17)); // Mueve la cámara y hace zoom al punto del usuario ak7
+                    displaySitesCoordinates(location);
+                    /*
                     LatLng sanjose = new LatLng(9.93333, -84.08333);
                     LatLng cartago = new LatLng(9.86444, -83.91944);
                     mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(sanjose).title("San Jose"));
                     mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(cartago).title("Cartago"));
+                    */
+
                     //Funcion agregarMarcadores(listaSitiosPlanUser)
                     //for i:lista{
                     //      addMarker(Sitio.coordenada)
@@ -81,12 +103,14 @@ public class MapsFragment2 extends Fragment {
                     //      location = i
                     //
                     //}
+                    /*
                     trazarRuta(location,String.valueOf(sanjose.latitude),String.valueOf(sanjose.longitude));
                     Location locationCopia = location;
                     locationCopia.setLatitude(sanjose.latitude);
                     locationCopia.setLongitude(sanjose.longitude);
                     trazarRuta(locationCopia,String.valueOf(cartago.latitude),String.valueOf(cartago.longitude));
 
+                     */
                 }
 
                 @Override
@@ -110,7 +134,52 @@ public class MapsFragment2 extends Fragment {
 
         }
     };
-    public void getLocalizacion() {
+
+    private ArrayList<String> getUserPersonalSitesIds(){
+        if (RutaPersonalizada.getInstance().getMyRoute().size() > 0)
+        {
+            ArrayList<SitioPersonalizado> sites = (ArrayList<SitioPersonalizado>) RutaPersonalizada.getInstance().getMyRoute();
+            ArrayList<String> idSitios = new ArrayList<>();
+
+            for (SitioPersonalizado site : sites)
+            {
+                idSitios.add(site.getIdSitio());
+            }
+
+
+            return idSitios;
+        }
+
+        return null;
+    }
+
+    private void displaySitesCoordinates(Location curr_location) {
+        ArrayList<String> sitesIds = getUserPersonalSitesIds();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Sitios").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Sitio site = document.toObject(Sitio.class);
+                        assert site != null;
+                        if (sitesIds.contains(document.getId())){
+                            site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                            LatLng coordenada = new LatLng(site.getCoordenadas().getLatitude(), site.getCoordenadas().getLongitude());
+                            mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(site.getNombre()));
+                            trazarRuta(curr_location,String.valueOf(coordenada.latitude),String.valueOf(coordenada.longitude));
+                            curr_location.setLatitude(coordenada.latitude);
+                            curr_location.setLongitude(coordenada.longitude);
+                        }
+                    }
+                } else {
+                    Log.w("res", "Error getting documents.", task.getException());
+                }
+            }
+        });
+    }
+
+            public void getLocalizacion() {
         int permiso = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if(permiso == PackageManager.PERMISSION_DENIED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
@@ -146,6 +215,7 @@ public class MapsFragment2 extends Fragment {
         });
         queue.add(stringRequest);
     }
+
     private void trazarRutaAux(JSONObject jso) {
         JSONArray jRoutes;
         JSONArray jLegs;
@@ -168,6 +238,8 @@ public class MapsFragment2 extends Fragment {
             e.printStackTrace();
         }
     }
+
+
 
     @Nullable
     @Override
