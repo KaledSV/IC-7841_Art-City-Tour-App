@@ -24,6 +24,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.Objects;
 import java.util.Set;
 
+import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
 
 public class MainActivity extends AppCompatActivity {
@@ -82,11 +83,29 @@ public class MainActivity extends AppCompatActivity {
         //URI with site data for sharing
         Uri uri = getIntent().getData();
 
+        //Todo change variable names
         if (uri != null) //Display the URI for parsing
         {
             Set<String> args = uri.getQueryParameterNames(); // Retrieves all arguments usable with the URI
-            String idSitio = uri.getQueryParameter("id");
-            getSiteData(idSitio);
+            String fragment = uri.getFragment();
+            switch (fragment)
+            {
+                case "Planear":{
+                    //RutaPersonalizada.alterRutaPersonalizada();
+                    navController.navigate(R.id.planningFragment);
+
+                }break;
+
+                case "Sitios":{
+                    String idSitio = uri.getQueryParameter("id");
+                    getSiteData(idSitio);
+                }break;
+
+                default:
+                    break;
+            }
+
+
         }
 
         // Fragment

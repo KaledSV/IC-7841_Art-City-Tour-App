@@ -1,5 +1,7 @@
 package com.example.artcitytourapp.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,9 +9,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.artcitytourapp.R;
+
+import Ruta.RutaPersonalizada;
 
 public class PlanningFragment extends Fragment {
     View view;
@@ -22,6 +27,9 @@ public class PlanningFragment extends Fragment {
         final TextView fragmetTitle = view.findViewById(R.id.lblPlanningTitle);
         final TextView myRouteBtn = (TextView) view.findViewById(R.id.myRouteLbl);
         final TextView favBtn = (TextView) view.findViewById(R.id.favLbl);
+        final ImageView shareBtn = view.findViewById(R.id.planning_share_button);
+        final ImageView notifyBtn = view.findViewById(R.id.planning_notification_button);
+
         SubPlanningFragment subPlanning = new SubPlanningFragment();
         //MapsFragment subPlanning = new MapsFragment();
         requireActivity().getSupportFragmentManager().beginTransaction()
@@ -92,6 +100,39 @@ public class PlanningFragment extends Fragment {
             }
         });
 
+        shareBtn.setOnClickListener(view ->
+                share_plan()
+        );
+
+        notifyBtn.setOnClickListener(view ->
+                notify_user()
+        );
+
         return view;
+
+
+    }
+
+    private void share_plan(){
+        Intent sendIntent = new Intent();
+        String base = "Mirá que chiva esta ruta personalizada: ";
+        Uri.Builder builder = new Uri.Builder(); //Query builder URI for easier parsing
+        builder.scheme("https")
+                .authority("act.navigation.app")
+                .appendPath("Plan")
+                .appendQueryParameter("id_ruta_compartida",RutaPersonalizada.getInstance().getIdSharedRoute())
+                .appendQueryParameter("id_ruta_personal",RutaPersonalizada.getInstance().getIdMyRoute()) //Saca el id de la ruta personalizada
+                .fragment("Planear");
+        String Uri = builder.build().toString();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT,base + RutaPersonalizada.getInstance().getName() + "\n Mas informacion en: "+Uri);
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
+    private void notify_user(){
+        //Todo notifications
+        
     }
 }

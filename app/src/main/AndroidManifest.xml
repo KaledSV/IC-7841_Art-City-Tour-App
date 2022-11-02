@@ -58,7 +58,6 @@
                 <!-- 4 easier Parsing we use a path prefix -->
                 <data
                     android:host="act.navigation.app"
-                    android:pathPrefix="/Sitio"
                     android:scheme="https" />
             </intent-filter>
         </activity>

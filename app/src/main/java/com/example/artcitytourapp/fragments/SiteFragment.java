@@ -199,7 +199,6 @@ public class SiteFragment extends Fragment {
                 .authority("act.navigation.app")
                 .appendPath("Sitio")
                 .appendQueryParameter("id", site.getIdSite())
-                .appendQueryParameter("sort", "relevance")
                 .fragment("Sitios");
         String Uri = builder.build().toString();
         sendIntent.setAction(Intent.ACTION_SEND);
