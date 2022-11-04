@@ -485,4 +485,9 @@ public class VisitanteSingleton extends Usuario {
         instance.getPhotoIdDislike().add(idPhoto);
         bdUpdateDislikePhoto(view, foto, true);
     }
+
+    // update share route method
+    public void bdUpdateSharedRouteId(){
+        
+    }
 }

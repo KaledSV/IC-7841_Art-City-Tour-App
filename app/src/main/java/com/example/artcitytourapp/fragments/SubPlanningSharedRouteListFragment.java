@@ -33,7 +33,9 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Objects;
 
 import Ruta.RutaPersonalizada;
@@ -42,6 +44,9 @@ import Sitio.SitioPersonalizado;
 public class SubPlanningSharedRouteListFragment extends Fragment {
     View view;
     TableLayout table;
+
+    Calendar lastDate = new GregorianCalendar();
+    @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +84,6 @@ public class SubPlanningSharedRouteListFragment extends Fragment {
         TextView editTextComment = (TextView) siteRow.findViewById(R.id.editTextComment);
         ImageView removeBtn = (ImageView) siteRow.findViewById(R.id.removeBtn);
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         imageRow(siteImageView, imgPath);
         siteTextView.setText(site.getNombre());
         siteTypeTextView.setText(site.getTipoSitio());
@@ -87,9 +91,9 @@ public class SubPlanningSharedRouteListFragment extends Fragment {
         removeBtn.setVisibility(View.GONE);
 
         if (site.getHoraVisita().toDate().compareTo(new Date()) < 0)
-            siteScheduleTextView.setText(R.string.no_schedule);
+            siteScheduleTextView.setText(R.string.add_schedule);
         else
-            siteScheduleTextView.setText(formatter.format(site.getHoraVisita()));
+            siteScheduleTextView.setText(formatter.format(site.getHoraVisita().toDate()));
 
         if (Objects.equals(site.getComentario(), ""))
             editTextComment.setText(R.string.no_comentary);

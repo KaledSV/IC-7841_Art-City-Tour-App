@@ -49,7 +49,6 @@ public class RutaPersonalizada {
         instance.setIdMyRoute(idMyRoute);
         instance.setIdSharedRoute(idSharedRoute);
         instance.bdGetMyRoute();
-        instance.bdGetSharedRoute();
     }
 
     public static RutaPersonalizada getInstance() {

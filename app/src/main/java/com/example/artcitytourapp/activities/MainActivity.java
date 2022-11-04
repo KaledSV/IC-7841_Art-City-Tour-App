@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
             switch (fragment)
             {
                 case "Planear":{
-                    //RutaPersonalizada.alterRutaPersonalizada();
+                    RutaPersonalizada.getInstance().setIdSharedRoute("1");
+                    //
                     navController.navigate(R.id.planningFragment);
 
                 }break;
