@@ -87,6 +87,9 @@ public class SubPlanningMyRouteListFragment extends Fragment {
         }
         else{
             table.setVisibility(View.GONE);
+            ImageView optionsBtn = view.findViewById(R.id.optionsBtn);
+            optionsBtn.setVisibility(View.GONE);
+
             Button exploreBtn = view.findViewById(R.id.exploreBtn);
             exploreBtn.setOnClickListener(view -> {
                 //todo boton de explorar

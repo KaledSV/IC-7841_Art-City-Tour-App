@@ -129,6 +129,10 @@ public class RutaPersonalizada {
     // load methods
     @SuppressWarnings("unchecked")
     private void bdGetMyRoute(){
+        instance.getMyRoutePersonalizedSitesIds().clear();
+        instance.getMyRouteSitesIds().clear();
+        instance.getMyRoute().clear();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference docRef = db.collection("RutaPersonalizada").document(instance.getIdMyRoute());
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -184,6 +188,7 @@ public class RutaPersonalizada {
     @SuppressWarnings("unchecked")
     private void bdGetSharedRoute(){
         if(!Objects.equals(instance.getIdSharedRoute(), "")){
+            instance.getSharedRoute().clear();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("RutaPersonalizada").document(instance.getIdSharedRoute());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

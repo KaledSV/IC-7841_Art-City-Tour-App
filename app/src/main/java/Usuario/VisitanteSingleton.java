@@ -488,6 +488,6 @@ public class VisitanteSingleton extends Usuario {
 
     // update share route method
     public void bdUpdateSharedRouteId(){
-        
+
     }
 }
