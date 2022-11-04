@@ -7,13 +7,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import Fotografia.Fotografia;
 import Resenna.Resenna;
@@ -44,14 +41,13 @@ public class VisitanteSingleton extends Usuario {
     private List<String> photoIdDislike = null;
 
     // Private constructor prevents instantiation from other classes
-    public static VisitanteSingleton AlterSingleton(String id, String nombre, long numero, String correo, String contrasenna) {
+    public static void AlterSingleton(String id, String nombre, long numero, String correo, String contrasenna) {
         instance.setId(id);
         instance.setNombre(nombre);
         instance.setNumero(numero);
         instance.setCorreo(correo);
         instance.setContrasenna(contrasenna);
         instance.bdGetFavoritos();
-        return instance;
     }
 
     public static VisitanteSingleton getInstance() {

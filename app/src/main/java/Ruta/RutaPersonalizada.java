@@ -92,6 +92,7 @@ public class RutaPersonalizada {
 
     public void setIdSharedRoute(String idSharedRoute) {
         this.idSharedRoute = idSharedRoute;
+        this.bdGetSharedRoute();
     }
 
     public List<SitioPersonalizado> getMyRoute() {
