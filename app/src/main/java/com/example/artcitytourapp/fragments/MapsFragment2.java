@@ -99,7 +99,7 @@ public class MapsFragment2 extends Fragment {
     };
 
     private void displaySitesCoordinates(Location curr_location) {
-        List<String> sitesIds = RutaPersonalizada.getInstance().getMyRoutePersonalizedSitesIds();
+        List<String> sitesIds = RutaPersonalizada.getInstance().getMyRouteSitesIds(); // Changed to work with the actual site id's, instead of the personalized site id's
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Sitios").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

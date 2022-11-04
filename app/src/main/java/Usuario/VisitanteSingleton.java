@@ -70,6 +70,7 @@ public class VisitanteSingleton extends Usuario {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
                                 VisitanteSingleton.AlterSingleton(doc.getId(), (String)doc.get("nombre"), (long)doc.get("numero"), correo, contrasenna);
+                                instance.setId(doc.getId());
                                 instance.setReviewIdLike((List<String>)doc.get("reviewIdLike"));
                                 instance.setReviewIdDislike((List<String>) doc.get("reviewIdDislike"));
                                 instance.setPhotoIdLike((List<String>)doc.get("photoIdLike"));
@@ -487,7 +488,18 @@ public class VisitanteSingleton extends Usuario {
     }
 
     // update share route method
-    public void bdUpdateSharedRouteId(){
-
+    public void bdUpdateSharedRouteId(String msharedRouteId){
+        VisitanteSingleton user = VisitanteSingleton.getInstance(); // no está inicializado el bro
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Log.d("singleton user id",user.toString());
+        db.collection("Usuarios")
+                .document(user.getId())
+                .update("rutaCompartida",msharedRouteId)
+                .addOnSuccessListener(unused -> {
+                    Log.d("TAG", "Ruta compartida successfully updated!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("TAG", "Error updating document", e);
+                });
     }
 }

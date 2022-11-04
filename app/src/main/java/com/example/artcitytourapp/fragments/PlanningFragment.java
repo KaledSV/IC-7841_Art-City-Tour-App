@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.artcitytourapp.R;
 
 import Ruta.RutaPersonalizada;
+import Usuario.VisitanteSingleton;
 
 public class PlanningFragment extends Fragment {
     View view;
@@ -120,7 +121,6 @@ public class PlanningFragment extends Fragment {
         builder.scheme("https")
                 .authority("act.navigation.app")
                 .appendPath("Plan")
-                .appendQueryParameter("id_ruta_compartida",RutaPersonalizada.getInstance().getIdSharedRoute())
                 .appendQueryParameter("id_ruta_personal",RutaPersonalizada.getInstance().getIdMyRoute()) //Saca el id de la ruta personalizada
                 .fragment("Planear");
         String Uri = builder.build().toString();
