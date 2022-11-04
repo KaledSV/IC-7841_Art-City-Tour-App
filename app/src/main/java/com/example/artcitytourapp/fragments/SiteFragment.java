@@ -227,7 +227,7 @@ public class SiteFragment extends Fragment {
         bdGetReviewsIdBySite(site.getIdSite());
         bdGetPhotosIdSite(site.getIdSite());
         bdGetHorarioDiaIdSite(site.getIdSite());
-        setFavButon();
+        //setFavButon(); //Da error a la hora de abrir el app desde 0 por medio de un link
     }
 
     protected void cleanData(){
@@ -268,7 +268,7 @@ public class SiteFragment extends Fragment {
     protected void setFavButon(){
         VisitanteSingleton user = VisitanteSingleton.getInstance();
         final ImageView favImage = (ImageView) view.findViewById(R.id.favImage_SiteDes);
-        setFavoriteImage(user.siteFavoriteStatus(site), favImage);
+        setFavoriteImage(user.siteFavoriteStatus(site), favImage); //Error al abrir link de sitios teniendo el app cerrrada.
 
         favImage.setClickable(true);
         favImage.setOnClickListener(new View.OnClickListener() {
