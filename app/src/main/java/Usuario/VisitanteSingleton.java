@@ -7,13 +7,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import Fotografia.Fotografia;
 import Resenna.Resenna;
@@ -44,14 +41,13 @@ public class VisitanteSingleton extends Usuario {
     private List<String> photoIdDislike = null;
 
     // Private constructor prevents instantiation from other classes
-    public static VisitanteSingleton AlterSingleton(String id, String nombre, long numero, String correo, String contrasenna) {
+    public static void AlterSingleton(String id, String nombre, long numero, String correo, String contrasenna) {
         instance.setId(id);
         instance.setNombre(nombre);
         instance.setNumero(numero);
         instance.setCorreo(correo);
         instance.setContrasenna(contrasenna);
         instance.bdGetFavoritos();
-        return instance;
     }
 
     public static VisitanteSingleton getInstance() {
@@ -74,6 +70,7 @@ public class VisitanteSingleton extends Usuario {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
                                 VisitanteSingleton.AlterSingleton(doc.getId(), (String)doc.get("nombre"), (long)doc.get("numero"), correo, contrasenna);
+                                instance.setId(doc.getId());
                                 instance.setReviewIdLike((List<String>)doc.get("reviewIdLike"));
                                 instance.setReviewIdDislike((List<String>) doc.get("reviewIdDislike"));
                                 instance.setPhotoIdLike((List<String>)doc.get("photoIdLike"));
@@ -488,5 +485,21 @@ public class VisitanteSingleton extends Usuario {
     public void addDislikePhoto(String idPhoto, View view, Fotografia foto){
         instance.getPhotoIdDislike().add(idPhoto);
         bdUpdateDislikePhoto(view, foto, true);
+    }
+
+    // update share route method
+    public void bdUpdateSharedRouteId(String msharedRouteId){
+        VisitanteSingleton user = VisitanteSingleton.getInstance(); // no está inicializado el bro
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Log.d("singleton user id",user.toString());
+        db.collection("Usuarios")
+                .document(user.getId())
+                .update("rutaCompartida",msharedRouteId)
+                .addOnSuccessListener(unused -> {
+                    Log.d("TAG", "Ruta compartida successfully updated!");
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("TAG", "Error updating document", e);
+                });
     }
 }

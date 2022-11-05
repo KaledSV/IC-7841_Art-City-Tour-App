@@ -26,6 +26,7 @@ import java.util.Set;
 
 import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
+import Usuario.VisitanteSingleton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,11 +92,12 @@ public class MainActivity extends AppCompatActivity {
             switch (fragment)
             {
                 case "Planear":{
-                    //RutaPersonalizada.alterRutaPersonalizada();
+                    String sharedRouteId = uri.getQueryParameter("id_ruta_personalizada");
+                    //VisitanteSingleton.getInstance().bdUpdateSharedRouteId(sharedRouteId); en este punto, el usuario no está inicializado
+                    RutaPersonalizada.getInstance().setIdSharedRoute(sharedRouteId);
                     navController.navigate(R.id.planningFragment);
 
                 }break;
-
                 case "Sitios":{
                     String idSitio = uri.getQueryParameter("id");
                     getSiteData(idSitio);
@@ -104,17 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     break;
             }
-
-
         }
-
-        // Fragment
-        /*bottomNavigationView = findViewById(R.id.bottom_nav);
-        NavController navController = Navigation.findNavController(this, R.id.contentContainer);
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);*/
-
-
-
     }
 
     protected void getSiteData(String siteId) {

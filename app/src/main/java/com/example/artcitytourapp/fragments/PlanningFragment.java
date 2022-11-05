@@ -1,16 +1,19 @@
 package com.example.artcitytourapp.fragments;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.artcitytourapp.R;
 
@@ -105,7 +108,7 @@ public class PlanningFragment extends Fragment {
         );
 
         notifyBtn.setOnClickListener(view ->
-                notify_user()
+                update_user_plan()
         );
 
         return view;
@@ -120,7 +123,6 @@ public class PlanningFragment extends Fragment {
         builder.scheme("https")
                 .authority("act.navigation.app")
                 .appendPath("Plan")
-                .appendQueryParameter("id_ruta_compartida",RutaPersonalizada.getInstance().getIdSharedRoute())
                 .appendQueryParameter("id_ruta_personal",RutaPersonalizada.getInstance().getIdMyRoute()) //Saca el id de la ruta personalizada
                 .fragment("Planear");
         String Uri = builder.build().toString();
@@ -131,8 +133,9 @@ public class PlanningFragment extends Fragment {
         startActivity(shareIntent);
     }
 
-    private void notify_user(){
-        //Todo notifications
-        
-    }
+    @SuppressLint("RestrictedApi")
+    private void update_user_plan() {
+        RutaPersonalizada.alterRutaPersonalizada(RutaPersonalizada.getInstance().getIdMyRoute(),RutaPersonalizada.getInstance().getIdSharedRoute() );
+        Toast.makeText(getApplicationContext(),"Sincronización completa!",Toast.LENGTH_SHORT).show();
+        }
 }
