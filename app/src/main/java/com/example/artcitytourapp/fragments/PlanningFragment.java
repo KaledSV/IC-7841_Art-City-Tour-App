@@ -1,21 +1,23 @@
 package com.example.artcitytourapp.fragments;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.artcitytourapp.R;
 
 import Ruta.RutaPersonalizada;
-import Usuario.VisitanteSingleton;
 
 public class PlanningFragment extends Fragment {
     View view;
@@ -106,7 +108,7 @@ public class PlanningFragment extends Fragment {
         );
 
         notifyBtn.setOnClickListener(view ->
-                notify_user()
+                update_user_plan()
         );
 
         return view;
@@ -131,8 +133,9 @@ public class PlanningFragment extends Fragment {
         startActivity(shareIntent);
     }
 
-    private void notify_user(){
-        //Todo notifications
-        
-    }
+    @SuppressLint("RestrictedApi")
+    private void update_user_plan() {
+        RutaPersonalizada.alterRutaPersonalizada(RutaPersonalizada.getInstance().getIdMyRoute(),RutaPersonalizada.getInstance().getIdSharedRoute() );
+        Toast.makeText(getApplicationContext(),"Sincronización completa!",Toast.LENGTH_SHORT).show();
+        }
 }

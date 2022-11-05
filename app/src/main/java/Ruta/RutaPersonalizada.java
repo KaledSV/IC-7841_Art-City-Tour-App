@@ -16,6 +16,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +39,7 @@ public class RutaPersonalizada {
     private int cantSitios;
     private String idMyRoute = null;
     private String idSharedRoute = null;
+    private Timestamp lastModified = null;
     private List<SitioPersonalizado> myRoute = new ArrayList<SitioPersonalizado>();
     private List<String> myRoutePersonalizedSitesIds = new ArrayList<String>();
     private List<String> myRouteSitesIds = new ArrayList<String>();
@@ -88,6 +90,10 @@ public class RutaPersonalizada {
     public String getIdSharedRoute() {
         return idSharedRoute;
     }
+
+    public Timestamp getlastModified() { return lastModified;}
+
+    public void setLastModified(Timestamp timestamp) {this.lastModified = timestamp;}
 
     public void setIdSharedRoute(String idSharedRoute) {
         this.idSharedRoute = idSharedRoute;
@@ -143,6 +149,7 @@ public class RutaPersonalizada {
                     if (document.exists()) {
                         ArrayList<String> ids = (ArrayList<String>)document.get("sitiosPersonalizado");
                         instance.setName((String)document.get("nombre"));
+                        instance.setLastModified((Timestamp) document.get("ultimaModificacion"));
                         if (ids != null){
                             instance.setCantSitios(ids.size());
                             for(String idPersonalizedSite : ids){
@@ -371,5 +378,20 @@ public class RutaPersonalizada {
                         Log.w("TAG", "Error updating document", e);
                     }
                 });
+    }
+
+    @Override
+    public String toString() {
+        return "RutaPersonalizada{" +
+                "name='" + name + '\'' +
+                ", cantSitios=" + cantSitios +
+                ", idMyRoute='" + idMyRoute + '\'' +
+                ", idSharedRoute='" + idSharedRoute + '\'' +
+                ", lastModified=" + lastModified +
+                ", myRoute=" + myRoute +
+                ", myRoutePersonalizedSitesIds=" + myRoutePersonalizedSitesIds +
+                ", myRouteSitesIds=" + myRouteSitesIds +
+                ", sharedRoute=" + sharedRoute +
+                '}';
     }
 }
