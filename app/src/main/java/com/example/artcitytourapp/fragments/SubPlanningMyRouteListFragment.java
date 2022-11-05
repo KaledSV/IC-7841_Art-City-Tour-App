@@ -78,6 +78,7 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             });
             ArrayList<SitioPersonalizado> sites = (ArrayList<SitioPersonalizado>) RutaPersonalizada.getInstance().getMyRoute();
             for (SitioPersonalizado site : sites){
+                Log.d("jacob",site.getIdSitioPersonalizado());
                 bdGetSiteFoto(site);
             }
 

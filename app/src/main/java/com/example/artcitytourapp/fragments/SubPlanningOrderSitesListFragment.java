@@ -77,11 +77,15 @@ public class SubPlanningOrderSitesListFragment extends Fragment {
         DocumentReference docRef = db.collection("RutaPersonalizada").document(RutaPersonalizada.getInstance().getIdMyRoute());
         ArrayList<String> idsSitiosPlanes = new ArrayList<>();
         for (int i=0;i<adapter.mItems.size();i++){
-            //idsSitiosPlanes.add(adapter.mItems.get(i).getIdSitio());
-            Log.d("tag",adapter.mItems.get(i).getIdSitio());
-
+            idsSitiosPlanes.add(adapter.mItems.get(i).getIdSitioPersonalizado());
+            Log.d("tag",adapter.mItems.get(i).getIdSitioPersonalizado());
         }
-        //docRef.update("sitiosPersonalizado",idsSitiosPlanes);
+        docRef.update("sitiosPersonalizado",idsSitiosPlanes);
+        RutaPersonalizada.getInstance().setMyRoutePersonalizedSitesIds(idsSitiosPlanes);
+        RutaPersonalizada.getInstance().setMyRoute(adapter.mItems);
+
+        //RutaPersonalizada.alterRutaPersonalizada(RutaPersonalizada.getInstance().getIdMyRoute(),RutaPersonalizada.getInstance().getIdSharedRoute());
+        //RutaPersonalizada.getInstance().setMyRoutePersonalizedSitesIds(idsSitiosPlanes);
     }
 
 }

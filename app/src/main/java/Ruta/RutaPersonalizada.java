@@ -153,7 +153,10 @@ public class RutaPersonalizada {
                         if (ids != null){
                             instance.setCantSitios(ids.size());
                             for(String idPersonalizedSite : ids){
+                                instance.getMyRoutePersonalizedSitesIds().add(idPersonalizedSite);
+                                instance.getMyRoute().add(null);
                                 bdGetSiteMyRoute(idPersonalizedSite);
+
                             }
                         }
                     } else {
@@ -178,9 +181,11 @@ public class RutaPersonalizada {
                         SitioPersonalizado site = document.toObject(SitioPersonalizado.class);
                         if (site != null){
                             site.setIdSitioPersonalizado(document.getId());
-                            instance.getMyRoutePersonalizedSitesIds().add(idPersonalizedSite);
+
                             instance.getMyRouteSitesIds().add(site.getIdSitio());
-                            instance.getMyRoute().add(site);
+                            int i = instance.getMyRoutePersonalizedSitesIds().indexOf(idPersonalizedSite);
+                            instance.getMyRoute().set(i,site);
+
                         }
                     } else {
                         Log.d("TAG", "No such document");
@@ -342,7 +347,7 @@ public class RutaPersonalizada {
                     @Override
                     public void onSuccess(Void aVoid) {
                         instance.getMyRoute().remove(site);
-                        instance.getMyRouteSitesIds().add(site.getIdSitio());
+                        instance.getMyRouteSitesIds().remove(site.getIdSitio());
                         instance.setCantSitios(instance.getCantSitios() - 1);
                         Log.d("TAG", "DocumentSnapshot successfully updated!");
                     }
