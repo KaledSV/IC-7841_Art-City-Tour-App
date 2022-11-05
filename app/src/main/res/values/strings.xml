@@ -91,4 +91,16 @@
     <string name="ex_comment">Ej. comentario</string>
     <string name="select_date">Seleccione la fecha</string>
     <string name="select_hour">Seleccione la hora</string>
+    <string name="login">Login</string>
+    <string name="info_app">Obtener informacion del art city tour</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="forgot_pass">Olvide contraseña</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="retroceder">Retroceder</string>
+    <string name="confirm_pass">Confirmar contraseña</string>
+    <string name="pass">Contraseña</string>
+    <string name="email">Correo</string>
+    <string name="recuperate_pass">Recuperar Contraseña</string>
+    <string name="send_recu_email">Enviar correo de recuperacion</string>
+    <string name="confirm_pass_change">Confirmar Cambio</string>
 </resources>
