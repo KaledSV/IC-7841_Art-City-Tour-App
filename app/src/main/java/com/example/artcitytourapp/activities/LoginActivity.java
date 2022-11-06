@@ -21,6 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.artcitytourapp.R;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,10 +38,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import Usuario.VisitanteSingleton;
@@ -47,8 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressBar;
 
     FirebaseAuth fAuth;
-    private static final int RC_SIGN_IN = 100;
-    private GoogleSignInClient googleSignInClient;
+    CallbackManager mCallbackManager;
     ActivityResultLauncher<Intent> startActivityForResult;
 
     @Override
@@ -59,25 +66,22 @@ public class LoginActivity extends AppCompatActivity {
         loaddata();
         startActivityForResult = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        Log.d("Codigo", String.valueOf(result.getResultCode()));
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Log.d("Existo", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                            Intent data = result.getData();
-                            Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
-                            try{
-                                GoogleSignInAccount account = accountTask.getResult(ApiException.class);
-                                firebaseAuthWithGoogle(account);
-                            }catch (Exception e){
-                                new AlertDialog.Builder(getApplicationContext())
-                                        .setTitle("Error")
-                                        //.setMessage("" + e.getMessage())
-                                        .setMessage("Google no pudo verificar sus credenciales")
-                                        .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
-                                        .show();
-                            }
+                result -> {
+                    Log.d("Codigo", String.valueOf(result.getResultCode()));
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Log.d("Existo", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        try{
+                            GoogleSignInAccount account = accountTask.getResult(ApiException.class);
+                            firebaseAuthWithGoogle(account);
+                        }catch (Exception e){
+                            new AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("Error")
+                                    //.setMessage("" + e.getMessage())
+                                    .setMessage("Google no pudo verificar sus credenciales")
+                                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                                    .show();
                         }
                     }
                 });
@@ -139,7 +143,34 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         loginFacebook.setOnClickListener(view -> {
-            // todo
+            mCallbackManager = CallbackManager.Factory.create();
+
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+            LoginManager.getInstance().registerCallback(mCallbackManager,
+                    new FacebookCallback<LoginResult>() {
+                        @Override
+                        public void onSuccess(LoginResult loginResult) {
+                            handleFacebookAccessToken(loginResult.getAccessToken());
+                        }
+                        @Override
+                        public void onCancel() {
+                            new AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("Error")
+                                    //.setMessage("" + e.getMessage())
+                                    .setMessage("Facebook no pudo verificar sus credenciales")
+                                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                                    .show();
+                        }
+                        @Override
+                        public void onError(FacebookException exception) {
+                            new AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("Error")
+                                    //.setMessage("" + e.getMessage())
+                                    .setMessage("Facebook no pudo verificar sus credenciales")
+                                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                                    .show();
+                        }
+                    });
         });
 
         createAccountTextView.setOnClickListener(view -> {
@@ -155,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         Intent intent = googleSignInClient.getSignInIntent();
         startActivityForResult.launch(intent);
@@ -163,6 +194,48 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        fAuth.signInWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                String uid = Objects.requireNonNull(fAuth.getCurrentUser()).getUid();
+                String correo = Objects.requireNonNull(fAuth.getCurrentUser()).getEmail();
+
+                Log.d("DATOSSSSS", "uid: " + uid + ", correo: " + correo);
+                Log.d("DATOSSSSS", String.valueOf(Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()));
+                if (Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()){
+                    //register
+                    VisitanteSingleton.CreateVisitante(uid, correo);
+                }else{
+                    //login
+                    Log.d("user", uid);
+                    VisitanteSingleton.LoginVisitante(uid);
+                }
+                // change to main
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                new AlertDialog.Builder(getApplicationContext())
+                        .setTitle("Error")
+                        //.setMessage("" + task.getException())
+                        .setMessage("El usuario no se ha podido verificar, revise que ya este registrado")
+                        .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
+                        .show();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Pass the activity result back to the Facebook SDK
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         fAuth.signInWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
