@@ -44,13 +44,6 @@ public class SubPlanningFragment extends Fragment {
 
     public void loadData(){
         RutaPersonalizada ruta = RutaPersonalizada.getInstance();
-        String cantidad = String.valueOf(ruta.getCantSitios());
-        if (ruta.getCantSitios() > 1){
-            cantidad += " sitios";
-        }
-        else{
-            cantidad += " sitio";
-        }
 
         final EditText editPlanTitle = view.findViewById(R.id.editPlanTitle);
         final TextView lblNumSites = view.findViewById(R.id.lblNumSites);
@@ -59,7 +52,7 @@ public class SubPlanningFragment extends Fragment {
         final TextView listDes = view.findViewById(R.id.listDes);
 
         editPlanTitle.setText(ruta.getName());
-        lblNumSites.setText(cantidad);
+        changeNumberSites(lblNumSites, true);
         orderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -90,6 +83,7 @@ public class SubPlanningFragment extends Fragment {
                 listContainer.removeAllViewsInLayout();
                 if (b){
                     listDes.setText(R.string.compartida);
+                    changeNumberSites(lblNumSites, false);
                     SubPlanningSharedRouteListFragment subPlanningSharedRoute = new SubPlanningSharedRouteListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.listContainer, subPlanningSharedRoute, "SubPlanningSharedRouteListFragment")
@@ -98,6 +92,7 @@ public class SubPlanningFragment extends Fragment {
                 }
                 else{
                     listDes.setText(R.string.propia);
+                    changeNumberSites(lblNumSites, true);
                     SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")
@@ -106,5 +101,24 @@ public class SubPlanningFragment extends Fragment {
                 }
             }
         });
+    }
+
+    void changeNumberSites(TextView lblNumSites, Boolean personal){
+        int i = 0;
+        String cantidad = "";
+        if (personal){
+            i = RutaPersonalizada.getInstance().getCantSitios();
+        }else{
+            i = RutaPersonalizada.getInstance().getSharedRoute().size();
+        }
+
+        cantidad = String.valueOf(i);
+        if (i > 1){
+            cantidad += " sitios";
+        }
+        else{
+            cantidad += " sitio";
+        }
+        lblNumSites.setText(cantidad);
     }
 }
