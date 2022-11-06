@@ -417,6 +417,13 @@ public class RutaPersonalizada {
                 });
     }
 
+    public void resetMyRoute(View view){
+        ArrayList<SitioPersonalizado> sitiosBorrar = new ArrayList<SitioPersonalizado>(instance.getMyRoute());
+        for (SitioPersonalizado site : sitiosBorrar){
+            removeSiteMyRouteList(site, view);
+        }
+    }
+
     @Override
     public String toString() {
         return "RutaPersonalizada{" +
