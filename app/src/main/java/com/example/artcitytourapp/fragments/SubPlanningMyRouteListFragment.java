@@ -75,6 +75,7 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             optionsBtn.setClickable(true);
             optionsBtn.setOnClickListener(view -> {
                 //todo boton de explorar
+                Log.d("tag","prueba");
             });
             ArrayList<SitioPersonalizado> sites = (ArrayList<SitioPersonalizado>) RutaPersonalizada.getInstance().getMyRoute();
             for (SitioPersonalizado site : sites){
@@ -93,6 +94,7 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             Button exploreBtn = view.findViewById(R.id.exploreBtn);
             exploreBtn.setOnClickListener(view -> {
                 //todo boton de explorar
+                Log.d("tag","prueba2");
             });
         }
     }
