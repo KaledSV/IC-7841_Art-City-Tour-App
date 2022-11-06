@@ -103,4 +103,12 @@
     <string name="recuperate_pass">Recuperar Contraseña</string>
     <string name="send_recu_email">Enviar correo de recuperacion</string>
     <string name="confirm_pass_change">Confirmar Cambio</string>
+    <string name="profile">Perfil</string>
+    <string name="change_username">Cambiar nombre de usuario</string>
+    <string name="name">Nombre</string>
+    <string name="save">Guardar</string>
+    <string name="save_name">Guardar nombre</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="save_password">Guardar contraseña</string>
+    <string name="close_session">Cerrar sesion</string>
 </resources>

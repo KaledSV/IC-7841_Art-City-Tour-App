@@ -50,7 +50,6 @@ public class RegisterActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         fAuth = FirebaseAuth.getInstance();
-        //fAuth.signOut();
         if (fAuth.getCurrentUser() != null){
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();

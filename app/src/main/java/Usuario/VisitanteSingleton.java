@@ -69,6 +69,7 @@ public class VisitanteSingleton extends Usuario {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
                                 VisitanteSingleton.AlterSingleton(doc.getId(), (String)doc.get("nombre"), (String)doc.get("correo"));
+
                                 instance.setId(doc.getId());
                                 instance.setReviewIdLike((List<String>)doc.get("reviewIdLike"));
                                 instance.setReviewIdDislike((List<String>) doc.get("reviewIdDislike"));
@@ -548,6 +549,33 @@ public class VisitanteSingleton extends Usuario {
                 })
                 .addOnFailureListener(e -> {
                     updateMyRouteId(myRouteId, userId);
+                    Log.w("TAG", "Error updating document", e);
+                });
+    }
+
+    public void updateUsername(String username, View view){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Usuarios")
+                .document(instance.getId())
+                .update("nombre", username)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        instance.setNombre(username);
+                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    new AlertDialog.Builder(view.getContext())
+                            .setTitle("Error")
+                            .setMessage("No se ha podido actualizar el nombre de usuario")
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
                     Log.w("TAG", "Error updating document", e);
                 });
     }

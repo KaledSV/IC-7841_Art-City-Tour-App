@@ -105,6 +105,13 @@
         android:label="fragment_close"
         tools:layout="@layout/fragment_close_sites" />
     <fragment
+        android:id="@+id/searchFragment2"
+        android:name="com.example.artcitytourapp.fragments.SearchFragment2"
+        android:label="fragment_search2"
+        tools:layout="@layout/fragment_search2" />
+
+
+    <fragment
         android:id="@+id/planningFragment"
         android:name="com.example.artcitytourapp.fragments.PlanningFragment"
         android:label="fragment_planning"
@@ -133,9 +140,11 @@
             android:name="Sitio"
             app:argType="Sitio.Sitio" />
     </fragment>
+
+
     <fragment
-        android:id="@+id/searchFragment2"
-        android:name="com.example.artcitytourapp.fragments.SearchFragment2"
-        android:label="fragment_search2"
-        tools:layout="@layout/fragment_search2" />
+        android:id="@+id/userProfileFragment"
+        android:name="com.example.artcitytourapp.fragments.UserProfileFragment"
+        android:label="userProfileFragment"
+        tools:layout="@layout/fragment_user_profile" />
 </navigation>

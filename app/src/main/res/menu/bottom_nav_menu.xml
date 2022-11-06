@@ -3,17 +3,21 @@
     <item
         android:id="@+id/sitesFragment"
         android:title="@string/sites"
-        android:icon="@drawable/ic_baseline_home_24" />
+        android:icon="@drawable/ic_sites_24" />
     <item
         android:id="@+id/closeFragment"
         android:title="@string/close"
-        android:icon="@drawable/ic_baseline_architecture_24"/>
+        android:icon="@drawable/ic_close_sites_24"/>
     <item
         android:id="@+id/planningFragment"
         android:title="@string/planning"
-        android:icon="@drawable/ic_baseline_search_24"/>
+        android:icon="@drawable/ic_planning_24"/>
     <item
         android:id="@+id/reviewFragment"
         android:title="@string/review"
-        android:icon="@drawable/ic_baseline_edit_24"/>
+        android:icon="@drawable/ic_review_sites_24"/>
+    <item
+        android:id="@+id/userProfileFragment"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_user_profile_24"/>
 </menu>

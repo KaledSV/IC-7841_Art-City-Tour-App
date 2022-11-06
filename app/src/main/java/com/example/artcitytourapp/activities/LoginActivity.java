@@ -50,8 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         fAuth = FirebaseAuth.getInstance();
-        //fAuth.signOut();
         if (fAuth.getCurrentUser() != null){
+            VisitanteSingleton.LoginVisitante(fAuth.getCurrentUser().getUid());
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
