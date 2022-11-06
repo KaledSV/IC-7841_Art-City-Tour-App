@@ -138,7 +138,6 @@ public class MapsFragment2 extends Fragment {
             try {
                 jso = new JSONObject(response);
                 trazarRutaAux(jso);
-                Log.i("jsonRuta: ",""+response);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -160,7 +159,6 @@ public class MapsFragment2 extends Fragment {
                     jSteps = ((JSONObject)jLegs.get(j)).getJSONArray("steps");
                     for (int k = 0; k<jSteps.length();k++){
                         String polyline = ""+((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
-                        Log.i("end",""+polyline);
                         List<LatLng> list = PolyUtil.decode(polyline);
                         mMap.addPolyline(new PolylineOptions().addAll(list).color(Color.MAGENTA).width(5));
                     }

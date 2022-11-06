@@ -16,6 +16,9 @@
     <string name="close">Cercanía</string>
     <string name="planning">Planear</string>
     <string name="review">Reseña</string>
+    <string name="facebook_app_id">497765492324515</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">0cc7c4ed38e7a55ea387e6fd88d1c08a</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>

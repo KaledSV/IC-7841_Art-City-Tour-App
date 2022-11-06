@@ -25,7 +25,7 @@ import Usuario.VisitanteSingleton;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText username, password, confirmPassword;
-    Button register, registerGoogle, registerFacebook;
+    Button register;
     TextView backTextView;
     ProgressBar progressBar;
 
@@ -44,8 +44,6 @@ public class RegisterActivity extends AppCompatActivity {
         password = findViewById(R.id.password);
         confirmPassword = findViewById(R.id.confirmPassword);
         register = findViewById(R.id.register);
-        registerGoogle = findViewById(R.id.registerGoogle);
-        registerFacebook = findViewById(R.id.registerFacebook);
         backTextView = findViewById(R.id.backTextView);
         progressBar = findViewById(R.id.progressBar);
 
