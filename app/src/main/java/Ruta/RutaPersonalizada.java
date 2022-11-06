@@ -135,38 +135,40 @@ public class RutaPersonalizada {
     // load methods
     @SuppressWarnings("unchecked")
     private void bdGetMyRoute(){
-        instance.getMyRoutePersonalizedSitesIds().clear();
-        instance.getMyRouteSitesIds().clear();
-        instance.getMyRoute().clear();
+        if(!Objects.equals(instance.getIdMyRoute(), "")){
+            instance.getMyRoutePersonalizedSitesIds().clear();
+            instance.getMyRouteSitesIds().clear();
+            instance.getMyRoute().clear();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference docRef = db.collection("RutaPersonalizada").document(instance.getIdMyRoute());
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        ArrayList<String> ids = (ArrayList<String>)document.get("sitiosPersonalizado");
-                        instance.setName((String)document.get("nombre"));
-                        instance.setLastModified((Timestamp) document.get("ultimaModificacion"));
-                        if (ids != null){
-                            instance.setCantSitios(ids.size());
-                            for(String idPersonalizedSite : ids){
-                                instance.getMyRoutePersonalizedSitesIds().add(idPersonalizedSite);
-                                instance.getMyRoute().add(null);
-                                bdGetSiteMyRoute(idPersonalizedSite);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("RutaPersonalizada").document(instance.getIdMyRoute());
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            ArrayList<String> ids = (ArrayList<String>)document.get("sitiosPersonalizado");
+                            instance.setName((String)document.get("nombre"));
+                            instance.setLastModified((Timestamp) document.get("ultimaModificacion"));
+                            if (ids != null){
+                                instance.setCantSitios(ids.size());
+                                for(String idPersonalizedSite : ids){
+                                    instance.getMyRoutePersonalizedSitesIds().add(idPersonalizedSite);
+                                    instance.getMyRoute().add(null);
+                                    bdGetSiteMyRoute(idPersonalizedSite);
 
+                                }
                             }
+                        } else {
+                            Log.d("TAG", "No such document");
                         }
                     } else {
-                        Log.d("TAG", "No such document");
+                        Log.d("TAG", "get failed with ", task.getException());
                     }
-                } else {
-                    Log.d("TAG", "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        }
     }
 
     private void bdGetSiteMyRoute(String idPersonalizedSite){
@@ -201,6 +203,7 @@ public class RutaPersonalizada {
     private void bdGetSharedRoute(){
         if(!Objects.equals(instance.getIdSharedRoute(), "")){
             instance.getSharedRoute().clear();
+
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference docRef = db.collection("RutaPersonalizada").document(instance.getIdSharedRoute());
             docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -381,6 +384,35 @@ public class RutaPersonalizada {
                         errorRemovingPersonalizedSite(view);
                         instance.getMyRoutePersonalizedSitesIds().add(site.getIdSitio());
                         Log.w("TAG", "Error updating document", e);
+                    }
+                });
+    }
+
+    public static void registerRoute(String idUser){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Date date = new Date();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("creador", idUser);
+        data.put("nombre", "Por el amor a Chepe");
+        data.put("sitiosPersonalizado", new ArrayList<>());
+        data.put("ultimaModificacion", new Timestamp(date));
+
+        Task<DocumentReference> docRef = db.collection("RutaPersonalizada").add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("TAG", "DocumentSnapshot written with ID: " + documentReference.getId());
+                        instance.setIdMyRoute(documentReference.getId());
+                        instance.bdGetMyRoute();
+                        VisitanteSingleton.getInstance().updateMyRouteId(documentReference.getId(), idUser);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        registerRoute(idUser);
+                        Log.w("Error", "Error adding document", e);
                     }
                 });
     }

@@ -14,14 +14,15 @@
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:contentDescription="@string/info_app"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.02"
-        tools:srcCompat="@drawable/logo" />
+        tools:srcCompat="@drawable/logo"
+        app:layout_constraintHeight_percent="0.25" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -91,12 +92,12 @@
         app:layout_constraintVertical_bias="0.02" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:backgroundTint="#31CD6F"
-        android:enabled="false"
+        android:enabled="true"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/registrarse"
         android:textColor="@color/black"
@@ -108,12 +109,12 @@
         app:layout_constraintWidth_percent="0.45" />
 
     <Button
-        android:id="@+id/loginGoogle"
+        android:id="@+id/registerGoogle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:backgroundTint="#D9D9D9"
-        android:enabled="false"
+        android:enabled="true"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/registrarse"
         android:textColor="@color/black"
@@ -121,17 +122,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login"
+        app:layout_constraintTop_toBottomOf="@+id/register"
         app:layout_constraintVertical_bias="0.02"
         app:layout_constraintWidth_percent="0.45" />
 
     <Button
-        android:id="@+id/loginFacebook"
+        android:id="@+id/registerFacebook"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:backgroundTint="#3A559F"
-        android:enabled="false"
+        android:enabled="true"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/registrarse"
         android:textColor="@color/black"
@@ -139,7 +140,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginGoogle"
+        app:layout_constraintTop_toBottomOf="@+id/registerGoogle"
         app:layout_constraintVertical_bias="0.02"
         app:layout_constraintWidth_percent="0.45" />
 
@@ -153,9 +154,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginFacebook"
+        app:layout_constraintTop_toBottomOf="@+id/registerFacebook"
         app:layout_constraintVertical_bias="0.2"
         android:clickable="true"
         android:focusable="true"  />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backTextView"
+        app:layout_constraintVertical_bias="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

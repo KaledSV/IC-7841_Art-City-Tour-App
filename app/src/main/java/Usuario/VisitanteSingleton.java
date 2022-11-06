@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,12 +43,10 @@ public class VisitanteSingleton extends Usuario {
     private List<String> photoIdDislike = null;
 
     // Private constructor prevents instantiation from other classes
-    public static void AlterSingleton(String id, String nombre, long numero, String correo, String contrasenna) {
+    public static void AlterSingleton(String id, String nombre, String correo) {
         instance.setId(id);
         instance.setNombre(nombre);
-        instance.setNumero(numero);
         instance.setCorreo(correo);
-        instance.setContrasenna(contrasenna);
         instance.bdGetFavoritos();
     }
 
@@ -55,21 +55,20 @@ public class VisitanteSingleton extends Usuario {
     }
 
     private VisitanteSingleton(){
-        super("", "", 0, "", "");
+        super("", "","");
     }
 
     @SuppressWarnings("unchecked")
-    public static void LoginVisitante(String correo, String contrasenna){
+    public static void LoginVisitante(String uid){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Usuarios")
-                .whereEqualTo("correo", correo)
-                .whereEqualTo("contraseña", contrasenna)
+                .whereEqualTo("uid", uid)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot doc : task.getResult()) {
-                                VisitanteSingleton.AlterSingleton(doc.getId(), (String)doc.get("nombre"), (long)doc.get("numero"), correo, contrasenna);
+                                VisitanteSingleton.AlterSingleton(doc.getId(), (String)doc.get("nombre"), (String)doc.get("correo"));
                                 instance.setId(doc.getId());
                                 instance.setReviewIdLike((List<String>)doc.get("reviewIdLike"));
                                 instance.setReviewIdDislike((List<String>) doc.get("reviewIdDislike"));
@@ -81,6 +80,39 @@ public class VisitanteSingleton extends Usuario {
                             // todo login incorrecto
                             Log.w("TAG", "Error getting documents.", task.getException());
                         }
+                    }
+                });
+    }
+
+    public static void CreateVisitante(String uid, String correo){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("correo", correo);
+        data.put("nombre", correo.split("@")[0]);
+        data.put("permiso", 2);
+        data.put("photoIdDislike", new ArrayList<>());
+        data.put("photoIdLike", new ArrayList<>());
+        data.put("reviewIdDislike", new ArrayList<>());
+        data.put("reviewIdLike", new ArrayList<>());
+        data.put("rutaCompartida", "");
+        data.put("rutaPersonal", "");
+        data.put("uid",uid);
+
+        Task<DocumentReference> docRef = db.collection("Usuarios").add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("TAG", "DocumentSnapshot written with ID: " + documentReference.getId());
+                        VisitanteSingleton.LoginVisitante(uid);
+                        RutaPersonalizada.registerRoute(documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        CreateVisitante(uid, correo);
+                        Log.w("Error", "Error adding document", e);
                     }
                 });
     }
@@ -499,6 +531,23 @@ public class VisitanteSingleton extends Usuario {
                     Log.d("TAG", "Ruta compartida successfully updated!");
                 })
                 .addOnFailureListener(e -> {
+                    Log.w("TAG", "Error updating document", e);
+                });
+    }
+
+    public void updateMyRouteId(String myRouteId, String userId){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Usuarios")
+                .document(userId)
+                .update("rutaPersonal", myRouteId)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully updated!");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    updateMyRouteId(myRouteId, userId);
                     Log.w("TAG", "Error updating document", e);
                 });
     }
