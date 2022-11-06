@@ -147,4 +147,14 @@
         android:name="com.example.artcitytourapp.fragments.UserProfileFragment"
         android:label="userProfileFragment"
         tools:layout="@layout/fragment_user_profile" />
+    <fragment
+        android:id="@+id/addPlanning"
+        android:name="com.example.artcitytourapp.fragments.addPlanning"
+        android:label="fragment_add_planning"
+        tools:layout="@layout/fragment_add_planning" />
+    <fragment
+        android:id="@+id/subFavoriteFragment"
+        android:name="com.example.artcitytourapp.fragments.SubFavoriteFragment"
+        android:label="fragment_sub_favorite"
+        tools:layout="@layout/fragment_sub_favorite" />
 </navigation>

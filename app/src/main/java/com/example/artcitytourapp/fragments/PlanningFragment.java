@@ -20,7 +20,7 @@ import com.example.artcitytourapp.R;
 import Ruta.RutaPersonalizada;
 
 public class PlanningFragment extends Fragment {
-    View view;
+    static View view;
     int window = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

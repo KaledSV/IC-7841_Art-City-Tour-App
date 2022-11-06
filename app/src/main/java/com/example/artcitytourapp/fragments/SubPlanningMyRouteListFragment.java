@@ -3,6 +3,7 @@ package com.example.artcitytourapp.fragments;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,9 +19,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.artcitytourapp.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,12 +77,66 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             exploreBtn.setVisibility(View.GONE);
 
             // set table and plus button
-            ImageView optionsBtn = view.findViewById(R.id.optionsBtn);
-            optionsBtn.setClickable(true);
-            optionsBtn.setOnClickListener(view -> {
-                //todo boton de explorar
-                Log.d("tag","prueba");
+
+
+
+            ConstraintLayout cl = PlanningFragment.view.findViewById(R.id.botones_burbuja);
+
+            /* todo Boton burbuja que abre el menu de botones burbuja
+                vuelve visible el menu(cl) luego deshabilita
+                los componentes de la ventana planear
+                y por ultimo vuelve invisible el boton del +(plus)*/
+            FloatingActionButton fab = view.findViewById(R.id.add_fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("prueba","prueba1");
+                    cl.setVisibility(View.VISIBLE);
+                    habilitar(false);
+                    fab.setVisibility(View.INVISIBLE);
+                }
             });
+
+            /* todo Boton burbuja que Cierra el menu de botones burbuja
+                vuelve Invisible el menu(cl) luego habilita
+                los componentes de la ventana planear
+                y por ultimo vuelve Visible el boton del +(plus)*/
+            FloatingActionButton fabQuit = cl.findViewById(R.id.add_fab2);
+            fabQuit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d("prueba","prueba2");
+                        cl.setVisibility(View.INVISIBLE);
+                        habilitar(true);
+                        fab.setVisibility(View.VISIBLE);
+                    }
+            });
+
+            /* todo Boton burbuja que elimina todos los sitios de planear*/
+            FloatingActionButton fabDeleteSites = cl.findViewById(R.id.add_fab3);
+            fabDeleteSites.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("prueba","prueba3");
+                    cl.setVisibility(View.INVISIBLE);
+                    habilitar(true);
+                    fab.setVisibility(View.VISIBLE);
+                }
+            });
+            /* todo Boton burbuja que agrega sitios de planear*/
+            FloatingActionButton fabAddSite = cl.findViewById(R.id.add_fab1);
+            fabAddSite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Navigation.findNavController(view).navigate(R.id.addPlanning);
+                }
+            });
+
+
+
+
+
+
             ArrayList<SitioPersonalizado> sites = (ArrayList<SitioPersonalizado>) RutaPersonalizada.getInstance().getMyRoute();
             for (SitioPersonalizado site : sites){
                 Log.d("jacob",site.getIdSitioPersonalizado());
@@ -89,15 +149,24 @@ public class SubPlanningMyRouteListFragment extends Fragment {
         }
         else{
             table.setVisibility(View.GONE);
-            ImageView optionsBtn = view.findViewById(R.id.optionsBtn);
+            FloatingActionButton optionsBtn = view.findViewById(R.id.add_fab);
             optionsBtn.setVisibility(View.GONE);
 
             Button exploreBtn = view.findViewById(R.id.exploreBtn);
             exploreBtn.setOnClickListener(view -> {
-                //todo boton de explorar
-                Log.d("tag","prueba2");
+                Navigation.findNavController(view).navigate(R.id.addPlanning);
             });
         }
+    }
+    protected void habilitar(boolean opc){
+        PlanningFragment.view.findViewById(R.id.myRouteLbl).setEnabled(opc);
+        PlanningFragment.view.findViewById(R.id.favLbl).setEnabled(opc);
+        PlanningFragment.view.findViewById(R.id.planning_share_button).setEnabled(opc);
+        PlanningFragment.view.findViewById(R.id.planning_notification_button).setEnabled(opc);
+        View v = PlanningFragment.view.findViewById(R.id.planningContainer);
+        v.findViewById(R.id.orderSwitch).setEnabled(opc);
+        v.findViewById(R.id.listSwitch).setEnabled(opc);
+        v.findViewById(R.id.editPlanTitle).setEnabled(opc);
     }
 
     protected void addTableRow(SitioPersonalizado site, String imgPath) {
@@ -125,7 +194,13 @@ public class SubPlanningMyRouteListFragment extends Fragment {
         editTextComment.setOnClickListener(view -> createCommentDialog(site, editTextComment));
 
         removeBtn.setClickable(true);
-        removeBtn.setOnClickListener(view -> RutaPersonalizada.getInstance().removeSiteMyRouteList(site, view));
+        removeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RutaPersonalizada.getInstance().removeSiteMyRouteList(site, view);
+            }
+        });
+        //removeBtn.setOnClickListener(view -> RutaPersonalizada.getInstance().removeSiteMyRouteList(site, view));
 
         table.addView(siteRow);
     }

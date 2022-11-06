@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,7 +39,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Random;
 
@@ -44,18 +47,87 @@ import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
-public class SubFavoriteFragment extends Fragment {
+
+public class addPlanning extends Fragment {
     View view;
     TableLayout table;
     TableLayout table2;
+    String palabraBuscada1;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_sub_favorite, container, false);
+        // Inflate the layout for this fragment
+        view = inflater.inflate(R.layout.fragment_add_planning, container, false);
         table = view.findViewById(R.id.tableFavSitesList);
         table2 = view.findViewById(R.id.tableRecSitesList);
+        final SearchView barraDeBusqueda1 = view.findViewById(R.id.searchViewSearch2);
+        final Button bf1 = view.findViewById(R.id.botonf1);
+        final Button bf2 = view.findViewById(R.id.botonf2);
+        final Button bf3 = view.findViewById(R.id.botonf3);
+        final Button bf4 = view.findViewById(R.id.botonf4);
+        bf1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 1);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        bf2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 2);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        bf3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 3);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        bf4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putSerializable("tipoFiltro", 4);
+                Navigation.findNavController(view).navigate(R.id.closeFragment,b);
+            }
+        });
+        barraDeBusqueda1.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                palabraBuscada1 = s;
+                table.removeAllViews();
+                table2.removeAllViews();
+                bdGetSitesFavorite();
+                bdGetSitesRecomendados(true);
+                TextView txv =view.findViewById(R.id.lblRecommended);
+                txv.setText("Buscados");
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if(s.length()==0){
+                    table.removeAllViews();
+                    table2.removeAllViews();
+                    bdGetSitesFavorite();
+                    bdGetSitesRecomendados(false);
+                    TextView txv =view.findViewById(R.id.lblRecommended);
+                    txv.setText("Recomendados");
+                }
+                return false;
+            }
+        });
         bdGetSitesFavorite();
-        bdGetSitesRecomendados();
+        bdGetSitesRecomendados(false);
+        TextView txv =view.findViewById(R.id.lblRecommended);
+        txv.setText("Recomendados");
         return view;
     }
     protected void bdGetSitesFavorite(){
@@ -85,41 +157,66 @@ public class SubFavoriteFragment extends Fragment {
         }
     }
 
-    protected void bdGetSitesRecomendados(){
+    protected void bdGetSitesRecomendados(boolean busquedaXNomb){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Sitios")
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Sitio site = document.toObject(Sitio.class);
-                            assert site != null;
-                            site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
-                            site.setIdSite(document.getId());
-                            final int random = new Random().nextInt(3);
-                            if(random==0){
-                                int band=0;
-                                VisitanteSingleton user = VisitanteSingleton.getInstance();
-                                for(String siteId : user.getSitiosFavoritos()){
-                                    if(document.getId().equals(siteId)){
-                                        band=1;
-                                        break;
-                                    }
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String nombre = document.get("nombre").toString();
+                                String nombre2 = nombre.toLowerCase();
+                                if(busquedaXNomb){
+                                    if(nombre.startsWith(palabraBuscada1)||nombre2.startsWith(palabraBuscada1)){
+                                        Sitio site = document.toObject(Sitio.class);
+                                        assert site != null;
+                                        site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                                        site.setIdSite(document.getId());
+                                        int band=0;
+                                        VisitanteSingleton user = VisitanteSingleton.getInstance();
+                                        for(String siteId : user.getSitiosFavoritos()){
+                                            if(document.getId().equals(siteId)){
+                                                band=1;
+                                                break;
+                                            }
 
-                                }
-                                if(band==0){
-                                    bdGetSiteFoto(site,true);
+                                        }
+                                        if(band==0){
+                                            bdGetSiteFoto(site,true);
+                                        }
+                                    }
+                                }else{
+                                    Sitio site = document.toObject(Sitio.class);
+                                    assert site != null;
+                                    site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
+                                    site.setIdSite(document.getId());
+
+
+                                    final int random = new Random().nextInt(3);
+                                    if(random==0){
+                                        int band=0;
+                                        VisitanteSingleton user = VisitanteSingleton.getInstance();
+                                        for(String siteId : user.getSitiosFavoritos()){
+                                            if(document.getId().equals(siteId)){
+                                                band=1;
+                                                break;
+                                            }
+
+                                        }
+                                        if(band==0){
+                                            bdGetSiteFoto(site,true);
+                                        }
+                                    }
+                                    //Log.d("TAG", document.getId() + " => " + document.getData());
                                 }
                             }
-                            //Log.d("TAG", document.getId() + " => " + document.getData());
+                        } else {
+                            Log.d("TAG", "Error getting documents: ", task.getException());
                         }
-                    } else {
-                        Log.d("TAG", "Error getting documents: ", task.getException());
                     }
-                }
-            });
+                });
     }
 
     protected void bdGetSiteFoto(Sitio espSite,boolean recomendados){
@@ -150,7 +247,6 @@ public class SubFavoriteFragment extends Fragment {
             });
         }
     }
-
     protected void addTableRowFav(Sitio espSite, String imgPath,boolean recomendados) {
         TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.fav_rows, null);
         VisitanteSingleton user = VisitanteSingleton.getInstance();
@@ -205,7 +301,10 @@ public class SubFavoriteFragment extends Fragment {
             addSiteImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(),"Agregado al plan", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(),"Agregado al plan", Toast.LENGTH_SHORT).show();
+                    Snackbar mySnackbar = Snackbar.make(view, "Agregado al plan", Snackbar.LENGTH_LONG);
+                    mySnackbar.setAction("ver plan", new MyUndoListener(view));
+                    mySnackbar.show();
                     RutaPersonalizada.getInstance().addSiteMyRoute(espSite, view);
                     addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
                 }
@@ -219,7 +318,6 @@ public class SubFavoriteFragment extends Fragment {
 
         }
     }
-
     protected void imageRow(ImageView iv, String imgPath){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
         try {
@@ -236,7 +334,6 @@ public class SubFavoriteFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
     protected void setFavoriteImage(Boolean status, ImageView iv){
         if (status){
             iv.setImageResource(R.drawable.favorite_on);
@@ -245,4 +342,8 @@ public class SubFavoriteFragment extends Fragment {
             iv.setImageResource(R.drawable.favorite_off);
         }
     }
+    //configurar recomendados
+    //configurar barra de busqueda
+    //configurar botones filtro
+
 }
