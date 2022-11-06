@@ -10,12 +10,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.artcitytourapp.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ChangePassActivity extends AppCompatActivity {
     EditText password, confirmPassword;
     Button changePass;
     TextView backTextView;
 
+    FirebaseAuth fAuth;
+
+    @Deprecated
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,7 @@ public class ChangePassActivity extends AppCompatActivity {
         changePass = findViewById(R.id.changePass);
         backTextView = findViewById(R.id.backTextView);
 
+        fAuth = FirebaseAuth.getInstance();
         changePass.setOnClickListener(view -> {
             String pass = password.getText().toString().trim();
             String confirmPass = confirmPassword.getText().toString().trim();
