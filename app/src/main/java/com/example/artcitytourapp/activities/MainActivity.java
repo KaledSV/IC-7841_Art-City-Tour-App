@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -85,28 +87,40 @@ public class MainActivity extends AppCompatActivity {
         Uri uri = getIntent().getData();
 
         //Todo change variable names
-        if (uri != null) //Display the URI for parsing
-        {
-            Set<String> args = uri.getQueryParameterNames(); // Retrieves all arguments usable with the URI
-            String fragment = uri.getFragment();
-            switch (fragment)
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+
+        if (fAuth.getCurrentUser() != null) {
+            if (uri != null) //Display the URI for parsing
             {
-                case "Planear":{
-                    String sharedRouteId = uri.getQueryParameter("id_ruta_personalizada");
-                    //VisitanteSingleton.getInstance().bdUpdateSharedRouteId(sharedRouteId); en este punto, el usuario no está inicializado
-                    RutaPersonalizada.getInstance().setIdSharedRoute(sharedRouteId);
-                    navController.navigate(R.id.planningFragment);
+                Set<String> args = uri.getQueryParameterNames(); // Retrieves all arguments usable with the URI
+                String fragment = uri.getFragment();
+                switch (fragment) {
+                    case "Planear": {
+                        String sharedRouteId = uri.getQueryParameter("id_ruta_personalizada");
+                        VisitanteSingleton.getInstance().bdUpdateSharedRouteId(sharedRouteId);
+                        RutaPersonalizada.getInstance().setIdSharedRoute(sharedRouteId);
+                        navController.navigate(R.id.planningFragment);
 
-                }break;
-                case "Sitios":{
-                    String idSitio = uri.getQueryParameter("id");
-                    getSiteData(idSitio);
-                }break;
-
-                default:
+                    }
                     break;
+                    case "Sitios": {
+                        String idSitio = uri.getQueryParameter("id");
+                        getSiteData(idSitio);
+                    }
+                    break;
+
+                    default:
+                        break;
+                }
             }
         }
+        else
+        {
+            finish();
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        }
+
+
     }
 
     protected void getSiteData(String siteId) {
