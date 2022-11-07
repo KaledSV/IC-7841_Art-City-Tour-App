@@ -39,6 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 
@@ -50,7 +51,7 @@ public class SubFavoriteFragment extends Fragment {
     View view;
     TableLayout table;
     TableLayout table2;
-
+    HashMap<Sitio, Boolean> sitios = new HashMap<Sitio, Boolean>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,11 +59,15 @@ public class SubFavoriteFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_sub_favorite, container, false);
         table = view.findViewById(R.id.tableFavSitesList);
         table2 = view.findViewById(R.id.tableRecSitesList);
-        bdGetSitesFavorite();
-        bdGetSitesRecomendados();
+
+        sitios.clear();
+        //bdGetSitesFavorite();
+        //bdGetSitesRecomendados();
+        bdGetSites();
         return view;
     }
-    protected void bdGetSitesFavorite(){
+
+    /*protected void bdGetSitesFavorite(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         VisitanteSingleton user = VisitanteSingleton.getInstance();
         for(String siteId : user.getSitiosFavoritos()){
@@ -87,9 +92,9 @@ public class SubFavoriteFragment extends Fragment {
                 }
             });
         }
-    }
+    }*/
 
-    protected void bdGetSitesRecomendados(){
+    protected void bdGetSites(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Sitios")
             .get()
@@ -102,20 +107,18 @@ public class SubFavoriteFragment extends Fragment {
                             site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
                             site.setIdSite(document.getId());
                             final int random = new Random().nextInt(3);
-                            if(random==0){
-                                int band=0;
-                                VisitanteSingleton user = VisitanteSingleton.getInstance();
-                                for(String siteId : user.getSitiosFavoritos()){
-                                    if(document.getId().equals(siteId)){
-                                        band=1;
-                                        break;
-                                    }
-                                }
-                                if(band==0){
-                                    bdGetSiteFoto(site,true);
+                            if (VisitanteSingleton.getInstance().getSitiosFavoritos().contains(document.getId())){
+                                sitios.put(site, false);
+                            }
+                            else{
+                                if(random==0){
+                                    sitios.put(site, true);
                                 }
                             }
                             //Log.d("TAG", document.getId() + " => " + document.getData());
+                        }
+                        for (Sitio site : sitios.keySet()){
+                            bdGetSiteFoto(site, sitios.get(site));
                         }
                     } else {
                         Log.d("TAG", "Error getting documents: ", task.getException());
@@ -165,7 +168,7 @@ public class SubFavoriteFragment extends Fragment {
         ConstraintLayout siteImageLayout = (ConstraintLayout) siteRow.findViewById(R.id.siteImageLayout);
 
         //heartImageView.setImageResource(R.drawable.favorite_off);
-        setFavoriteImage(user.siteFavoriteStatus(espSite), heartImageView);
+        setFavoriteImage(!recomendados, heartImageView);
         imageRow(siteImageView, imgPath, recomendados);
         siteTextView.setText(espSite.getNombre());
         siteTypeTextView.setText(espSite.getTipoSitio());
@@ -229,7 +232,7 @@ public class SubFavoriteFragment extends Fragment {
             File localFile = File.createTempFile(name, extension);
             pathReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
                 Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 125, 125, false));
+                iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 175, 175, false));
             });
         }
         catch (IOException e){
