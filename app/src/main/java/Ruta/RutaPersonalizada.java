@@ -430,7 +430,11 @@ public class RutaPersonalizada {
 
     public void refreshPlanning(){
         if (SubPlanningFragment.getContainer() != null){
-            SubPlanningFragment.getSwitch().setChecked(true);
+            SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
+            SubPlanningFragment.getActivityContainer().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 

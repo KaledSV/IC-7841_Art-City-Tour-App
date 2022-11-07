@@ -157,11 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void changeSharedRoute(){
         if (SubPlanningFragment.getContainer() != null){
-            SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
-            SubPlanningFragment.getActivityContainer().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")
-                    .addToBackStack(null)
-                    .commit();
+            SubPlanningFragment.getSwitch().setChecked(true);
         }
     }
 }
