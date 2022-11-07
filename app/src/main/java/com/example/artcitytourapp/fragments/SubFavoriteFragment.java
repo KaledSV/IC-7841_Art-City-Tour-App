@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -109,7 +110,6 @@ public class SubFavoriteFragment extends Fragment {
                                         band=1;
                                         break;
                                     }
-
                                 }
                                 if(band==0){
                                     bdGetSiteFoto(site,true);
@@ -124,7 +124,7 @@ public class SubFavoriteFragment extends Fragment {
             });
     }
 
-    protected void bdGetSiteFoto(Sitio espSite,boolean recomendados){
+    protected void bdGetSiteFoto(Sitio espSite, boolean recomendados){
         if (espSite.getIdFotoPredeterminada() == null){
             addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png",recomendados);
         }
@@ -153,7 +153,7 @@ public class SubFavoriteFragment extends Fragment {
         }
     }
 
-    protected void addTableRowFav(Sitio espSite, String imgPath,boolean recomendados) {
+    protected void addTableRowFav(Sitio espSite, String imgPath, boolean recomendados) {
         TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.fav_rows, null);
         VisitanteSingleton user = VisitanteSingleton.getInstance();
 
@@ -162,11 +162,11 @@ public class SubFavoriteFragment extends Fragment {
         TextView siteTextView = (TextView) siteRow.findViewById(R.id.siteTextView);
         TextView siteTypeTextView = (TextView) siteRow.findViewById(R.id.siteTypeTextView);
         ImageView addSiteImageView = (ImageView) siteRow.findViewById(R.id.addSiteImageView);
-        RelativeLayout siteImageLayout = (RelativeLayout) siteRow.findViewById(R.id.siteImageLayout);
+        ConstraintLayout siteImageLayout = (ConstraintLayout) siteRow.findViewById(R.id.siteImageLayout);
 
         //heartImageView.setImageResource(R.drawable.favorite_off);
         setFavoriteImage(user.siteFavoriteStatus(espSite), heartImageView);
-        imageRow(siteImageView, imgPath);
+        imageRow(siteImageView, imgPath, recomendados);
         siteTextView.setText(espSite.getNombre());
         siteTypeTextView.setText(espSite.getTipoSitio());
 
@@ -221,16 +221,15 @@ public class SubFavoriteFragment extends Fragment {
         }
     }
 
-    protected void imageRow(ImageView iv, String imgPath){
+    protected void imageRow(ImageView iv, String imgPath, boolean recomendado){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
+        String name = imgPath.substring(imgPath.lastIndexOf("/")+1,imgPath.lastIndexOf(".")) + recomendado;
+        String extension = imgPath.substring(imgPath.lastIndexOf("."));
         try {
-            File localFile = File.createTempFile("tempFile", imgPath.substring(imgPath.lastIndexOf(".")));
-            pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 125, 125, false));
-                }
+            File localFile = File.createTempFile(name, extension);
+            pathReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 125, 125, false));
             });
         }
         catch (IOException e){
