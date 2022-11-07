@@ -1,6 +1,9 @@
 package com.example.artcitytourapp.fragments;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +36,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,10 +59,10 @@ import Ruta.RutaPersonalizada;
 import Sitio.Sitio;
 import Sitio.SitioPersonalizado;
 
-public class MapsFragment2 extends Fragment {
+public class MapsFragment2 extends Fragment implements GoogleMap.OnMarkerClickListener  {
     GoogleMap mMap;
     JSONObject jso;
-
+    public List<Marker> markers = new ArrayList<>();
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         @Override
@@ -94,7 +99,14 @@ public class MapsFragment2 extends Fragment {
                 }
             };
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1000, locationListener);
-
+            /*mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @SuppressLint("RestrictedApi")
+                @Override
+                public boolean onMarkerClick(@NonNull Marker marker) {
+                    Toast.makeText(getApplicationContext(), marker.toString(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });*/
         }
     };
 
@@ -108,7 +120,9 @@ public class MapsFragment2 extends Fragment {
                     if (sitesIds.contains(document.getId())){
                         site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
                         LatLng coordenada = new LatLng(site.getCoordenadas().getLatitude(), site.getCoordenadas().getLongitude());
-                        mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(site.getNombre()));
+                        mMap.setOnMarkerClickListener(this);
+                        Marker newMarker = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)).position(coordenada).title(site.getNombre()));
+                        this.markers.add(newMarker);
                         trazarRuta(curr_location,String.valueOf(coordenada.latitude),String.valueOf(coordenada.longitude));
                         curr_location.setLatitude(coordenada.latitude);
                         curr_location.setLongitude(coordenada.longitude);
@@ -120,7 +134,7 @@ public class MapsFragment2 extends Fragment {
         });
     }
 
-            public void getLocalizacion() {
+    public void getLocalizacion() {
         int permiso = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if(permiso == PackageManager.PERMISSION_DENIED){
             if(ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)){
@@ -170,7 +184,6 @@ public class MapsFragment2 extends Fragment {
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -188,5 +201,12 @@ public class MapsFragment2 extends Fragment {
             mapFragment.getMapAsync(callback);
             getLocalizacion();
         }
+    }
+
+
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
+        Toast.makeText(getApplicationContext(), marker.toString(), Toast.LENGTH_SHORT).show();
+        return false;
     }
 }
