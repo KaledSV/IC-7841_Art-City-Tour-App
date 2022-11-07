@@ -148,13 +148,13 @@ public class SitioPersonalizado implements Serializable {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("SitioPersonalizado")
                 .document(site.getIdSitioPersonalizado())
-                .update("horaVisita", date)
+                .update("horaVisita", new Timestamp(date))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         site.setHoraVisita(new Timestamp(date));
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                        formatter.setTimeZone(TimeZone.getTimeZone("UTC-6"));
+                        //formatter.setTimeZone(TimeZone.getTimeZone("UTC-6"));
                         siteScheduleTextView.setText(formatter.format(date));
                         Log.d("TAG", "DocumentSnapshot successfully updated!");
                     }
