@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.artcitytourapp.R;
@@ -22,6 +23,7 @@ import Ruta.RutaPersonalizada;
 public class PlanningFragment extends Fragment {
     static View view;
     int window = 0;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

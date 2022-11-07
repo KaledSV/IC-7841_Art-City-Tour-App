@@ -48,6 +48,8 @@ public class SubFavoriteFragment extends Fragment {
     View view;
     TableLayout table;
     TableLayout table2;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,7 +97,6 @@ public class SubFavoriteFragment extends Fragment {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Sitio site = document.toObject(Sitio.class);
-                            assert site != null;
                             site.setCoordenadas((GeoPoint) Objects.requireNonNull(document.get("coordenadas")));
                             site.setIdSite(document.getId());
                             final int random = new Random().nextInt(3);

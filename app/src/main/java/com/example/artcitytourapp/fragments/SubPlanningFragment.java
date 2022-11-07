@@ -3,6 +3,7 @@ package com.example.artcitytourapp.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentContainer;
 import androidx.fragment.app.FragmentContainerView;
 
@@ -23,23 +24,32 @@ import Sitio.SitioPersonalizado;
 
 public class SubPlanningFragment extends Fragment {
     View view;
+    static FragmentContainerView listContainer;
+    static FragmentActivity activity;
+    static SwitchMaterial listSwitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_sub_planning, container, false);
 
-        for (SitioPersonalizado site : RutaPersonalizada.getInstance().getMyRoute()){
-            Log.d("WEEEEEEEEEEEEEEEEEEEe", site.getFieldValues());
-        }
-        for (SitioPersonalizado site : RutaPersonalizada.getInstance().getSharedRoute()){
-            Log.d("eEEEEEEEEEEEEEEEEEEEW", site.getFieldValues());
-        }
-        Log.d("WEEEEEEEEEEEE",  RutaPersonalizada.getInstance().getName() + " " +  RutaPersonalizada.getInstance().getCantSitios());
-        Log.d("WEEEEEEEEEEEE",  RutaPersonalizada.getInstance().getMyRoutePersonalizedSitesIds().toString());
-        Log.d("WEEEEEEEEEEEE",  RutaPersonalizada.getInstance().getMyRouteSitesIds().toString());
         loadData();
         return view;
+    }
+
+    public static FragmentContainerView getContainer(){
+        if (listContainer == null){
+            return null;
+        }
+        return listContainer;
+    }
+
+    public static FragmentActivity getActivityContainer(){
+        return activity;
+    }
+
+    public static SwitchMaterial getSwitch(){
+        return listSwitch;
     }
 
     public void loadData(){
@@ -48,15 +58,16 @@ public class SubPlanningFragment extends Fragment {
         final EditText editPlanTitle = view.findViewById(R.id.editPlanTitle);
         final TextView lblNumSites = view.findViewById(R.id.lblNumSites);
         final SwitchMaterial orderSwitch = view.findViewById(R.id.orderSwitch);
-        final SwitchMaterial listSwitch = view.findViewById(R.id.listSwitch);
+        listSwitch = view.findViewById(R.id.listSwitch);
         final TextView listDes = view.findViewById(R.id.listDes);
+        listContainer = view.findViewById(R.id.listContainer);
+        activity = getActivity();
 
         editPlanTitle.setText(ruta.getName());
         changeNumberSites(lblNumSites, true);
         orderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                FragmentContainerView listContainer = view.findViewById(R.id.listContainer);
                 listContainer.removeAllViewsInLayout();
                 if (b){
                     SubPlanningOrderSitesListFragment subPlanningOrder = new SubPlanningOrderSitesListFragment();
@@ -66,7 +77,6 @@ public class SubPlanningFragment extends Fragment {
                             .commit();
                 }
                 else{
-                    // todo stop editing and save changes
                     SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")

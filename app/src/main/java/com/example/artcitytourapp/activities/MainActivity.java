@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.artcitytourapp.R;
+import com.example.artcitytourapp.fragments.SubPlanningFragment;
+import com.example.artcitytourapp.fragments.SubPlanningMyRouteListFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -100,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         VisitanteSingleton.getInstance().bdUpdateSharedRouteId(sharedRouteId);
                         RutaPersonalizada.getInstance().setIdSharedRoute(sharedRouteId);
                         navController.navigate(R.id.planningFragment);
-
+                        changeSharedRoute();
                     }
                     break;
                     case "Sitios": {
@@ -151,6 +153,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    protected void changeSharedRoute(){
+        if (SubPlanningFragment.getContainer() != null){
+            SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
+            SubPlanningFragment.getActivityContainer().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 }
 

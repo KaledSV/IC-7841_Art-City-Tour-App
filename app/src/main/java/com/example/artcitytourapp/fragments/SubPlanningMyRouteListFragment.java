@@ -77,9 +77,6 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             exploreBtn.setVisibility(View.GONE);
 
             // set table and plus button
-
-
-
             ConstraintLayout cl = PlanningFragment.view.findViewById(R.id.botones_burbuja);
 
             /* todo Boton burbuja que abre el menu de botones burbuja
@@ -97,7 +94,7 @@ public class SubPlanningMyRouteListFragment extends Fragment {
                 }
             });
 
-            /* todo Boton burbuja que Cierra el menu de botones burbuja
+            /* Boton burbuja que Cierra el menu de botones burbuja
                 vuelve Invisible el menu(cl) luego habilita
                 los componentes de la ventana planear
                 y por ultimo vuelve Visible el boton del +(plus)*/
@@ -105,25 +102,24 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             fabQuit.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d("prueba","prueba2");
                         cl.setVisibility(View.INVISIBLE);
                         habilitar(true);
                         fab.setVisibility(View.VISIBLE);
                     }
             });
 
-            /* todo Boton burbuja que elimina todos los sitios de planear*/
+            /* Boton burbuja que elimina todos los sitios de planear*/
             FloatingActionButton fabDeleteSites = cl.findViewById(R.id.add_fab3);
             fabDeleteSites.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("prueba","prueba3");
+                    RutaPersonalizada.getInstance().resetMyRoute(view);
                     cl.setVisibility(View.INVISIBLE);
                     habilitar(true);
                     fab.setVisibility(View.VISIBLE);
                 }
             });
-            /* todo Boton burbuja que agrega sitios de planear*/
+            /* Boton burbuja que agrega sitios de planear*/
             FloatingActionButton fabAddSite = cl.findViewById(R.id.add_fab1);
             fabAddSite.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,11 +127,6 @@ public class SubPlanningMyRouteListFragment extends Fragment {
                     Navigation.findNavController(view).navigate(R.id.addPlanning);
                 }
             });
-
-
-
-
-
 
             ArrayList<SitioPersonalizado> sites = (ArrayList<SitioPersonalizado>) RutaPersonalizada.getInstance().getMyRoute();
             for (SitioPersonalizado site : sites){
@@ -181,7 +172,11 @@ public class SubPlanningMyRouteListFragment extends Fragment {
         imageRow(siteImageView, imgPath);
         siteTextView.setText(site.getNombre());
         siteTypeTextView.setText(site.getTipoSitio());
-        editTextComment.setText(site.getComentario());
+        if (Objects.equals(site.getComentario(), "")){
+            editTextComment.setText(R.string.add_comentary);
+        }else{
+            editTextComment.setText(site.getComentario());
+        }
 
         if (site.getHoraVisita().toDate().compareTo(new Date()) < 0)
             siteScheduleTextView.setText(R.string.add_schedule);
@@ -193,13 +188,7 @@ public class SubPlanningMyRouteListFragment extends Fragment {
         editTextComment.setOnClickListener(view -> createCommentDialog(site, editTextComment));
 
         removeBtn.setClickable(true);
-        removeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RutaPersonalizada.getInstance().removeSiteMyRouteList(site, view);
-            }
-        });
-        //removeBtn.setOnClickListener(view -> RutaPersonalizada.getInstance().removeSiteMyRouteList(site, view));
+        removeBtn.setOnClickListener(view -> RutaPersonalizada.getInstance().removeSiteMyRouteList(site, view));
 
         table.addView(siteRow);
     }

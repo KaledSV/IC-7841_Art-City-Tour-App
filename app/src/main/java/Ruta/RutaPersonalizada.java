@@ -7,6 +7,9 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.artcitytourapp.R;
+import com.example.artcitytourapp.fragments.SubPlanningFragment;
+import com.example.artcitytourapp.fragments.SubPlanningMyRouteListFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -352,6 +355,7 @@ public class RutaPersonalizada {
                         instance.getMyRoute().remove(site);
                         instance.getMyRouteSitesIds().remove(site.getIdSitio());
                         instance.setCantSitios(instance.getCantSitios() - 1);
+                        refreshPlanning();
                         Log.d("TAG", "DocumentSnapshot successfully updated!");
                     }
                 })
@@ -421,6 +425,12 @@ public class RutaPersonalizada {
         ArrayList<SitioPersonalizado> sitiosBorrar = new ArrayList<SitioPersonalizado>(instance.getMyRoute());
         for (SitioPersonalizado site : sitiosBorrar){
             removeSiteMyRouteList(site, view);
+        }
+    }
+
+    public void refreshPlanning(){
+        if (SubPlanningFragment.getContainer() != null){
+            SubPlanningFragment.getSwitch().setChecked(true);
         }
     }
 
