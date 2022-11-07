@@ -33,6 +33,7 @@ import Sitio.Sitio;
 import Usuario.VisitanteSingleton;
 
 public class MainActivity extends AppCompatActivity {
+    public static MainActivity main;
 
     BottomNavigationView bottomNavigationView;
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        main = this;
 
         //FragmentContainerView
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()

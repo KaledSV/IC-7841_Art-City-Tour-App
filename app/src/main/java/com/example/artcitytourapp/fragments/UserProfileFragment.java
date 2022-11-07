@@ -79,6 +79,7 @@ public class UserProfileFragment extends Fragment {
 
         logoutBtn.setOnClickListener(view -> {
             fAuth.signOut();
+            MainActivity.main.finish();
             startActivity(new Intent(view.getContext(), LoginActivity.class));
         });
 
