@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.artcitytourapp.R;
 import com.facebook.AccessToken;
@@ -154,21 +155,12 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         @Override
                         public void onCancel() {
-                            new AlertDialog.Builder(getApplicationContext())
-                                    .setTitle("Error")
-                                    //.setMessage("" + e.getMessage())
-                                    .setMessage("Facebook no pudo verificar sus credenciales")
-                                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
-                                    .show();
+                            Log.d("TAG", "facebook:onCancel");
                         }
+
                         @Override
-                        public void onError(FacebookException exception) {
-                            new AlertDialog.Builder(getApplicationContext())
-                                    .setTitle("Error")
-                                    //.setMessage("" + e.getMessage())
-                                    .setMessage("Facebook no pudo verificar sus credenciales")
-                                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
-                                    .show();
+                        public void onError(FacebookException error) {
+                            Log.d("TAG", "facebook:onError", error);
                         }
                     });
         });
@@ -257,12 +249,10 @@ public class LoginActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                new AlertDialog.Builder(getApplicationContext())
-                        .setTitle("Error")
-                        //.setMessage("" + task.getException())
-                        .setMessage("El usuario no se ha podido verificar, revise que ya este registrado")
-                        .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
-                        .show();
+                // If sign in fails, display a message to the user.
+                Log.d("TAG", "signInWithCredential:failure " +  e.getMessage());
+                Toast.makeText(LoginActivity.this, "Fallo en la autentificacion. Puede ya haberse registrado con otro metodo",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
