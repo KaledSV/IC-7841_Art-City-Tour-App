@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.artcitytourapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+@Deprecated
 public class ChangePassActivity extends AppCompatActivity {
     EditText password, confirmPassword;
     Button changePass;
@@ -19,7 +20,6 @@ public class ChangePassActivity extends AppCompatActivity {
 
     FirebaseAuth fAuth;
 
-    @Deprecated
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,6 @@ public class ChangePassActivity extends AppCompatActivity {
             if (!confirmPass.equals(pass)){
                 confirmPassword.setError("La contraseña no coincide");
             }
-            // todo change pass
         });
         backTextView.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));

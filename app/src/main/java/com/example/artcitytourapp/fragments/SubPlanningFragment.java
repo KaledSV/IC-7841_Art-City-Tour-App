@@ -71,6 +71,9 @@ public class SubPlanningFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 listContainer.removeAllViewsInLayout();
                 if (b){
+                    if (listSwitch.isChecked()){
+                        listSwitch.setChecked(false);
+                    }
                     SubPlanningOrderSitesListFragment subPlanningOrder = new SubPlanningOrderSitesListFragment();
                     requireActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.listContainer, subPlanningOrder, "subPlanningOrderListFragment")
@@ -93,6 +96,9 @@ public class SubPlanningFragment extends Fragment {
                 FragmentContainerView listContainer = view.findViewById(R.id.listContainer);
                 listContainer.removeAllViewsInLayout();
                 if (b){
+                    if (orderSwitch.isChecked()){
+                        orderSwitch.setChecked(false);
+                    }
                     listDes.setText(R.string.compartida);
                     changeNumberSites(lblNumSites, false);
                     SubPlanningSharedRouteListFragment subPlanningSharedRoute = new SubPlanningSharedRouteListFragment();

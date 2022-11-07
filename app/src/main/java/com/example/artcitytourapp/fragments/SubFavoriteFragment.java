@@ -230,7 +230,7 @@ public class SubFavoriteFragment extends Fragment {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250, 250, false));
+                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 125, 125, false));
                 }
             });
         }

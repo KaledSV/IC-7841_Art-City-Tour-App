@@ -79,7 +79,7 @@ public class SubPlanningMyRouteListFragment extends Fragment {
             // set table and plus button
             ConstraintLayout cl = PlanningFragment.view.findViewById(R.id.botones_burbuja);
 
-            /* todo Boton burbuja que abre el menu de botones burbuja
+            /*  Boton burbuja que abre el menu de botones burbuja
                 vuelve visible el menu(cl) luego deshabilita
                 los componentes de la ventana planear
                 y por ultimo vuelve invisible el boton del +(plus)*/

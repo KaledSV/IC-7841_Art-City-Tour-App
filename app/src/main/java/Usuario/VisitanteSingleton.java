@@ -78,7 +78,6 @@ public class VisitanteSingleton extends Usuario {
                                 RutaPersonalizada.alterRutaPersonalizada((String) doc.get("rutaPersonal"), (String) doc.get("rutaCompartida"));
                             }
                         } else {
-                            // todo login incorrecto
                             Log.w("TAG", "Error getting documents.", task.getException());
                         }
                     }
