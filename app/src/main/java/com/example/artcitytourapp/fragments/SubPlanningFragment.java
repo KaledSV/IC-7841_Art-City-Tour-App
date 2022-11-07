@@ -26,7 +26,6 @@ public class SubPlanningFragment extends Fragment {
     View view;
     static FragmentContainerView listContainer;
     static FragmentActivity activity;
-    static SwitchMaterial listSwitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,23 +47,25 @@ public class SubPlanningFragment extends Fragment {
         return activity;
     }
 
-    public static SwitchMaterial getSwitch(){
-        return listSwitch;
-    }
-
     public void loadData(){
         RutaPersonalizada ruta = RutaPersonalizada.getInstance();
 
         final EditText editPlanTitle = view.findViewById(R.id.editPlanTitle);
         final TextView lblNumSites = view.findViewById(R.id.lblNumSites);
         final SwitchMaterial orderSwitch = view.findViewById(R.id.orderSwitch);
-        listSwitch = view.findViewById(R.id.listSwitch);
+        final SwitchMaterial listSwitch = view.findViewById(R.id.listSwitch);
         final TextView listDes = view.findViewById(R.id.listDes);
         listContainer = view.findViewById(R.id.listContainer);
         activity = getActivity();
 
         editPlanTitle.setText(ruta.getName());
         changeNumberSites(lblNumSites, true);
+        SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")
+                .addToBackStack(null)
+                .commit();
+
         orderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

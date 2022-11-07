@@ -69,12 +69,15 @@
             android:id="@+id/editTextComment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:text="@string/add_comentary"
+            android:background="@drawable/comment_background"
             android:clickable="true"
             android:focusable="true"
-            android:background="@drawable/comment_background"
-            android:layout_marginTop="5dp"
-            />
+            android:gravity="center_vertical"
+            android:minHeight="48dp"
+            android:text="@string/add_comentary"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
     </LinearLayout>
 </TableRow>

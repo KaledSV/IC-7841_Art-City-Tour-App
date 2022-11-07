@@ -24,6 +24,7 @@ import com.example.artcitytourapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -203,13 +204,13 @@ public class SubFavoriteFragment extends Fragment {
         else{
             addSiteImageView.setImageResource(R.drawable.ic_baseline_add_google_24);
             addSiteImageView.setClickable(true);
-            addSiteImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getContext(),"Agregado al plan", Toast.LENGTH_SHORT).show();
-                    RutaPersonalizada.getInstance().addSiteMyRoute(espSite, view);
-                    addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
-                }
+            addSiteImageView.setOnClickListener(v -> {
+                Snackbar mySnackbar = Snackbar.make(view, "Agregado al plan", Snackbar.LENGTH_LONG);
+                mySnackbar.setAction("ver plan", new MyUndoListener(view));
+                mySnackbar.show();
+
+                RutaPersonalizada.getInstance().addSiteMyRoute(espSite, view);
+                addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
             });
         }
         if(recomendados){

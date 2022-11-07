@@ -13,7 +13,9 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_add_google_24.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_add_purple_48.xml" value="0.1655" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_add_purple_72.xml" value="0.1" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_architecture_24.xml" value="0.223" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_check_circle_24.xml" value="0.2535" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1655" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_favorite_border_24.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_favorite_off_grey_24.xml" value="0.1215" />
@@ -22,10 +24,13 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_next_24.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_notifications_24.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_remove_circle_24.xml" value="0.2535" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.223" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_thumb_down_24.xml" value="0.2535" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_thumb_up_24.xml" value="0.2535" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_baseline_user_profile_24.xml" value="0.1655" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_launcher_background.xml" value="0.124" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_logout_24.xml" value="0.223" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/round_outline.xml" value="0.2535" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/row_border.xml" value="0.2595" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/selected_button_border.xml" value="0.2485" />
@@ -33,6 +38,7 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/unselected_button_border.xml" value="0.2485" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.233203125" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_change_pass.xml" value="0.24010416666666667" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_facebook_auth.xml" value="0.1" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_full_screen_image.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_gallery.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_login.xml" value="0.264" />
@@ -43,19 +49,23 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_review2.xml" value="0.11302083333333333" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_route.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_site.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/bottom_sheet.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/content_review.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fav_rows.xml" value="0.1" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_close_sites.xml" value="0.2" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_direccion1.xml" value="0.11302083333333333" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_filtros.xml" value="0.2" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_first.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_fullscreen_image.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_gallery.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_maps2.xml" value="0.11302083333333333" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_planning.xml" value="0.2" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_resena.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_review.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_routes.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_schedule.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search.xml" value="0.264" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search2.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_second.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_site.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_site_review.xml" value="0.25416666666666665" />
@@ -66,6 +76,7 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_order_sites_list.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_shared_route_list.xml" value="0.1962962962962963" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_sites_list.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_user_profile.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/images_review.xml" value="0.253125" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/photo_popup.xml" value="0.264" />
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/layout/planning_row.xml" value="0.264" />
@@ -79,18 +90,11 @@
         <entry key="..\:/Users/Nitroso/Documents/GitHub/IC-7841_Art-City-Tour-App/app/src/main/res/menu/menu.xml" value="0.1037037037037037" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_marcadorLugar_background.xml" value="0.207" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/ic_marcadorLugar_foreground.xml" value="0.207" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/round_outline.xml" value="0.2075" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/round_outline2.xml" value="0.2075" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/rounded.xml" value="0.2075" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/row_border.xml" value="0.207" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/drawable/selected_button_border.xml" value="0.2075" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout-w936dp/fragment_resena.xml" value="0.5" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout-w936dp/item_main.xml" value="0.15" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_full_screen_image.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/add_planning.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/bottom_sheet.xml" value="0.25" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_add_planning.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_close_sites.xml" value="0.25" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_direccion1.xml" value="0.33" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_direccion2.xml" value="0.33" />
@@ -104,20 +108,17 @@
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_review.xml" value="0.22" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_routes.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_schedule.xml" value="0.2" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search.xml" value="0.25" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search2.xml" value="0.25" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search.xml" value="0.42337375964718854" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_search2.xml" value="0.33" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_site.xml" value="0.33" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sites.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_favorite.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning.xml" value="0.2" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_my_route_list.xml" value="0.22" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_order_sites_list.xml" value="0.5" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_my_route_list.xml" value="0.2" />
+        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_order_sites_list.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/fragment_sub_planning_shared_route_list.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/images_review.xml" value="0.2" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/item_list.xml" value="0.19895833333333332" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/photo_popup.xml" value="0.2" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/planning_row.xml" value="0.2" />
-        <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/planning_row_order.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_and_photo_popup.xml" value="0.2" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_main.xml" value="0.25" />
         <entry key="..\:/Users/yeico/Desktop/IC-7841_Art-City-Tour-App/app/src/main/res/layout/resena_photos_popup.xml" value="0.2" />

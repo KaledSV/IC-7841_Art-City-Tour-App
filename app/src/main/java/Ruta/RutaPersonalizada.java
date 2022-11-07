@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.artcitytourapp.R;
 import com.example.artcitytourapp.fragments.SubPlanningFragment;
@@ -430,9 +431,11 @@ public class RutaPersonalizada {
 
     public void refreshPlanning(){
         if (SubPlanningFragment.getContainer() != null){
+            FragmentManager manager = SubPlanningFragment.getActivityContainer().getSupportFragmentManager();
             SubPlanningMyRouteListFragment subPlanningMyRoute = new SubPlanningMyRouteListFragment();
-            SubPlanningFragment.getActivityContainer().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.listContainer, subPlanningMyRoute, "subPlanningMyRouteListFragment")
+
+            manager.beginTransaction()
+                    .replace(SubPlanningFragment.getContainer().getId(), subPlanningMyRoute, "subPlanningMyRouteListFragment")
                     .addToBackStack(null)
                     .commit();
         }

@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                         VisitanteSingleton.getInstance().bdUpdateSharedRouteId(sharedRouteId);
                         RutaPersonalizada.getInstance().setIdSharedRoute(sharedRouteId);
                         navController.navigate(R.id.planningFragment);
-                        changeSharedRoute();
                     }
                     break;
                     case "Sitios": {
@@ -154,12 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    protected void changeSharedRoute(){
-        if (SubPlanningFragment.getContainer() != null){
-            SubPlanningFragment.getSwitch().setChecked(true);
-        }
     }
 }
 
