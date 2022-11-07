@@ -218,7 +218,6 @@ public class SubFavoriteFragment extends Fragment {
         }
         else{
             table.addView(siteRow);
-
         }
     }
 
