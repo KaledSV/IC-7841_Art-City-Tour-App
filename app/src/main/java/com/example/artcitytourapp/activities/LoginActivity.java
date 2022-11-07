@@ -128,12 +128,14 @@ public class LoginActivity extends AppCompatActivity {
                         // change to main
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     }else{
-                        new AlertDialog.Builder(getApplicationContext())
+                        Toast.makeText(LoginActivity.this, "Fallo en la autentificacion. Puede ya haberse registrado con otro metodo",
+                                Toast.LENGTH_SHORT).show();
+                        /*new AlertDialog.Builder(getApplicationContext())
                                 .setTitle("Error")
                                 //.setMessage("" + task.getException())
                                 .setMessage("El usuario no se ha podido verificar, revise los datos")
                                 .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
-                                .show();
+                                .show();*/
                     }
                 }
             });
