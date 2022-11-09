@@ -129,7 +129,7 @@ public class SubFavoriteFragment extends Fragment {
 
     protected void bdGetSiteFoto(Sitio espSite, boolean recomendados){
         if (espSite.getIdFotoPredeterminada() == null){
-            addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png",recomendados);
+            addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png", recomendados);
         }
         else {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -141,9 +141,9 @@ public class SubFavoriteFragment extends Fragment {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             if (document.get("foto") == null) {
-                                addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png",recomendados);
+                                addTableRowFav(espSite, "Imagenes Interfaz/notFoundImage.png", recomendados);
                             } else {
-                                addTableRowFav(espSite, (String) Objects.requireNonNull(document.get("foto")),recomendados);
+                                addTableRowFav(espSite, (String) Objects.requireNonNull(document.get("foto")), recomendados);
                             }
                         } else {
                             Log.d("TAG", "No such document");
@@ -157,7 +157,10 @@ public class SubFavoriteFragment extends Fragment {
     }
 
     protected void addTableRowFav(Sitio espSite, String imgPath, boolean recomendados) {
-        TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.fav_rows, null);
+        TableRow siteRow = (TableRow) getLayoutInflater().inflate(R.layout.fav_rows, table, false);
+        if (recomendados)
+            siteRow = (TableRow) getLayoutInflater().inflate(R.layout.fav_rows, table2, false);
+
         VisitanteSingleton user = VisitanteSingleton.getInstance();
 
         ImageView siteImageView = (ImageView) siteRow.findViewById(R.id.siteImageView);
@@ -175,7 +178,6 @@ public class SubFavoriteFragment extends Fragment {
 
         // clicks de la fila
         LinearLayout siteData = (LinearLayout) siteRow.findViewById(R.id.siteData);
-        siteData.setClickable(true);
         siteData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,7 +188,6 @@ public class SubFavoriteFragment extends Fragment {
             }
         });
 
-        siteImageLayout.setClickable(true);
         siteImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,12 +217,10 @@ public class SubFavoriteFragment extends Fragment {
                 addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
             });
         }
-        if(recomendados){
+        if (recomendados)
             table2.addView(siteRow);
-        }
-        else{
+        else
             table.addView(siteRow);
-        }
     }
 
     protected void imageRow(ImageView iv, String imgPath, boolean recomendado){

@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem closeItem = menu.findItem(R.id.closeFragment);
         MenuItem planningItem = menu.findItem(R.id.planningFragment);
         MenuItem reviewItem = menu.findItem(R.id.reviewFragment);
+        MenuItem userItem = menu.findItem(R.id.userProfileFragment);
 
         sitesItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -82,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 navController.navigate(R.id.reviewFragment);
+                return true;
+            }
+        });
+        userItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                navController.navigate(R.id.userProfileFragment);
                 return true;
             }
         });
