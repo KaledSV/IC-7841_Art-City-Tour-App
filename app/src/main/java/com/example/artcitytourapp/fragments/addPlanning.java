@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -248,7 +249,10 @@ public class addPlanning extends Fragment {
         }
     }
     protected void addTableRowFav(Sitio espSite, String imgPath,boolean recomendados) {
-        TableRow siteRow = (TableRow)LayoutInflater.from(getContext()).inflate(R.layout.fav_rows, null);
+        TableRow siteRow = (TableRow) getLayoutInflater().inflate(R.layout.fav_rows, table, false);
+        if (recomendados)
+            siteRow = (TableRow) getLayoutInflater().inflate(R.layout.fav_rows, table2, false);
+
         VisitanteSingleton user = VisitanteSingleton.getInstance();
 
         ImageView siteImageView = (ImageView) siteRow.findViewById(R.id.siteImageView);
@@ -256,17 +260,16 @@ public class addPlanning extends Fragment {
         TextView siteTextView = (TextView) siteRow.findViewById(R.id.siteTextView);
         TextView siteTypeTextView = (TextView) siteRow.findViewById(R.id.siteTypeTextView);
         ImageView addSiteImageView = (ImageView) siteRow.findViewById(R.id.addSiteImageView);
-        RelativeLayout siteImageLayout = (RelativeLayout) siteRow.findViewById(R.id.siteImageLayout);
+        ConstraintLayout siteImageLayout = (ConstraintLayout) siteRow.findViewById(R.id.siteImageLayout);
 
         //heartImageView.setImageResource(R.drawable.favorite_off);
-        setFavoriteImage(user.siteFavoriteStatus(espSite), heartImageView);
-        imageRow(siteImageView, imgPath);
+        setFavoriteImage(!recomendados, heartImageView);
+        imageRow(siteImageView, imgPath, recomendados);
         siteTextView.setText(espSite.getNombre());
         siteTypeTextView.setText(espSite.getTipoSitio());
 
         // clicks de la fila
         LinearLayout siteData = (LinearLayout) siteRow.findViewById(R.id.siteData);
-        siteData.setClickable(true);
         siteData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,7 +280,6 @@ public class addPlanning extends Fragment {
             }
         });
 
-        siteImageLayout.setClickable(true);
         siteImageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,36 +300,30 @@ public class addPlanning extends Fragment {
         else{
             addSiteImageView.setImageResource(R.drawable.ic_baseline_add_google_24);
             addSiteImageView.setClickable(true);
-            addSiteImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //Toast.makeText(getContext(),"Agregado al plan", Toast.LENGTH_SHORT).show();
-                    Snackbar mySnackbar = Snackbar.make(view, "Agregado al plan", Snackbar.LENGTH_LONG);
-                    mySnackbar.setAction("ver plan", new MyUndoListener(view));
-                    mySnackbar.show();
-                    RutaPersonalizada.getInstance().addSiteMyRoute(espSite, view);
-                    addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
-                }
+            addSiteImageView.setOnClickListener(v -> {
+                Snackbar mySnackbar = Snackbar.make(view, "Agregado al plan", Snackbar.LENGTH_LONG);
+                mySnackbar.setAction("ver plan", new MyUndoListener(view));
+                mySnackbar.show();
+
+                RutaPersonalizada.getInstance().addSiteMyRoute(espSite, view);
+                addSiteImageView.setImageResource(R.drawable.ic_baseline_check_circle_24);
             });
         }
-        if(recomendados){
+        if (recomendados)
             table2.addView(siteRow);
-        }
-        else{
+        else
             table.addView(siteRow);
-
-        }
     }
-    protected void imageRow(ImageView iv, String imgPath){
+    
+    protected void imageRow(ImageView iv, String imgPath, boolean recomendado){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
+        String name = imgPath.substring(imgPath.lastIndexOf("/")+1,imgPath.lastIndexOf(".")) + recomendado;
+        String extension = imgPath.substring(imgPath.lastIndexOf("."));
         try {
-            File localFile = File.createTempFile("tempFile", imgPath.substring(imgPath.lastIndexOf(".")));
-            pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 250, 250, false));
-                }
+            File localFile = File.createTempFile(name, extension);
+            pathReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                iv.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 175, 175, false));
             });
         }
         catch (IOException e){
