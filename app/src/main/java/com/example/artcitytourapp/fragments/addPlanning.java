@@ -314,7 +314,7 @@ public class addPlanning extends Fragment {
         else
             table.addView(siteRow);
     }
-    
+
     protected void imageRow(ImageView iv, String imgPath, boolean recomendado){
         StorageReference pathReference  = FirebaseStorage.getInstance().getReference(imgPath);
         String name = imgPath.substring(imgPath.lastIndexOf("/")+1,imgPath.lastIndexOf(".")) + recomendado;

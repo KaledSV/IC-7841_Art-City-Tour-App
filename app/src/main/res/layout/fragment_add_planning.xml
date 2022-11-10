@@ -126,7 +126,9 @@
             <TableLayout
                 android:id="@+id/tableFavSitesList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:shrinkColumns="*" />
 
             <TextView
                 android:id="@+id/lblRecommended"
@@ -142,7 +144,9 @@
             <TableLayout
                 android:id="@+id/tableRecSitesList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:stretchColumns="*"
+                android:shrinkColumns="*" />
 
         </LinearLayout>
     </ScrollView>
