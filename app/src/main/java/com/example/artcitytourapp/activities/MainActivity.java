@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
         if (fAuth.getCurrentUser() != null) {
+            VisitanteSingleton.LoginVisitante(fAuth.getCurrentUser().getUid());
             if (uri != null) //Display the URI for parsing
             {
                 Set<String> args = uri.getQueryParameterNames(); // Retrieves all arguments usable with the URI
